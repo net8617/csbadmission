@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSB Admission Portal | Cyber Sentinel Bangladesh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* টেক্সট কপি করা বন্ধ করতে */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #04060a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+            color: #f1f5f9;
+        }
+
+        /* ===== BACKGROUND ===== */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(rgba(0, 245, 212, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.015) 1px, transparent 1px);
+            background-size: 45px 45px;
+            z-index: 0;
+            animation: gridMove 25s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(45px, 45px); }
+        }
+
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: rgba(0, 245, 212, 0.25);
+            border-radius: 50%;
+            z-index: 0;
+            animation: floatParticle 18s infinite linear;
+        }
+        .particle:nth-child(1) { left: 8%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 25%; animation-delay: 3s; width: 4px; height: 4px; }
+        .particle:nth-child(3) { left: 45%; animation-delay: 6s; }
+        .particle:nth-child(4) { left: 65%; animation-delay: 9s; width: 5px; height: 5px; }
+        .particle:nth-child(5) { left: 85%; animation-delay: 12s; }
+
+        @keyframes floatParticle {
+            0% { top: -10%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 110%; opacity: 0; }
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            width: 100%;
+            background: rgba(10, 15, 30, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 245, 212, 0.15);
+            border-radius: 28px;
+            padding: 45px 40px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 245, 212, 0.02) inset;
+            animation: containerIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes containerIn {
+            0% { opacity: 0; transform: scale(0.98) translateY(15px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 28px;
+            padding: 1.5px;
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.3), transparent 40%, transparent 60%, rgba(14, 165, 233, 0.25));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* ===== WELCOME / LANDING ===== */
+        .welcome-section {
+            text-align: center;
+            padding: 10px 0 30px;
+        }
+        .welcome-section .csb-logo {
+            font-size: 64px;
+            color: #00f5d4;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 20px rgba(0, 245, 212, 0.4));
+            animation: pulseLogo 3s ease-in-out infinite;
+        }
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(0, 245, 212, 0.3)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(0, 245, 212, 0.5)); }
+        }
+        .welcome-section h1 {
+            font-size: 40px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 20%, #cbd5e1 60%, #00f5d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        .welcome-section .sub {
+            color: #64748b;
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 14px;
+            display: inline-block;
+            font-weight: 700;
+        }
+        .welcome-section .badge-batch {
+            display: inline-block;
+            margin-top: 20px;
+            background: rgba(0, 245, 212, 0.04);
+            border: 1px solid rgba(0, 245, 212, 0.15);
+            padding: 8px 22px;
+            border-radius: 30px;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .welcome-section .badge-batch i { color: #00f5d4; margin-right: 8px; }
+
+        .live-counter {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-left: 8px;
+            animation: pulseLive 2s infinite;
+        }
+        @keyframes pulseLive {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .live-counter i { margin-right: 4px; }
+
+        /* ===== HOME BUTTONS ===== */
+        .home-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin: 25px 0 10px;
+        }
+        .home-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 16px 32px;
+            min-width: 170px;
+            color: #cbd5e1;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        .home-btn i { font-size: 16px; color: #00f5d4; }
+        .home-btn:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 245, 212, 0.4);
+            background: rgba(0, 245, 212, 0.05);
+            color: #fff;
+            box-shadow: 0 10px 25px rgba(0, 245, 212, 0.12);
+        }
+        .home-btn.primary {
+            background: linear-gradient(135deg, #00f5d4, #0ea5e9);
+            border: none;
+            color: #0b1120;
+            box-shadow: 0 4px 15px rgba(0, 245, 212, 0.15);
+        }
+        .home-btn.primary i { color: #0b1120; }
+        .home-btn.primary:hover { 
+            box-shadow: 0 12px 30px rgba(0, 245, 212, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-btn-wrapper {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 22px;
+            border-radius: 14px;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 245, 212, 0.4);
+            color: #00f5d4;
+            transform: translateX(-4px);
+        }
+
+        /* ===== FORM WRAPPER ===== */
+        .form-wrapper {
+            display: none;
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .form-wrapper.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== PAYMENT CARD ===== */
+        .payment-card {
+            background: rgba(0, 245, 212, 0.02);
+            border: 1px solid rgba(0, 245, 212, 0.15);
+            border-radius: 20px;
+            padding: 24px 28px;
+            margin: 15px 0 30px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .payment-card .left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .payment-card .left .icon-box {
+            background: rgba(0, 245, 212, 0.08);
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #00f5d4;
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.15);
+        }
+        .payment-card .left .info h4 {
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+        .payment-card .left .info p {
+            color: #94a3b8;
+            font-size: 13.5px;
+            margin-top: 4px;
+        }
+        .payment-card .left .info p strong {
+            color: #00f5d4;
+            font-weight: 800;
+            font-size: 15px;
+        }
+        .payment-card .right {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 10px 20px;
+            color: #cbd5e1;
+            font-size: 13.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .payment-card .right .number {
+            color: #00f5d4;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .payment-card .right i { color: #00f5d4; }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .form-group label .step-icon {
+            font-size: 14px;
+            color: #00f5d4;
+            width: 20px;
+            text-align: center;
+        }
+        .form-group label .step-num {
+            color: #00f5d4;
+            font-weight: 800;
+            font-size: 10px;
+            background: rgba(0, 245, 212, 0.1);
+            padding: 2px 6px;
+            border-radius: 5px;
+        }
+        .form-group label .required {
+            color: #ef4444;
+            font-size: 14px;
+            margin-left: auto;
+        }
+        .form-control {
+            width: 100%;
+            padding: 15px 18px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            color: #f1f5f9;
+            font-size: 14.5px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+        .form-control:focus {
+            border-color: rgba(0, 245, 212, 0.4);
+            background: rgba(0, 245, 212, 0.02);
+            box-shadow: 0 0 0 4px rgba(0, 245, 212, 0.05);
+        }
+        .form-control::placeholder { color: #475569; }
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2300f5d4' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            padding-right: 45px;
+            cursor: pointer;
+        }
+        select.form-control option { background: #0c101d; color: #f1f5f9; }
+
+        /* ===== FILE UPLOAD ===== */
+        .file-upload-wrapper { position: relative; }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 3;
+        }
+        .file-upload-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1.5px dashed rgba(0, 245, 212, 0.15);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+        .file-upload-area .icon { font-size: 20px; color: rgba(0, 245, 212, 0.4); }
+        .file-upload-area .info .main { color: #94a3b8; font-size: 13.5px; }
+        .file-upload-area .info .main span { color: #00f5d4; font-weight: 600; }
+        .file-upload-area .info .sub { color: #475569; font-size: 11.5px; margin-top: 3px; }
+        .file-upload-area .size-badge {
+            font-size: 11.5px;
+            color: #00f5d4;
+            background: rgba(0, 245, 212, 0.05);
+            padding: 5px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 245, 212, 0.1);
+            font-weight: 600;
+        }
+        .file-upload-wrapper:hover .file-upload-area {
+            border-color: rgba(0, 245, 212, 0.4);
+            background: rgba(0, 245, 212, 0.02);
+        }
+
+        /* ===== VIDEO RECORDER ===== */
+        .video-recorder {
+            background: rgba(0, 245, 212, 0.015);
+            border: 1px solid rgba(0, 245, 212, 0.12);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .video-recorder .recorder-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .video-recorder .recorder-header h4 {
+            color: #cbd5e1;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+        .video-recorder .recorder-header .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .video-recorder .recorder-header .status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #475569;
+        }
+        .video-recorder .recorder-header .status .dot.recording {
+            background: #ef4444;
+            animation: blink 1s infinite;
+        }
+        .video-recorder .recorder-header .status .dot.ready {
+            background: #00f5d4;
+            box-shadow: 0 0 8px #00f5d4;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .video-recorder video {
+            width: 100%;
+            border-radius: 14px;
+            background: #070911;
+            max-height: 250px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .video-recorder .recorder-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .btn-recorder {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-recorder.start {
+            background: linear-gradient(135deg, #00f5d4, #0ea5e9);
+            color: #0b1120;
+        }
+        .btn-recorder.stop {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: #fff;
+        }
+        .btn-recorder.download {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+        }
+        .btn-recorder:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ===== OATH BOX ===== */
+        .oath-box {
+            background: rgba(0, 245, 212, 0.015);
+            border: 1px solid rgba(0, 245, 212, 0.1);
+            border-radius: 20px;
+            padding: 22px 25px;
+            margin: 15px 0 10px;
+            position: relative;
+            transition: 0.3s;
+        }
+        .oath-box:hover {
+            border-color: rgba(0, 245, 212, 0.25);
+            background: rgba(0, 245, 212, 0.02);
+        }
+        .oath-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #00f5d4, #0ea5e9);
+            border-radius: 4px 0 0 4px;
+        }
+        .oath-box .oath-title {
+            color: #00f5d4;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .oath-box .oath-text {
+            color: #cbd5e1;
+            font-size: 13.5px;
+            line-height: 1.8;
+            font-style: italic;
+        }
+        .oath-box .oath-text .highlight {
+            color: #00f5d4;
+            font-style: normal;
+            font-weight: 700;
+        }
+        .oath-box .oath-amen {
+            text-align: right;
+            color: #00f5d4;
+            font-weight: 800;
+            margin-top: 10px;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .lock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 245, 212, 0.04);
+            border: 1px solid rgba(0, 245, 212, 0.12);
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #00f5d4;
+            font-weight: 700;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .btn-submit {
+            flex: 2;
+            padding: 18px 26px;
+            background: linear-gradient(135deg, #00f5d4, #0ea5e9);
+            border: none;
+            border-radius: 16px;
+            color: #0b1120;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 245, 212, 0.15);
+        }
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+            transform: translateX(-100%);
+            transition: 0.6s;
+        }
+        .btn-submit:hover::after { transform: translateX(0); }
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 245, 212, 0.25);
+        }
+        .btn-submit .arrow {
+            display: inline-block;
+            margin-left: 8px;
+            transition: 0.3s;
+        }
+        .btn-submit:hover .arrow { transform: translateX(6px); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-reset {
+            flex: 1;
+            padding: 18px 22px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            color: #64748b;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 11.5px;
+            color: #475569;
+        }
+        .form-footer .secured { display: flex; align-items: center; gap: 6px; }
+        .form-footer .secured i { color: #00f5d4; }
+
+        /* ===== PROGRESS ===== */
+        .upload-progress {
+            display: none;
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            height: 6px;
+            overflow: hidden;
+        }
+        .upload-progress.show { display: block; }
+        .upload-progress .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00f5d4, #0ea5e9);
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+        .upload-progress .status-text {
+            color: #94a3b8;
+            font-size: 12.5px;
+            margin-top: 6px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(10, 15, 30, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 245, 212, 0.25);
+            border-radius: 14px;
+            padding: 16px 24px;
+            color: #f1f5f9;
+            font-size: 13.5px;
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 380px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            font-weight: 600;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-color: rgba(0, 245, 212, 0.35); }
+        .toast.error { border-color: rgba(239, 68, 68, 0.35); }
+        .toast .toast-icon { margin-right: 8px; }
+        .toast.success .toast-icon { color: #00f5d4; }
+        .toast.error .toast-icon { color: #ef4444; }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.show { display: flex; }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .modal-content {
+            background: rgba(10, 15, 30, 0.95);
+            border: 1px solid rgba(0, 245, 212, 0.25);
+            border-radius: 24px;
+            padding: 40px 30px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            animation: modalSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
+        }
+        @keyframes modalSlide {
+            0% { transform: scale(0.92) translateY(15px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .modal-content .icon { font-size: 58px; color: #00f5d4; margin-bottom: 14px; display: block; filter: drop-shadow(0 0 10px rgba(0,245,212,0.3)); }
+        .modal-content .icon.error { color: #ef4444; filter: drop-shadow(0 0 10px rgba(239,68,68,0.3)); }
+        .modal-content h2 { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .modal-content p { color: #94a3b8; font-size: 14.5px; line-height: 1.6; margin-bottom: 22px; }
+        .modal-content .btn-modal {
+            padding: 12px 36px;
+            background: linear-gradient(135deg, #00f5d4, #0ea5e9);
+            border: none;
+            border-radius: 14px;
+            color: #0b1120;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .modal-content .btn-modal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 245, 212, 0.2);
+        }
+        .modal-content .btn-modal.error {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: #fff;
+        }
+
+        /* ===== TRACKING PANEL ===== */
+        .tracking-panel {
+            display: none;
+            margin-top: 30px;
+            background: rgba(0, 245, 212, 0.015);
+            border: 1px solid rgba(0, 245, 212, 0.1);
+            border-radius: 22px;
+            padding: 26px;
+        }
+        .tracking-panel.active { display: block; }
+        .tracking-panel h3 {
+            color: #fff;
+            font-weight: 800;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        /* ===== SPINNER ===== */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(11, 17, 32, 0.2);
+            border-top: 2px solid #0b1120;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn-submit.loading .spinner { display: inline-block; }
+        .btn-submit.loading .btn-text { display: none; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container { padding: 30px 20px; border-radius: 24px; }
+            .welcome-section h1 { font-size: 30px; }
+            .home-buttons { flex-direction: column; align-items: stretch; }
+            .home-btn { min-width: auto; }
+            .row-2 { grid-template-columns: 1fr; gap: 0; }
+            .payment-card { flex-direction: column; align-items: stretch; }
+            .payment-card .left { flex-wrap: wrap; }
+            .btn-group { flex-direction: column; }
+            .video-recorder .recorder-controls { flex-direction: column; }
+            .btn-recorder { width: 100%; flex: none; }
+            .form-footer { flex-direction: column; gap: 10px; text-align: center; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 20px 15px; border-radius: 20px; }
+            .welcome-section h1 { font-size: 22px; }
+            .modal-content { padding: 28px 16px; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #04060a; }
+        ::-webkit-scrollbar-thumb { background: #00f5d4; border-radius: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <div class="container" id="mainContainer">
+
+        <div id="landingPage">
+            <div class="welcome-section">
+                <div class="csb-logo"><i class="fas fa-shield-halved"></i></div>
+                <h1>Cyber Sentinel Bangladesh</h1>
+                <div class="sub">OFFICIAL ADMISSION PORTAL · BATCH 8-9</div>
+                <div class="badge-batch">
+                    <i class="fas fa-users"></i> ব্যাচ ৮-৯ · ২০২৬
+                    <span class="live-counter"><i class="fas fa-circle"></i> LIVE</span>
+                </div>
+            </div>
+
+            <div class="home-buttons">
+                <button class="home-btn primary" id="registerBtn"><i class="fas fa-pen-to-square"></i> রেজিস্ট্রেশন</button>
+                <button class="home-btn" id="trackingBtn"><i class="fas fa-search"></i> ট্র্যাকিং</button>
+                <button class="home-btn" id="supportBtn"><i class="fas fa-headset"></i> সাপোর্ট</button>
+            </div>
+
+            <div class="tracking-panel" id="trackingPanel">
+                <h3><i class="fas fa-magnifying-glass" style="color:#00f5d4; margin-right:12px;"></i> আপনার আবেদন ট্র্যাক করুন <span class="live-counter"><i class="fas fa-circle"></i> LIVE</span></h3>
+                <div style="display:flex; gap:14px; flex-wrap:wrap; margin: 16px 0;">
+                    <input type="text" id="trackInput" class="form-control" style="flex:2; min-width:200px;" placeholder="আপনার আইডি নম্বর লিখুন (যেমন: CSB-2026-0012)" />
+                    <button class="home-btn primary" id="trackSubmitBtn" style="flex:0; padding:12px 28px; border-radius:20px;"><i class="fas fa-arrow-right"></i> চেক করুন</button>
+                </div>
+                <div id="trackResult" style="margin-top:10px; color:#94a3b8; font-size:15px;">
+                    <p><i class="fas fa-circle-info" style="color:#00f5d4;"></i> আপনার আবেদন আইডি দিয়ে স্ট্যাটাস দেখুন।</p>
+                </div>
+                <div id="liveTime" style="margin-top:12px; font-size:12px; color:#64748b; text-align:center;">
+                    <i class="fas fa-clock"></i> লাইভ আপডেট: <span id="liveTimeDisplay">--:--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-wrapper" id="formWrapper">
+            
+            <div class="back-btn-wrapper">
+                <button type="button" class="back-btn" id="backToHomeBtn">
+                    <i class="fas fa-arrow-left"></i> হোম পেজে ফিরুন
+                </button>
+            </div>
+
+            <div class="payment-card">
+                <div class="left">
+                    <div class="icon-box"><i class="fas fa-hand-holding-dollar"></i></div>
+                    <div class="info">
+                        <h4>ফর্ম ফি: ৫০ টাকা</h4>
+                        <p><i class="fas fa-phone-alt" style="color:#00f5d4; margin-right:6px;"></i> <strong>01971138617</strong> (বিকাশ, নগদ, রকেট)</p>
+                    </div>
+                </div>
+                <div class="right">
+                    <span><i class="fas fa-qrcode"></i> TNX &amp; Screenshot</span>
+                    <span class="number">পেমেন্ট রেফারেন্স</span>
+                </div>
+            </div>
+
+            <form id="csbForm" novalidate autocomplete="off">
+
+                <div class="form-group">
+                    <label><i class="fas fa-user step-icon"></i><span class="step-num">01</span> সম্পূর্ণ নাম (ইংরেজি)<span class="required">*</span></label>
+                    <input type="text" class="form-control" id="fullName" placeholder="যেমন: Md. Shahriar Ahmed" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-location-dot step-icon"></i><span class="step-num">02</span> বর্তমান ঠিকানা<span class="required">*</span></label>
+                    <input type="text" class="form-control" id="address" placeholder="গ্রাম/রোড, পোস্ট অফিস, থানা, জেলা" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-envelope step-icon"></i><span class="step-num">03</span> ইমেইল<span class="required">*</span></label>
+                    <input type="email" class="form-control" id="email" placeholder="your@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fab fa-whatsapp step-icon"></i><span class="step-num">04</span> হোয়াটসঅ্যাপ<span class="required">*</span></label>
+                    <input type="tel" class="form-control" id="whatsapp" placeholder="01XXXXXXXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fab fa-telegram step-icon"></i><span class="step-num">05</span> টেলিগ্রাম ইউজারনেম<span class="required">*</span></label>
+                    <input type="text" class="form-control" id="telegram" placeholder="@yourusername" required>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label><i class="fab fa-facebook step-icon"></i><span class="step-num">06</span> ফেসবুক নাম<span class="required">*</span></label>
+                        <input type="text" class="form-control" id="fbName" placeholder="আপনার ফেসবুক নাম" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-link step-icon"></i><span class="step-num">07</span> ফেসবুক লিংক<span class="required">*</span></label>
+                        <input type="url" class="form-control" id="fbLink" placeholder="https://facebook.com/username" required>
+                    </div>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label><i class="fas fa-image step-icon"></i><span class="step-num">08</span> পাসপোর্ট ছবি (১ম)<span class="required">*</span></label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" accept="image/*" id="photo1" required>
+                            <div class="file-upload-area">
+                                <i class="fas fa-image icon"></i>
+                                <div class="info"><div class="main"><span>Choose file</span> · JPG/PNG</div><div class="sub">Max 5MB</div></div>
+                                <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-image step-icon"></i><span class="step-num">09</span> পাসপোর্ট ছবি (২য়)<span class="required">*</span></label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" accept="image/*" id="photo2" required>
+                            <div class="file-upload-area">
+                                <i class="fas fa-image icon"></i>
+                                <div class="info"><div class="main"><span>Choose file</span> · JPG/PNG</div><div class="sub">Max 5MB</div></div>
+                                <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-id-card step-icon"></i><span class="step-num">10</span> NID / জন্মসনদ (সামনে)<span class="required">*</span></label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" accept="image/*" id="nid" required>
+                        <div class="file-upload-area">
+                            <i class="fas fa-file-pdf icon"></i>
+                            <div class="info"><div class="main"><span>Upload front</span> · JPG/PNG/PDF</div><div class="sub">Max 10MB</div></div>
+                            <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-hashtag step-icon"></i><span class="step-num">11</span> NID / জন্মসনদ নম্বর<span class="required">*</span></label>
+                    <input type="text" class="form-control" id="nidNumber" placeholder="আইডি নম্বর" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-day step-icon"></i><span class="step-num">12</span> জন্মতারিখ<span class="required">*</span></label>
+                    <input type="date" class="form-control" id="dob" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-video step-icon"></i><span class="step-num">13</span> শপথনামার ভিডিও (Live)<span class="required">*</span></label>
+                    <div class="video-recorder">
+                        <div class="recorder-header">
+                            <h4><i class="fas fa-video"></i> Live Recording Camera</h4>
+                            <div class="status"><span class="dot idle" id="recordingDot"></span><span id="recordingStatus">Ready</span></div>
+                        </div>
+                        <video id="previewVideo" autoplay muted playsinline></video>
+                        <div class="recorder-controls">
+                            <button type="button" class="btn-recorder start" id="startRecord"><i class="fas fa-circle"></i> Start</button>
+                            <button type="button" class="btn-recorder stop" id="stopRecord" disabled><i class="fas fa-square"></i> Stop</button>
+                            <button type="button" class="btn-recorder download" id="downloadRecord" disabled><i class="fas fa-download"></i> Download</button>
+                        </div>
+                        <input type="hidden" id="recordedVideo" value="">
+                        <input type="hidden" id="recordedVideoBlob" value="">
+                    </div>
+                    <div class="oath-box">
+                        <div class="oath-title"><i class="fas fa-shield"></i> শপথনামা</div>
+                        <div class="oath-text">
+                            “আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।<br>
+                            <span class="highlight">আমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো।</span> সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো।<br>
+                            আমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”
+                        </div>
+                        <div class="oath-amen"><i class="fas fa-heart" style="color:#ff6b6b; margin-right:6px;"></i> আমিন <i class="fas fa-heart" style="color:#ff6b6b; margin-left:6px;"></i></div>
+                    </div>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label><i class="fas fa-venus-mars step-icon"></i><span class="step-num">14A</span> জেন্ডার<span class="required">*</span></label>
+                        <select class="form-control" id="gender" required>
+                            <option value="">সিলেক্ট করুন</option>
+                            <option value="Male">পুরুষ</option>
+                            <option value="Female">নারী</option>
+                            <option value="Other">অন্যান্য</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-briefcase step-icon"></i><span class="step-num">14B</span> রোল<span class="required">*</span></label>
+                        <select class="form-control" id="role" required>
+                            <option value="">সিলেক্ট করুন</option>
+                            <option value="Cyber Security Analyst">Cyber Security Analyst</option>
+                            <option value="Ethical Hacker">Ethical Hacker</option>
+                            <option value="Security Researcher">Security Researcher</option>
+                            <option value="Network Security Engineer">Network Security Engineer</option>
+                            <option value="Digital Forensics Expert">Digital Forensics Expert</option>
+                            <option value="GRC Specialist">GRC Specialist</option>
+                            <option value="CSB Trainee">CSB Trainee</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-receipt step-icon"></i><span class="step-num">15</span> TNX আইডি (পেমেন্ট রেফারেন্স)<span class="required">*</span></label>
+                    <input type="text" class="form-control" id="tnxId" placeholder="যেমন: 9X7F2G3H" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-image step-icon"></i><span class="step-num">16</span> পেমেন্ট স্ক্রিনশট<span class="required">*</span></label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" accept="image/*" id="paymentScreenshot" required>
+                        <div class="file-upload-area">
+                            <i class="fas fa-camera icon"></i>
+                            <div class="info"><div class="main"><span>Upload screenshot</span> · JPG/PNG</div><div class="sub">Max 5MB</div></div>
+                            <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label><i class="fas fa-phone step-icon"></i><span class="step-num">17</span> অভিভাবকের মোবাইল<span class="required">*</span></label>
+                        <input type="tel" class="form-control" id="guardianPhone" placeholder="01XXXXXXXXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-mobile-screen-button step-icon"></i><span class="step-num">18</span> আপনার মোবাইল<span class="required">*</span></label>
+                        <input type="tel" class="form-control" id="personalPhone" placeholder="01XXXXXXXXX (সচল)" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label style="opacity:0.5;"><i class="fas fa-lock step-icon"></i> ক্যাটাগরি ডেটা লক</label>
+                    <div class="lock-badge"><i class="fas fa-lock lock-icon"></i> Category: NEW STUDENTS</div>
+                </div>
+
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="bar" id="progressBar"></div>
+                    <div class="status-text" id="progressStatus">আপলোড হচ্ছে...</div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="spinner"></span>
+                        <span class="btn-text"><i class="fas fa-paper-plane"></i> জমা দিন <span class="arrow"><i class="fas fa-arrow-right"></i></span></span>
+                    </button>
+                    <button type="reset" class="btn-reset"><i class="fas fa-rotate-left"></i> রিসেট</button>
+                </div>
+
+                <div class="form-footer">
+                    <span class="secured"><i class="fas fa-lock"></i> SSL Secured · CSB Admission</span>
+                    <span class="version">v3.0 · 2026</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <i class="fas fa-check-circle icon"></i>
+            <h2>✅ আবেদন সফল!</h2>
+            <p>আপনার আবেদন সফলভাবে জমা হয়েছে।<br><strong style="color:#00f5d4;">আপনার ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span></strong><br>এই আইডিটি সংরক্ষণ করুন এবং ট্র্যাকিং প্যানেল থেকে আবেদনের অবস্থা চেক করুন।</p>
+            <button class="btn-modal" onclick="closeModal()">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal-content">
+            <i class="fas fa-times-circle icon error"></i>
+            <h2>❌ সমস্যা হয়েছে</h2>
+            <div id="errorMessage" style="font-weight: 500;"></div>
+            <button class="btn-modal error" onclick="closeErrorModal()">আবার চেষ্টা</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span class="toast-icon"><i class="fas fa-circle-check"></i></span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        // ===================================================================
+        // SECURITY CONFIG (Anti-Cheat & Anti-Theft Protection)
+        // ===================================================================
+        // রাইট ক্লিক ব্লক করা
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            showToast('⚠️ রাইট ক্লিক করা নিষিদ্ধ (CSB Security)', 'error');
+        });
+
+        // কীবোর্ড শর্টকাট লক করা (F12, DevTools)
+        document.addEventListener('keydown', (e) => {
+            if (
+                e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
+                (e.ctrlKey && e.key === 'U')
+            ) {
+                e.preventDefault();
+                showToast('⚠️ সোর্স কোড দেখা বা কপি করা সম্পূর্ণ নিষিদ্ধ!', 'error');
+                return false;
+            }
+        });
+
+        // ===================================================================
+        // CONFIG
+        // ===================================================================
+        const BOT_TOKEN = '8677605758:AAHJs_SE2YmS0g0RVfuesZuXVKAJ3O5CjiM';
+        const CHANNEL_ID_SUBMIT = '-1004341639499'; // আবেদন রিসিভ চ্যানেল
+        const CHANNEL_ID_APPROVE = '-1003891211232'; // এপ্রুভ চ্যানেল
+
+        // ===================================================================
+        // DOM REFS
+        // ===================================================================
+        const landingPage = document.getElementById('landingPage');
+        const formWrapper = document.getElementById('formWrapper');
+        const registerBtn = document.getElementById('registerBtn');
+        const trackingBtn = document.getElementById('trackingBtn');
+        const supportBtn = document.getElementById('supportBtn');
+        const backToHomeBtn = document.getElementById('backToHomeBtn');
+        const trackingPanel = document.getElementById('trackingPanel');
+        const trackInput = document.getElementById('trackInput');
+        const trackSubmitBtn = document.getElementById('trackSubmitBtn');
+        const trackResult = document.getElementById('trackResult');
+        const liveTimeDisplay = document.getElementById('liveTimeDisplay');
+
+        // ===================================================================
+        // LIVE TIME COUNTER
+        // ===================================================================
+        function updateLiveTime() {
+            const now = new Date();
+            liveTimeDisplay.textContent = now.toLocaleTimeString('bn-BD', { hour12: false });
+        }
+        updateLiveTime();
+        setInterval(updateLiveTime, 1000);
+
+        // ===================================================================
+        // NAVIGATION
+        // ===================================================================
+        registerBtn.addEventListener('click', () => {
+            landingPage.style.display = 'none';
+            formWrapper.classList.add('active');
+            trackingPanel.classList.remove('active');
+            // রেজিস্ট্রেশন বাটনে ক্লিক করলেই ব্যাকগ্রাউন্ডে ক্যামেরা লোড করার ট্রাই করবে
+            initCamera(); 
+        });
+
+        backToHomeBtn.addEventListener('click', () => {
+            formWrapper.classList.remove('active');
+            landingPage.style.display = 'block';
+        });
+
+        trackingBtn.addEventListener('click', () => {
+            landingPage.style.display = 'block';
+            formWrapper.classList.remove('active');
+            trackingPanel.classList.toggle('active');
+            if (trackingPanel.classList.contains('active')) {
+                trackResult.innerHTML = `<p><i class="fas fa-circle-info" style="color:#00f5d4;"></i> আপনার আইডি লিখে চেক করুন।</p>`;
+            }
+        });
+
+        supportBtn.addEventListener('click', () => {
+            window.open('https://wa.me/+601130345524', '_blank');
+        });
+
+        // URL চেক করে অ্যাডমিনদের Approve/Reject হ্যান্ডেল করা
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const action = params.get('action');
+            const trackId = params.get('id');
+
+            if (action && trackId) {
+                let localData = localStorage.getItem(trackId);
+                if (localData) {
+                    let parsed = JSON.parse(localData);
+                    if (action === 'approve') {
+                        parsed.status = 'Approved';
+                        parsed.time = new Date().toLocaleString('bn-BD');
+                        localStorage.setItem(trackId, JSON.stringify(parsed));
+                        showToast(`✅ ID: ${trackId} সফলভাবে Approved করা হয়েছে!`, 'success');
+                        
+                        sendToApproveChannel(trackId, parsed);
+                    } else if (action === 'reject') {
+                        parsed.status = 'Rejected';
+                        parsed.time = new Date().toLocaleString('bn-BD');
+                        localStorage.setItem(trackId, JSON.stringify(parsed));
+                        showToast(`❌ ID: ${trackId} Rejected করা হয়েছে!`, 'error');
+                        sendRejectionNotice(trackId, parsed);
+                    }
+                }
+            }
+        });
+
+        async function sendToApproveChannel(trackId, data) {
+            const text = `🎉 **নতুন আবেদন অনুমোদিত (APPROVED)** 🎉\n` +
+                         `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                         `👤 নাম: ${data.name}\n` +
+                         `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
+                         `🏠 ঠিকানা: ${data.address || 'N/A'}\n` +
+                         `📧 ইমেইল: ${data.email || 'N/A'}\n` +
+                         `📱 WhatsApp: ${data.whatsapp || 'N/A'}\n` +
+                         `✈️ Telegram: ${data.telegram || 'N/A'}\n` +
+                         `⚧️ জেন্ডার: ${data.gender}\n` +
+                         `🗂️ রোল: ${data.role}\n` +
+                         `🧾 TNX ID: ${data.tnxId || 'N/A'}\n` +
+                         `📞 অভিভাবক: ${data.guardianPhone || 'N/A'}\n` +
+                         `📱 নিজের: ${data.personalPhone || 'N/A'}\n` +
+                         `📅 অনুমোদন সময়: ${data.time}\n` +
+                         `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                         `🛡️ Cyber Sentinel Bangladesh`;
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHANNEL_ID_APPROVE, text: text, parse_mode: 'Markdown' })
+            });
+        }
+
+        async function sendRejectionNotice(trackId, data) {
+            const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n` +
+                         `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                         `👤 নাম: ${data.name}\n` +
+                         `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
+                         `⚠️ আপনার আবেদনে ভুল তথ্য অথবা পেমেন্টে অসঙ্গতি পাওয়া গেছে। পুনরায় সঠিক নিয়মে আবেদন করুন।\n` +
+                         `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                         `🛡️ Cyber Sentinel Bangladesh`;
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHANNEL_ID_SUBMIT, text: text, parse_mode: 'Markdown' })
+            });
+        }
+
+        // ===================================================================
+        // TRACKING SYSTEM
+        // ===================================================================
+        trackSubmitBtn.addEventListener('click', () => {
+            const id = trackInput.value.trim().toUpperCase();
+            if (!id) { showToast('⚠️ আইডি লিখুন', 'error'); return; }
+
+            const localData = localStorage.getItem(id);
+            let status = 'Pending';
+            let name = 'আবেদনকারী';
+            let role = 'CSB Member';
+            let gender = 'Male';
+            let now = new Date().toLocaleString('bn-BD');
+
+            if (localData) {
+                const parsed = JSON.parse(localData);
+                status = parsed.status || 'Pending';
+                name = parsed.name || name;
+                role = parsed.role || role;
+                gender = parsed.gender || 'Male';
+                now = parsed.time || now;
+            } else {
+                // পূর্বে ডাটা না থাকলে পেন্ডিং হিসেবে একটি মক ডাটা তৈরি
+                const appData = { name: "New User", role: "Trainee", gender: "Male", status: status, time: now };
+                localStorage.setItem(id, JSON.stringify(appData));
+            }
+
+            let color = '#ffa94d';
+            let icon = '⏳';
+            let joinLinkHtml = '';
+            
+            if (status === 'Approved') {
+                color = '#00f5d4';
+                icon = '✅';
+                
+                let targetGroupLink = 'https://t.me/+iK88FtiL2YNmZjE1'; 
+                if (gender === 'Female') {
+                    targetGroupLink = 'https://t.me/+tSQK_jWEeWU0YjI1';
+                }
+
+                joinLinkHtml = `
+                    <div style="margin-top: 15px; border-top: 1px dashed rgba(0, 255, 200, 0.2); padding-top: 15px; text-align: center;">
+                        <p style="color: #00f5d4; font-weight: 600; font-size: 14px; margin-bottom: 10px;">🎉 অভিনন্দন! আপনার আবেদনটি সফলভাবে মঞ্জুর করা হয়েছে।</p>
+                        <a href="${targetGroupLink}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #00f5d4, #0ea5e9); color: #0b1120; padding: 12px 26px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 14px; box-shadow: 0 4px 15px rgba(0, 245, 212, 0.2); transition: 0.3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <i class="fab fa-telegram"></i> গ্রুপে জয়েন করুন
+                        </a>
+                    </div>
+                `;
+            } else if (status === 'Rejected') {
+                color = '#ef4444';
+                icon = '❌';
+                joinLinkHtml = `
+                    <div style="margin-top: 15px; border-top: 1px dashed rgba(239, 68, 68, 0.2); padding-top: 15px; text-align: center;">
+                        <p style="color: #ef4444; font-weight: 600; font-size: 13px;">❌ দুঃখিত, আপনার আবেদনটি বাতিল করা হয়েছে। সঠিক তথ্য এবং পেমেন্ট রেফারেন্স প্রদান করে পুনরায় আবেদন সম্পন্ন করুন।</p>
+                    </div>
+                `;
+            } else if (status === 'Under Review') {
+                color = '#60a5fa';
+                icon = '🔍';
+            }
+
+            trackResult.innerHTML = `
+                <div style="background:rgba(0,245,212,0.02); border-radius:16px; padding:20px; border:1px solid rgba(0,245,212,0.1);">
+                    <p style="font-size:18px; font-weight:700; color:#fff;">🔍 আবেদন আইডি: <span style="color:#00f5d4;">${id}</span></p>
+                    <p style="margin-top:8px; font-size:16px; font-weight:600;">স্ট্যাটাস: <span style="color:${color}; font-weight:800;">${icon} ${status}</span></p>
+                    <p style="font-size:13px; color:#64748b; margin-top:6px;">আপডেট সময়: ${now}</p>
+                    ${joinLinkHtml}
+                    <div style="margin-top:12px; background:rgba(255,255,255,0.02); border-radius:10px; padding:10px; font-size:12px; color:#64748b; text-align: center;">
+                        <i class="fas fa-clock"></i> স্ট্যাটাস ট্র্যাক ডাটাবেজ লাইভ
+                    </div>
+                </div>
+            `;
+        });
+
+        // ===================================================================
+        // TOAST SYSTEM
+        // ===================================================================
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toast.className = 'toast ' + type;
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        // ===================================================================
+        // MODAL MANAGEMENT
+        // ===================================================================
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('show');
+        }
+
+        // ===================================================================
+        // VIDEO RECORDER (Anti-Crash, Instant Live Setup)
+        // ===================================================================
+        let mediaRecorder, recordedChunks = [],
+            stream = null,
+            isCameraReady = false,
+            recordedBlob = null;
+        const previewVideo = document.getElementById('previewVideo');
+        const startBtn = document.getElementById('startRecord');
+        const stopBtn = document.getElementById('stopRecord');
+        const downloadBtn = document.getElementById('downloadRecord');
+        const recordingDot = document.getElementById('recordingDot');
+        const recordingStatus = document.getElementById('recordingStatus');
+        const recordedVideoInput = document.getElementById('recordedVideo');
+        const recordedVideoBlobInput = document.getElementById('recordedVideoBlob');
+
+        async function initCamera() {
+            if (isCameraReady) return true;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+                    audio: true
+                });
+                previewVideo.srcObject = stream;
+                isCameraReady = true;
+                recordingStatus.textContent = 'Camera Ready';
+                recordingDot.className = 'dot ready';
+                return true;
+            } catch (err) {
+                recordingStatus.textContent = 'Camera Access Denied';
+                recordingDot.className = 'dot idle';
+                showToast('⚠️ ক্যামেরা ও মাইক্রোফোন অনুমতি দিন', 'error');
+                return false;
+            }
+        }
+
+        startBtn.addEventListener('click', async () => {
+            const cameraStarted = await initCamera();
+            if (!cameraStarted || !stream) { 
+                showToast('⚠️ ক্যামেরা সচল করতে অনুমতি দিন', 'error'); 
+                return; 
+            }
+            
+            recordedChunks = [];
+            recordedBlob = null;
+            
+            try {
+                mediaRecorder = new MediaRecorder(stream);
+            } catch (err) {
+                showToast('⚠️ আপনার ব্রাউজারে ভিডিও রেকর্ডিং সাপোর্ট করছে না', 'error');
+                return;
+            }
+
+            mediaRecorder.ondataavailable = (e) => { 
+                if (e.data && e.data.size > 0) recordedChunks.push(e.data); 
+            };
+
+            mediaRecorder.onstop = () => {
+                if (!recordedChunks.length) { 
+                    showToast('⚠️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); 
+                    return; 
+                }
+                recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(recordedBlob);
+                
+                downloadBtn.disabled = false;
+                downloadBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `csb_oath_${Date.now()}.webm`;
+                    a.click();
+                };
+
+                recordedVideoInput.value = url;
+                const reader = new FileReader();
+                reader.onload = function() { 
+                    recordedVideoBlobInput.value = reader.result; 
+                };
+                reader.readAsDataURL(recordedBlob);
+
+                recordingStatus.textContent = '✅ Saved';
+                recordingDot.className = 'dot ready';
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                showToast('✅ ভিডিও রেকর্ড সম্পূর্ণ', 'success');
+            };
+
+            mediaRecorder.start();
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            downloadBtn.disabled = true;
+            recordingStatus.textContent = '🔴 Recording...';
+            recordingDot.className = 'dot recording';
+        });
+
+        stopBtn.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                recordingStatus.textContent = '⏳ Processing...';
+            }
+        });
+
+        // ===================================================================
+        // FILE UPLOAD LABEL UPDATE
+        // ===================================================================
+        document.querySelectorAll('.file-upload-wrapper input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const area = this.closest('.file-upload-wrapper').querySelector('.file-upload-area');
+                const span = area.querySelector('.info .main span');
+                if (this.files.length) span.textContent = this.files[0].name;
+                else span.textContent = 'Choose file';
+            });
+        });
+
+        // ===================================================================
+        // PROGRESS SYSTEM
+        // ===================================================================
+        function updateProgress(pct, status) {
+            const prog = document.getElementById('uploadProgress');
+            const bar = document.getElementById('progressBar');
+            const st = document.getElementById('progressStatus');
+            prog.classList.add('show');
+            bar.style.width = pct + '%';
+            st.textContent = status;
+            
+            // মোবাইল স্ক্রিনে ফর্ম প্রগ্রেসবার ফোকাসে নিয়ে আসা
+            prog.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            if (pct >= 100) {
+                setTimeout(() => { 
+                    prog.classList.remove('show'); 
+                    bar.style.width = '0%'; 
+                }, 2000);
+            }
+        }
+
+        // ===================================================================
+        // FORM SUBMISSION (Secure & Bug-Free Live Telegram Sending)
+        // ===================================================================
+        document.getElementById('csbForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // ফাস্ট সাবমিট রেস-কন্ডিশন আটকাতে লোডিং স্টেট সেট
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            try {
+                const formData = {
+                    fullName: document.getElementById('fullName').value.trim(),
+                    address: document.getElementById('address').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    whatsapp: document.getElementById('whatsapp').value.trim(),
+                    telegram: document.getElementById('telegram').value.trim(),
+                    fbName: document.getElementById('fbName').value.trim(),
+                    fbLink: document.getElementById('fbLink').value.trim(),
+                    nidNumber: document.getElementById('nidNumber').value.trim(),
+                    dob: document.getElementById('dob').value,
+                    gender: document.getElementById('gender').value,
+                    role: document.getElementById('role').value,
+                    tnxId: document.getElementById('tnxId').value.trim().toUpperCase(),
+                    guardianPhone: document.getElementById('guardianPhone').value.trim(),
+                    personalPhone: document.getElementById('personalPhone').value.trim(),
+                };
+
+                // ফিল্ড ভ্যালিডেশন চেক
+                for (let k in formData) {
+                    if (!formData[k] || formData[k] === '') {
+                        showToast('⚠️ সব তথ্য সঠিকভাবে পূরণ করুন', 'error');
+                        submitBtn.classList.remove('loading');
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                }
+
+                // ডুপ্লিকেট পেমেন্ট ভ্যালিডেশন বাগ ফিক্স
+                if(localStorage.getItem(`TNX_${formData.tnxId}`) !== null) {
+                    document.getElementById('errorMessage').innerHTML = `
+                        <div style="padding: 10px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #ef4444; margin-bottom: 12px;"></i>
+                            <p style="color: #fff; font-size: 16px; font-weight: 700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p>
+                            <p style="color: #94a3b8; font-size: 13px; margin-top: 6px;">এই পেমেন্ট রেফারেন্স আইডিটি (${formData.tnxId}) পূর্বে সফলভাবে যাচাই করা হয়েছে। অনুগ্রহ করে সঠিক এবং অব্যবহৃত TNX আইডি দিয়ে পুনরায় চেষ্টা করুন।</p>
+                        </div>
+                    `;
+                    document.getElementById('errorModal').classList.add('show');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                    showToast('⚠️ সঠিক ইমেইল দিন', 'error');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    return;
+                }
+                const phoneRegex = /^01[3-9]\d{8}$/;
+                if (!phoneRegex.test(formData.whatsapp) || !phoneRegex.test(formData.guardianPhone) || !phoneRegex.test(formData.personalPhone)) {
+                    showToast('⚠️ সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)', 'error');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    return;
+                }
+                if (!formData.fbLink.match(/^https?:\/\/(www\.)?facebook\.com\/.+/)) {
+                    showToast('⚠️ সঠিক ফেসবুক লিংক দিন', 'error');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    return;
+                }
+                if (!recordedBlob) {
+                    showToast('⚠️ শপথনামার ভিডিও রেকর্ড করা বাধ্যতামূলক', 'error');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                const fileIds = ['photo1', 'photo2', 'nid', 'paymentScreenshot'];
+                for (let id of fileIds) {
+                    const inp = document.getElementById(id);
+                    if (!inp.files || inp.files.length === 0) {
+                        showToast('⚠️ সব ছবি ও প্রমাণপত্র আপলোড করুন', 'error');
+                        submitBtn.classList.remove('loading');
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                }
+
+                updateProgress(10, 'আবেদন প্রস্তুত হচ্ছে...');
+
+                const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+
+                const appData = {
+                    name: formData.fullName,
+                    role: formData.role,
+                    gender: formData.gender, 
+                    address: formData.address,
+                    email: formData.email,
+                    whatsapp: formData.whatsapp,
+                    telegram: formData.telegram,
+                    tnxId: formData.tnxId,
+                    guardianPhone: formData.guardianPhone,
+                    personalPhone: formData.personalPhone,
+                    status: 'Pending',
+                    time: new Date().toLocaleString('bn-BD')
+                };
+                localStorage.setItem(trackId, JSON.stringify(appData));
+                localStorage.setItem(`TNX_${formData.tnxId}`, "USED"); 
+
+                const caption = `🛡️ **CSB NEW ADMISSION FORM** 🛡️\n` +
+                                `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                                `👤 নাম: ${formData.fullName}\n` +
+                                `🏠 ঠিকানা: ${formData.address}\n` +
+                                `📧 ইমেইল: ${formData.email}\n` +
+                                `📱 WhatsApp: ${formData.whatsapp}\n` +
+                                `✈️ Telegram: ${formData.telegram}\n` +
+                                `📘 FB নাম: ${formData.fbName}\n` +
+                                `🔗 FB লিংক: ${formData.fbLink}\n` +
+                                `🪪 NID: ${formData.nidNumber}\n` +
+                                `📅 জন্ম: ${formData.dob}\n` +
+                                `⚧️ জেন্ডার: ${formData.gender}\n` +
+                                `🗂️ রোল: ${formData.role}\n` +
+                                `🧾 TNX ID: ${formData.tnxId}\n` +
+                                `📞 অভিভাবক: ${formData.guardianPhone}\n` +
+                                `📱 নিজের: ${formData.personalPhone}\n` +
+                                `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
+                                `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                                `📅 আবেদন টাইম: ${new Date().toLocaleString('bn-BD')}`;
+
+                updateProgress(30, 'ফাইলগুলো প্রসেস করা হচ্ছে...');
+
+                const mediaGroup = new FormData();
+                mediaGroup.append('chat_id', CHANNEL_ID_SUBMIT);
+
+                const photo1 = document.getElementById('photo1').files[0];
+                const photo2 = document.getElementById('photo2').files[0];
+                const nid = document.getElementById('nid').files[0];
+                const paymentScreenshot = document.getElementById('paymentScreenshot').files[0];
+
+                mediaGroup.append('file1', photo1, 'photo1.jpg');
+                mediaGroup.append('file2', photo2, 'photo2.jpg');
+                mediaGroup.append('file3', nid, 'nid.jpg');
+                mediaGroup.append('file4', paymentScreenshot, 'screenshot.jpg');
+
+                const mediaData = [
+                    { type: 'photo', media: 'attach://file1', caption: caption },
+                    { type: 'photo', media: 'attach://file2' },
+                    { type: 'photo', media: 'attach://file3' },
+                    { type: 'photo', media: 'attach://file4' }
+                ];
+
+                mediaGroup.append('media', JSON.stringify(mediaData));
+
+                updateProgress(60, 'টেলিগ্রাম সার্ভারে মিডিয়া আপলোড হচ্ছে...');
+
+                const albumRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
+                    method: 'POST',
+                    body: mediaGroup
+                });
+
+                if (!albumRes.ok) {
+                    const errData = await albumRes.json();
+                    console.error('Telegram Error:', errData);
+                    throw new Error(errData.description || 'Media Group submission failed');
+                }
+
+                updateProgress(75, 'শপথনামার ভিডিও আপলোড হচ্ছে...');
+
+                const videoData = new FormData();
+                videoData.append('chat_id', CHANNEL_ID_SUBMIT);
+                videoData.append('video', recordedBlob, `oath_${trackId}.mp4`);
+                videoData.append('caption', `📹 শপথনামার ভিডিও\nID: \`${trackId}\`\nনাম: ${formData.fullName}`);
+
+                const videoRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
+                    method: 'POST',
+                    body: videoData
+                });
+
+                if (!videoRes.ok) {
+                    // ভিডিও ডিরেক্ট না গেলে ব্যাকআপ ডকুমেন্ট হিসেবে সেন্ড হবে
+                    const docData = new FormData();
+                    docData.append('chat_id', CHANNEL_ID_SUBMIT);
+                    docData.append('document', recordedBlob, `oath_${trackId}.webm`);
+                    docData.append('caption', `📹 শপথনামার ভিডিও (ফাইল ব্যাকআপ)\nID: \`${trackId}\`\nনাম: ${formData.fullName}`);
+                    
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+                        method: 'POST',
+                        body: docData
+                    });
+                }
+
+                updateProgress(90, 'অ্যাডমিন প্যানেল বাটন সেট করা হচ্ছে...');
+
+                const webAppBaseUrl = window.location.href.split('?')[0]; 
+                const approveUrl = `${webAppBaseUrl}?action=approve&id=${trackId}`;
+                const rejectUrl = `${webAppBaseUrl}?action=reject&id=${trackId}`;
+
+                const actionText = `🚨 **নতুন আবেদন অ্যাকশন প্যানেল** 🚨\nID: \`${trackId}\`\nনাম: ${formData.fullName}\nরোল: ${formData.role}\nলিংক ব্যবহার করে লাইভ স্ট্যাটাস আপডেট করুন।`;
+                
+                const inlineKeyboard = {
+                    inline_keyboard: [
+                        [
+                            { text: '✅ Approve', url: approveUrl }, 
+                            { text: '❌ Reject', url: rejectUrl }
+                        ]
+                    ]
+                };
+
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        chat_id: CHANNEL_ID_SUBMIT, 
+                        text: actionText, 
+                        parse_mode: 'Markdown',
+                        reply_markup: inlineKeyboard 
+                    })
+                });
+
+                updateProgress(100, '✅ সম্পূর্ণ!');
+
+                document.getElementById('trackingIdDisplay').textContent = trackId;
+                document.getElementById('successModal').classList.add('show');
+
+                setTimeout(() => {
+                    document.getElementById('csbForm').reset();
+                    document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'Choose file');
+                    document.getElementById('recordedVideo').value = '';
+                    document.getElementById('recordedVideoBlob').value = '';
+                    recordedBlob = null;
+                    recordedChunks = [];
+                    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+                    recordingStatus.textContent = 'Ready';
+                    recordingDot.className = 'dot idle';
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    downloadBtn.disabled = true;
+                    if (stream) { 
+                        stream.getTracks().forEach(t => t.stop());
+                        stream = null;
+                        isCameraReady = false;
+                        previewVideo.srcObject = null; 
+                    }
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }, 2000);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('errorMessage').textContent = 'টেলিগ্রাম সার্ভার কানেকশন ইস্যু অথবা সাইজ বেশি বড়। পুনরায় চেষ্টা করুন। (' + err.message + ')';
+                document.getElementById('errorModal').classList.add('show');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                document.getElementById('uploadProgress').classList.remove('show');
+            }
+        });
+
+        // ===================================================================
+        // RESET FORM
+        // ===================================================================
+        document.querySelector('.btn-reset').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('সব তথ্য রিসেট করবেন?')) {
+                document.getElementById('csbForm').reset();
+                document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'Choose file');
+                document.getElementById('recordedVideo').value = '';
+                document.getElementById('recordedVideoBlob').value = '';
+                recordedBlob = null;
+                recordedChunks = [];
+                if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+                recordingStatus.textContent = 'Ready';
+                recordingDot.className = 'dot idle';
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                downloadBtn.disabled = true;
+                if (stream) { 
+                    stream.getTracks().forEach(t => t.stop());
+                    stream = null;
+                    isCameraReady = false;
+                    previewVideo.srcObject = null; 
+                }
+                document.getElementById('uploadProgress').classList.remove('show');
+                showToast('🔄 ফর্ম রিসেট করা হয়েছে', 'success');
+            }
+        });
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').classList.remove('show');
+        }
+
+        console.log('🤖 CSB Admission System Loaded | Cyber Sentinel Bangladesh');
+    </script>
+</body>
+</html>
