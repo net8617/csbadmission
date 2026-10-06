@@ -6,7 +6,7 @@
     <title>CSB Master Admin Engine | Cyber Sentinel Bangladesh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-    <!-- PDF Export Libraries (html2pdf & jspdf) -->
+    <!-- PDF Export Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -98,8 +98,8 @@
             margin-bottom: 25px;
         }
         .sidebar .brand img {
-            max-width: 36px;
-            max-height: 36px;
+            max-width: 38px;
+            max-height: 38px;
             object-fit: contain;
             border-radius: 8px;
         }
@@ -342,6 +342,7 @@
             .admin-layout { flex-direction: column; }
             .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--card-border); }
             .main-content { padding: 25px 20px; }
+            .form-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -350,7 +351,7 @@
     <div class="ambient-glow glow-top"></div>
     <div class="ambient-glow glow-bottom"></div>
 
-    <!-- 1. LOGIN GATEWAY -->
+    <!-- LOGIN GATEWAY -->
     <div class="login-wrap" id="loginWrap">
         <div class="login-card">
             <i class="fas fa-shield-halved" style="font-size: 48px; color: var(--primary); margin-bottom: 14px;"></i>
@@ -372,7 +373,7 @@
         </div>
     </div>
 
-    <!-- 2. DASHBOARD SHELL -->
+    <!-- DASHBOARD SHELL -->
     <div class="admin-layout" id="adminLayout">
         
         <!-- SIDEBAR -->
@@ -478,7 +479,7 @@
 
             <!-- TAB 2: BRANDING (LOGO, BANNER, NOTICE & BATCH) -->
             <div class="content-panel" id="tab-branding">
-                <!-- DYNAMIC LOGO UPLOAD -->
+                <!-- LOGO UPLOAD -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-shield-cat"></i> হোম লোগো আপলোড ও কন্ট্রোল</h3>
@@ -551,7 +552,7 @@
                 </div>
             </div>
 
-            <!-- TAB 3: CATEGORIES & ROLES -->
+            <!-- TAB 3: CATEGORIES & CATEGORY-SPECIFIC ROLES -->
             <div class="content-panel" id="tab-categories">
                 <div class="card">
                     <div class="card-header">
@@ -574,12 +575,15 @@
                             <select id="roleCategorySelect" class="form-control" onchange="renderCategoryRoles()"></select>
                         </div>
                         <div class="form-group">
-                            <label>এই ক্যাটাগরিতে নতুন রোল নাম</label>
+                            <label>নির্বাচিত ক্যাটাগরিতে নতুন রোল যোগ করুন</label>
                             <input type="text" id="newRoleInput" class="form-control" placeholder="যেমন: Cyber Security Analyst" />
                         </div>
                     </div>
                     <button class="btn-primary" onclick="addRoleToCategory()"><i class="fas fa-plus"></i> এই ক্যাটাগরিতে রোল যোগ করুন</button>
-                    <div class="tag-wrap" id="categoryRoleTagList" style="margin-top: 15px;"></div>
+                    <div style="margin-top: 15px;">
+                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">এই ক্যাটাগরিতে সংরক্ষিত রোলসমূহ:</label>
+                        <div class="tag-wrap" id="categoryRoleTagList"></div>
+                    </div>
                 </div>
             </div>
 
@@ -746,7 +750,11 @@
             batchSub: 'OFFICIAL ADMISSION PORTAL · BATCH 8-9',
             paymentNumber: '01971138617',
             categories: ['NEW STUDENTS', 'EX-STUDENTS', 'EXECUTIVE'],
-            categoryRoles: {},
+            categoryRoles: {
+                'NEW STUDENTS': ['Cyber Security Analyst', 'Ethical Hacker', 'CSB Trainee'],
+                'EX-STUDENTS': ['Security Researcher', 'Digital Forensics Expert'],
+                'EXECUTIVE': ['Network Security Engineer', 'GRC Specialist']
+            },
             categoryFees: {},
             categoryLinks: {},
             categoryOaths: {},
@@ -854,7 +862,12 @@
                 const cfgRef = doc(db, "settings", "portalConfig");
                 const snap = await getDoc(cfgRef);
                 if (snap.exists()) {
-                    portalConfig = { ...portalConfig, ...snap.data() };
+                    const data = snap.data();
+                    portalConfig = { ...portalConfig, ...data };
+                    // নিশ্চিত করা হচ্ছে categoryRoles একটি অবজেক্ট
+                    if (!portalConfig.categoryRoles || Array.isArray(portalConfig.categoryRoles)) {
+                        portalConfig.categoryRoles = {};
+                    }
                 }
                 renderConfigToUI();
             } catch (err) {
@@ -911,6 +924,9 @@
             portalConfig.batchSub = document.getElementById('cfgBatchSub').value.trim();
             portalConfig.paymentNumber = document.getElementById('cfgPaymentNumber').value.trim();
 
+            // পুরাতন গ্লোবাল roles মুছে ফেলা হচ্ছে যাতে এক ক্যাটাগরির রোল অন্য ক্যাটাগরিতে না যায়
+            delete portalConfig.roles;
+
             try {
                 await setDoc(doc(db, "settings", "portalConfig"), portalConfig);
                 showToast('সব কনফিগারেশন ক্লাউডে লাইভ সেভ হয়েছে!', 'success');
@@ -921,7 +937,7 @@
             }
         };
 
-        // CATEGORY & CATEGORY-SPECIFIC ROLES
+        // CATEGORY & CATEGORY-SPECIFIC ROLES (FULLY ISOLATED)
         function renderCategories() {
             const list = document.getElementById('categoryTagList');
             const select = document.getElementById('roleCategorySelect');
@@ -963,6 +979,8 @@
             const val = document.getElementById('newCategoryInput').value.trim();
             if (val && !portalConfig.categories.includes(val)) {
                 portalConfig.categories.push(val);
+                if (!portalConfig.categoryRoles) portalConfig.categoryRoles = {};
+                portalConfig.categoryRoles[val] = [];
                 document.getElementById('newCategoryInput').value = '';
                 renderCategories();
                 populateCategoryDropdowns();
@@ -984,6 +1002,7 @@
             syncAllToFirestore();
         };
 
+        // নির্দিষ্ট ক্যাটাগরির নিজস্ব রোল লিস্ট রেন্ডার
         window.renderCategoryRoles = function() {
             const selectedCat = document.getElementById('roleCategorySelect').value;
             const list = document.getElementById('categoryRoleTagList');
@@ -991,6 +1010,11 @@
 
             if (!portalConfig.categoryRoles) portalConfig.categoryRoles = {};
             const roles = portalConfig.categoryRoles[selectedCat] || [];
+
+            if (roles.length === 0) {
+                list.innerHTML = '<span style="font-size:12px; color:var(--text-muted);">এই ক্যাটাগরিতে এখনো কোনো রোল যুক্ত করা হয়নি।</span>';
+                return;
+            }
 
             roles.forEach((role, idx) => {
                 const tag = document.createElement('div');
@@ -1000,10 +1024,18 @@
             });
         };
 
+        // নির্দিষ্ট ক্যাটাগরিতে রোল যোগ
         window.addRoleToCategory = function() {
             const selectedCat = document.getElementById('roleCategorySelect').value;
             const val = document.getElementById('newRoleInput').value.trim();
-            if (!selectedCat || !val) return;
+            if (!selectedCat) {
+                showToast('⚠️ অনুগ্রহ করে ক্যাটাগরি সিলেক্ট করুন', 'error');
+                return;
+            }
+            if (!val) {
+                showToast('⚠️ রোলের নাম লিখুন', 'error');
+                return;
+            }
 
             if (!portalConfig.categoryRoles) portalConfig.categoryRoles = {};
             if (!portalConfig.categoryRoles[selectedCat]) portalConfig.categoryRoles[selectedCat] = [];
@@ -1013,10 +1045,13 @@
                 document.getElementById('newRoleInput').value = '';
                 renderCategoryRoles();
                 syncAllToFirestore();
-                showToast(`✅ ${selectedCat} এ রোল '${val}' যোগ হয়েছে`, 'success');
+                showToast(`✅ '${selectedCat}' ক্যাটাগরিতে রোল '${val}' যোগ হয়েছে`, 'success');
+            } else {
+                showToast('⚠️ এই রোলটি ইতিমধ্যে এই ক্যাটাগরিতে বিদ্যমান!', 'error');
             }
         };
 
+        // নির্দিষ্ট ক্যাটাগরি থেকে রোল রিমুভ
         window.removeRoleFromCategory = function(cat, idx) {
             if (portalConfig.categoryRoles && portalConfig.categoryRoles[cat]) {
                 portalConfig.categoryRoles[cat].splice(idx, 1);
@@ -1201,7 +1236,7 @@
 
         // DELETE APPLICATION FROM FIRESTORE
         window.deleteApplication = async function(id) {
-            if (confirm(`⚠️️ আপনি কি নিশ্চিতভাবে আবেদন আইডি ${id} সম্পূর্ণ মুছে ফেলতে চান?`)) {
+            if (confirm(`⚠️ আপনি কি নিশ্চিতভাবে আবেদন আইডি ${id} সম্পূর্ণ মুছে ফেলতে চান?`)) {
                 try {
                     await deleteDoc(doc(db, "applications", id));
                     showToast(`🗑️ আবেদন ${id} সফলভাবে ডিলিট করা হয়েছে!`, 'success');
@@ -1313,7 +1348,7 @@
             triggerPDFDownload(reportContainer, `CSB_Report_${type}_${Date.now()}.pdf`);
         };
 
-        // 1-DAY SPECIFIC DATE REPORT GENERATOR (With Full Status Breakdown)
+        // 1-DAY SPECIFIC DATE REPORT GENERATOR
         window.exportDailyReport = function() {
             const dateVal = document.getElementById('dailyReportDateInput').value;
             if (!dateVal) {
@@ -1393,7 +1428,6 @@
                     </div>
                 </div>
 
-                <!-- Daily Summary Stats Box in PDF -->
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 18px; font-size: 12px;">
                     <div style="flex: 1;"><strong>মোট আবেদন:</strong> ${dailyApps.length}টি</div>
                     <div style="flex: 1; color: #16a34a;"><strong>অনুমোদিত (Approved):</strong> ${appCount}টি</div>
