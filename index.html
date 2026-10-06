@@ -109,7 +109,7 @@
         }
         #csbDynamicBanner {
             max-width: 100%;
-            max-height: 190px;
+            max-height: 200px;
             border-radius: 18px;
             border: 1px solid var(--card-border);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
@@ -309,34 +309,55 @@
             gap: 16px;
         }
 
-        .file-upload-wrapper { position: relative; }
+        /* Responsive Safe File Upload Styling */
+        .file-upload-wrapper { position: relative; width: 100%; }
         .file-upload-wrapper input[type="file"] {
             position: absolute;
             inset: 0;
             opacity: 0;
             cursor: pointer;
             z-index: 3;
+            width: 100%;
+            height: 100%;
         }
         .file-upload-area {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 12px 18px;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 18px;
             background: rgba(255, 255, 255, 0.02);
             border: 1.5px dashed rgba(255, 255, 255, 0.15);
             border-radius: 14px;
             transition: all 0.3s ease;
+            width: 100%;
+            overflow: hidden;
         }
-        .file-upload-area .icon { font-size: 20px; color: var(--primary); }
-        .file-upload-area .info .main { font-size: 13px; color: var(--text-muted); }
+        .file-upload-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            flex: 1;
+        }
+        .file-upload-area .icon { font-size: 20px; color: var(--primary); flex-shrink: 0; }
+        .file-upload-area .info { min-width: 0; flex: 1; }
+        .file-upload-area .info .main {
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
         .file-upload-area .info .main span { color: var(--primary); font-weight: 600; }
         .file-upload-area .info .sub { font-size: 11px; color: #475569; margin-top: 2px; }
         .file-upload-area .size-badge {
-            margin-left: auto;
+            flex-shrink: 0;
             font-size: 11px;
             color: var(--primary);
             background: rgba(0, 245, 212, 0.08);
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 8px;
             font-weight: 700;
         }
@@ -546,16 +567,17 @@
         .btn-submit.loading .spinner { display: inline-block; }
         .btn-submit.loading .btn-text { display: none; }
 
-        /* Hidden Receipt Template for PDF Export */
+        /* Off-screen Clean White PDF Container */
         #pdfReceiptTemplate {
-            display: none;
-            background: #0b1120;
-            color: #fff;
-            padding: 35px;
+            position: fixed;
+            left: -9999px;
+            top: 0;
+            width: 700px;
+            background: #ffffff;
+            color: #0f172a;
+            padding: 40px;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            border: 2px solid #00f5d4;
-            border-radius: 12px;
-            width: 600px;
+            border: 1px solid #e2e8f0;
         }
 
         @media (max-width: 768px) {
@@ -580,9 +602,9 @@
             <div class="welcome-section" id="welcomeSection">
                 <div class="csb-logo"><i class="fas fa-shield-halved"></i></div>
 
-                <!-- DYNAMIC BANNER (Placed strictly above title) -->
+                <!-- DYNAMIC BANNER (Strictly above title) -->
                 <div id="bannerWrapper">
-                    <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" onerror="this.parentElement.style.display='none';" />
+                    <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" />
                 </div>
 
                 <h1>Cyber Sentinel Bangladesh</h1>
@@ -679,8 +701,13 @@
                         <div class="file-upload-wrapper">
                             <input type="file" accept="image/*" id="photo1" required>
                             <div class="file-upload-area">
-                                <i class="fas fa-image icon"></i>
-                                <div class="info"><div class="main"><span>ফাইল বেছে নিন</span> · JPG/PNG</div><div class="sub">Max 5MB</div></div>
+                                <div class="file-upload-left">
+                                    <i class="fas fa-image icon"></i>
+                                    <div class="info">
+                                        <div class="main"><span>ফাইল বেছে নিন</span> · JPG/PNG</div>
+                                        <div class="sub">Max 5MB</div>
+                                    </div>
+                                </div>
                                 <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
                             </div>
                         </div>
@@ -690,8 +717,13 @@
                         <div class="file-upload-wrapper">
                             <input type="file" accept="image/*" id="photo2" required>
                             <div class="file-upload-area">
-                                <i class="fas fa-image icon"></i>
-                                <div class="info"><div class="main"><span>ফাইল বেছে নিন</span> · JPG/PNG</div><div class="sub">Max 5MB</div></div>
+                                <div class="file-upload-left">
+                                    <i class="fas fa-image icon"></i>
+                                    <div class="info">
+                                        <div class="main"><span>ফাইল বেছে নিন</span> · JPG/PNG</div>
+                                        <div class="sub">Max 5MB</div>
+                                    </div>
+                                </div>
                                 <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
                             </div>
                         </div>
@@ -703,8 +735,13 @@
                     <div class="file-upload-wrapper">
                         <input type="file" accept="image/*" id="nid" required>
                         <div class="file-upload-area">
-                            <i class="fas fa-file-shield icon"></i>
-                            <div class="info"><div class="main"><span>ফাইল যুক্ত করুন</span> · JPG/PNG/PDF</div><div class="sub">Max 10MB</div></div>
+                            <div class="file-upload-left">
+                                <i class="fas fa-file-shield icon"></i>
+                                <div class="info">
+                                    <div class="main"><span>ফাইল যুক্ত করুন</span> · JPG/PNG/PDF</div>
+                                    <div class="sub">Max 10MB</div>
+                                </div>
+                            </div>
                             <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
                         </div>
                     </div>
@@ -782,8 +819,13 @@
                     <div class="file-upload-wrapper">
                         <input type="file" accept="image/*" id="paymentScreenshot" required>
                         <div class="file-upload-area">
-                            <i class="fas fa-camera icon"></i>
-                            <div class="info"><div class="main"><span>স্ক্রিনশট আপলোড করুন</span> · JPG/PNG</div><div class="sub">Max 5MB</div></div>
+                            <div class="file-upload-left">
+                                <i class="fas fa-camera icon"></i>
+                                <div class="info">
+                                    <div class="main"><span>স্ক্রিনশট আপলোড করুন</span> · JPG/PNG</div>
+                                    <div class="sub">Max 5MB</div>
+                                </div>
+                            </div>
                             <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
                         </div>
                     </div>
@@ -800,7 +842,6 @@
                     </div>
                 </div>
 
-                <!-- CATEGORY SELECTION -->
                 <div class="form-group">
                     <label><i class="fas fa-layer-group"></i><span class="step-num">19</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
                     <select class="form-control" id="category" required>
@@ -854,25 +895,55 @@
         <span id="toastMessage"></span>
     </div>
 
-    <!-- HIDDEN RECEIPT CONTAINER FOR PDF EXPORT -->
+    <!-- WHITE PROFESSIONAL PRINTABLE PDF RECEIPT -->
     <div id="pdfReceiptTemplate">
-        <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 18px; margin-bottom: 20px;">
-            <h2 style="color: #00f5d4; font-size: 24px; margin-bottom: 4px;">CYBER SENTINEL BANGLADESH</h2>
-            <p style="font-size: 13px; color: #94a3b8; letter-spacing: 2px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
+        <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 15px; margin-bottom: 25px;">
+            <h1 style="color: #0f172a; font-size: 24px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px;">CYBER SENTINEL BANGLADESH</h1>
+            <p style="font-size: 12px; color: #475569; letter-spacing: 2px; font-weight: 700;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
         </div>
-        <div style="margin: 20px 0; font-size: 14px; line-height: 2;">
-            <p><strong>ট্র্যাকিং আইডি:</strong> <span id="pdfTrackId" style="color:#00f5d4; font-family:'JetBrains Mono'; font-weight:700;"></span></p>
-            <p><strong>আবেদনকারীর নাম:</strong> <span id="pdfName"></span></p>
-            <p><strong>ক্যাটাগরি:</strong> <span id="pdfCategory"></span></p>
-            <p><strong>নির্বাচিত রোল:</strong> <span id="pdfRole"></span></p>
-            <p><strong>মোবাইল নম্বর:</strong> <span id="pdfPhone"></span></p>
-            <p><strong>পেমেন্ট রেফারেন্স (TNX):</strong> <span id="pdfTnx" style="color:#0ea5e9; font-family:'JetBrains Mono';"></span></p>
-            <p><strong>আবেদনের তারিখ ও সময়:</strong> <span id="pdfTime"></span></p>
-            <p><strong>বর্তমান স্ট্যাটাস:</strong> <span style="color:#ffa94d; font-weight:700;">Pending (যাচাই চলছে)</span></p>
-        </div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; text-align: center; font-size: 11px; color: #64748b;">
-            <p>এই স্লিপটি সংরক্ষণ করুন এবং অফিসিয়াল পোর্টাল থেকে স্ট্যাটাস ট্র্যাক করুন।</p>
-            <p style="margin-top: 4px; color: #00f5d4;">🛡️ Cyber Sentinel Bangladesh · All Rights Reserved</p>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13.5px;">
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; width: 40%; font-weight: 600;">ট্র্যাকিং আইডি (Tracking ID):</td>
+                <td style="padding: 10px 0; font-weight: 800; color: #0284c7; font-family: 'JetBrains Mono', monospace;" id="pdfTrackId"></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: 600;">আবেদনকারীর নাম (Full Name):</td>
+                <td style="padding: 10px 0; font-weight: 700; color: #0f172a;" id="pdfName"></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: 600;">মোবাইল নম্বর (Phone):</td>
+                <td style="padding: 10px 0; font-weight: 600; color: #0f172a;" id="pdfPhone"></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: 600;">ইমেইল (Email):</td>
+                <td style="padding: 10px 0; font-weight: 600; color: #0f172a;" id="pdfEmail"></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: 600;">ক্যাটাগরি (Category):</td>
+                <td style="padding: 10px 0; font-weight: 600; color: #0f172a;" id="pdfCategory"></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: 600;">নির্বাচিত রোল (Role):</td>
+                <td style="padding: 10px 0; font-weight: 600; color: #0f172a;" id="pdfRole"></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: 600;">পেমেন্ট রেফারেন্স (TNX):</td>
+                <td style="padding: 10px 0; font-weight: 700; color: #0f172a; font-family: 'JetBrains Mono', monospace;" id="pdfTnx"></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: 600;">আবেদনের সময় (Application Time):</td>
+                <td style="padding: 10px 0; font-weight: 600; color: #0f172a;" id="pdfTime"></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px 0; color: #64748b; font-weight: 600;">বর্তমান অবস্থা (Status):</td>
+                <td style="padding: 10px 0; font-weight: 800; color: #d97706;">Pending (যাচাই চলছে)</td>
+            </tr>
+        </table>
+
+        <div style="border-top: 1px dashed #cbd5e1; padding-top: 18px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.6;">
+            <p>এই স্লিপটি আপনার আবেদনের অফিশিয়াল প্রমাণপত্র। ট্র্যাকিং প্যানেল থেকে নিয়মিত স্ট্যাটাস চেক করুন।</p>
+            <p style="margin-top: 4px; font-weight: 700; color: #0f172a;">🛡️ Cyber Sentinel Bangladesh · Official Admission Desk</p>
         </div>
     </div>
 
@@ -909,7 +980,7 @@
                 const cfg = snap.data();
                 activePortalConfig = { ...activePortalConfig, ...cfg };
 
-                // ব্যানার হ্যান্ডলার
+                // ব্যানার হ্যান্ডলার (ক্যাশিং বাইপাস ও নির্ভরযোগ্য ডিসপ্লে)
                 const bannerWrap = document.getElementById('bannerWrapper');
                 const bannerImg = document.getElementById('csbDynamicBanner');
                 if (cfg.bannerUrl && cfg.bannerUrl.trim() !== '') {
@@ -1209,30 +1280,28 @@
             if (pct >= 100) setTimeout(() => prog.classList.remove('show'), 2000);
         }
 
-        // AUTOMATIC PDF GENERATION FUNCTION
+        // PERFECTED AUTOMATIC PDF GENERATION FUNCTION (Pure White, Ultra-Clear Slip)
         function generateAutoPDF(trackId, formData, currentTime) {
             document.getElementById('pdfTrackId').textContent = trackId;
             document.getElementById('pdfName').textContent = formData.fullName;
+            document.getElementById('pdfPhone').textContent = formData.personalPhone;
+            document.getElementById('pdfEmail').textContent = formData.email;
             document.getElementById('pdfCategory').textContent = formData.category;
             document.getElementById('pdfRole').textContent = formData.role;
-            document.getElementById('pdfPhone').textContent = formData.personalPhone;
             document.getElementById('pdfTnx').textContent = formData.tnxId;
             document.getElementById('pdfTime').textContent = currentTime;
 
             const element = document.getElementById('pdfReceiptTemplate');
-            element.style.display = 'block';
 
             const opt = {
-                margin: 10,
+                margin: [15, 15, 15, 15],
                 filename: `CSB_Slip_${trackId}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, backgroundColor: '#0b1120' },
-                jsPDF: { unit: 'mm', format: 'a5', orientation: 'portrait' }
+                image: { type: 'jpeg', quality: 1.0 },
+                html2canvas: { scale: 3, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.style.display = 'none';
-            });
+            html2pdf().set(opt).from(element).save();
         }
 
         // FORM SUBMISSION (Combined Telegram Payload + Auto PDF Download)
@@ -1279,8 +1348,7 @@
                 if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { showToast('⚠️ সঠিক ইমেইল দিন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
                 const phoneRegex = /^01[3-9]\d{8}$/;
                 if (!phoneRegex.test(formData.whatsapp) || !phoneRegex.test(formData.guardianPhone) || !phoneRegex.test(formData.personalPhone)) {
-                    showToast('⚠️ সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
-                }
+                    showToast('⚠️ সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
                 if (!formData.fbLink.match(/^https?:\/\/(www\.)?facebook\.com\/.+/)) { showToast('⚠️ সঠিক ফেসবুক লিংক দিন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
                 if (!recordedBlob) { showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড বাধ্যতামূলক', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
 
