@@ -34,7 +34,6 @@
             overflow-x: hidden;
         }
 
-        /* Ambient Glow & Grid */
         .ambient-glow {
             position: fixed;
             width: 450px;
@@ -48,7 +47,6 @@
         .glow-top { top: -120px; left: 10%; }
         .glow-bottom { bottom: -120px; right: 10%; background: radial-gradient(circle, rgba(14, 165, 233, 0.06) 0%, transparent 70%); }
 
-        /* Login Screen */
         .login-wrap {
             position: fixed;
             inset: 0;
@@ -73,7 +71,6 @@
         .login-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
         .login-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
 
-        /* Dashboard Layout */
         .admin-layout {
             display: none;
             min-height: 100vh;
@@ -82,7 +79,6 @@
         }
         .admin-layout.active { display: flex; }
 
-        /* Sidebar */
         .sidebar {
             width: 280px;
             background: var(--sidebar-bg);
@@ -152,7 +148,6 @@
         }
         .btn-logout:hover { background: var(--accent-red); color: #fff; }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             padding: 35px 40px;
@@ -170,7 +165,6 @@
         .top-bar h1 { font-size: 24px; font-weight: 800; }
         .top-bar p { font-size: 13px; color: var(--text-muted); }
 
-        /* Metrics */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -204,7 +198,6 @@
         .metric-card h4 { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
         .metric-card p { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
 
-        /* Section Panels */
         .content-panel { display: none; }
         .content-panel.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -230,7 +223,6 @@
         .card-header h3 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .card-header h3 i { color: var(--primary); }
 
-        /* Form Controls */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 16px; }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
@@ -389,7 +381,7 @@
 
             <ul class="nav-menu">
                 <li class="nav-item"><button class="active" onclick="switchTab('dashboard')"><i class="fas fa-chart-pie"></i> ওভারভিউ</button></li>
-                <li class="nav-item"><button onclick="switchTab('branding')"><i class="fas fa-image"></i> ব্যানার, নোটিশ ও ব্যাচ</button></li>
+                <li class="nav-item"><button onclick="switchTab('branding')"><i class="fas fa-image"></i> ব্যানার, লোগো ও ব্যাচ</button></li>
                 <li class="nav-item"><button onclick="switchTab('categories')"><i class="fas fa-layer-group"></i> ক্যাটাগরি ও রোল</button></li>
                 <li class="nav-item"><button onclick="switchTab('fees')"><i class="fas fa-wallet"></i> ফি ও টেলিগ্রাম লিংক</button></li>
                 <li class="nav-item"><button onclick="switchTab('oath')"><i class="fas fa-scroll"></i> শপথনামা কন্ট্রোল</button></li>
@@ -475,8 +467,31 @@
                 </div>
             </div>
 
-            <!-- TAB 2: BRANDING (BANNER, NOTICE & BATCH) -->
+            <!-- TAB 2: BRANDING (LOGO, BANNER, NOTICE & BATCH) -->
             <div class="content-panel" id="tab-branding">
+                <!-- 1. DYNAMIC LOGO UPLOAD -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-shield-cat"></i> হোম লোগো আপলোড ও কন্ট্রোল</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>সরাসরি লোগো আপলোড করুন (Local File Upload)</label>
+                            <input type="file" id="cfgLogoFileInput" class="form-control" accept="image/*" />
+                        </div>
+                        <div class="form-group">
+                            <label>অথবা লোগো ইমেজ URL দিন</label>
+                            <input type="url" id="cfgLogoUrl" class="form-control" placeholder="https://i.ibb.co/logo.png" />
+                        </div>
+                    </div>
+                    <div id="logoPreviewBox" style="margin-top: 10px; display: none;">
+                        <img id="logoImgPreview" src="" alt="Logo Preview" style="max-height: 90px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.5); padding: 5px;" />
+                        <br>
+                        <button type="button" class="btn-action-icon reject" onclick="removeLogo()" style="margin-top: 6px;"><i class="fas fa-trash"></i> লোগো মুছুন</button>
+                    </div>
+                </div>
+
+                <!-- 2. NOTICE -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-bullhorn"></i> ইউজার প্যানেল লাইভ নোটিশ বক্স</h3>
@@ -487,17 +502,18 @@
                     </div>
                 </div>
 
+                <!-- 3. BANNER -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-image"></i> হোম ব্যানার আপলোড ও কন্ট্রোল</h3>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>সরাসরি ছবি আপলোড করুন (Local File Upload)</label>
+                            <label>সরাসরি ব্যানার আপলোড করুন (Local File Upload)</label>
                             <input type="file" id="cfgBannerFileInput" class="form-control" accept="image/*" />
                         </div>
                         <div class="form-group">
-                            <label>অথবা ইমেজ URL দিন</label>
+                            <label>অথবা ব্যানার ইমেজ URL দিন</label>
                             <input type="url" id="cfgBannerUrl" class="form-control" placeholder="https://i.ibb.co/banner.png" />
                         </div>
                     </div>
@@ -508,6 +524,7 @@
                     </div>
                 </div>
 
+                <!-- 4. BATCH -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-graduation-cap"></i> ব্যাচ ম্যানেজমেন্ট</h3>
@@ -638,6 +655,15 @@
                         </div>
                     </div>
 
+                    <!-- 1 DAY SPECIFIC DATE REPORT GENERATOR -->
+                    <div style="background: rgba(0, 245, 212, 0.03); border: 1px solid rgba(0, 245, 212, 0.15); border-radius: 14px; padding: 16px; margin-bottom: 20px;">
+                        <h4 style="font-size: 13px; color: var(--primary); margin-bottom: 10px;"><i class="fas fa-calendar-day"></i> নির্দিষ্ট ১ দিনের আবেদন রিপোর্ট PDF তৈরি করুন:</h4>
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <input type="date" id="dailyReportDateInput" class="form-control" style="max-width: 240px;" />
+                            <button class="btn-primary" onclick="exportDailyReport()" style="padding: 10px 20px;"><i class="fas fa-download"></i> এই দিনের রিপোর্ট PDF ডাউনলোড</button>
+                        </div>
+                    </div>
+
                     <!-- Live Search & Filter Bar -->
                     <div class="form-grid" style="margin-bottom: 20px;">
                         <div class="form-group">
@@ -703,6 +729,7 @@
         const db = getFirestore(app);
 
         let portalConfig = {
+            logoUrl: '',
             bannerUrl: '',
             notice: '',
             batchTitle: 'ব্যাচ ৮-৯ · ২০২৬',
@@ -753,12 +780,41 @@
             bindApplicationsStream();
         }
 
+        // LOGO LOCAL FILE UPLOAD (Base64)
+        document.getElementById('cfgLogoFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('⚠️ লোগোর সাইজ ২ মেগাবাইটের বেশি হওয়া যাবে না!', 'error');
+                    this.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    portalConfig.logoUrl = event.target.result;
+                    document.getElementById('cfgLogoUrl').value = '';
+                    document.getElementById('logoPreviewBox').style.display = 'block';
+                    document.getElementById('logoImgPreview').src = portalConfig.logoUrl;
+                    showToast('লোগো সিলেক্ট হয়েছে! এবার "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        window.removeLogo = function() {
+            portalConfig.logoUrl = '';
+            document.getElementById('cfgLogoUrl').value = '';
+            document.getElementById('cfgLogoFileInput').value = '';
+            document.getElementById('logoPreviewBox').style.display = 'none';
+            syncAllToFirestore();
+        };
+
         // BANNER LOCAL FILE UPLOAD (Base64)
         document.getElementById('cfgBannerFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 if (file.size > 2 * 1024 * 1024) {
-                    showToast('⚠️️ ছবির সাইজ ২ মেগাবাইটের বেশি হওয়া যাবে না!', 'error');
+                    showToast('⚠️ ব্যানারের সাইজ ২ মেগাবাইটের বেশি হওয়া যাবে না!', 'error');
                     this.value = '';
                     return;
                 }
@@ -768,7 +824,7 @@
                     document.getElementById('cfgBannerUrl').value = '';
                     document.getElementById('bannerPreviewBox').style.display = 'block';
                     document.getElementById('bannerImgPreview').src = portalConfig.bannerUrl;
-                    showToast('ছবি রেডি! এবার "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
+                    showToast('ব্যানার সিলেক্ট হয়েছে! এবার "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
                 };
                 reader.readAsDataURL(file);
             }
@@ -797,6 +853,7 @@
         }
 
         function renderConfigToUI() {
+            document.getElementById('cfgLogoUrl').value = portalConfig.logoUrl || '';
             document.getElementById('cfgNoticeText').value = portalConfig.notice || '';
             document.getElementById('cfgBannerUrl').value = portalConfig.bannerUrl || '';
             document.getElementById('cfgBatchTitle').value = portalConfig.batchTitle || '';
@@ -804,6 +861,15 @@
             document.getElementById('cfgPaymentNumber').value = portalConfig.paymentNumber || '';
             document.getElementById('statBatch').textContent = portalConfig.batchTitle || 'Batch 8-9';
 
+            // লোগো প্রিভিউ
+            if (portalConfig.logoUrl) {
+                document.getElementById('logoPreviewBox').style.display = 'block';
+                document.getElementById('logoImgPreview').src = portalConfig.logoUrl;
+            } else {
+                document.getElementById('logoPreviewBox').style.display = 'none';
+            }
+
+            // ব্যানার প্রিভিউ
             if (portalConfig.bannerUrl) {
                 document.getElementById('bannerPreviewBox').style.display = 'block';
                 document.getElementById('bannerImgPreview').src = portalConfig.bannerUrl;
@@ -817,6 +883,9 @@
         }
 
         window.syncAllToFirestore = async function() {
+            if (document.getElementById('cfgLogoUrl').value.trim() !== '') {
+                portalConfig.logoUrl = document.getElementById('cfgLogoUrl').value.trim();
+            }
             portalConfig.notice = document.getElementById('cfgNoticeText').value.trim();
             if (document.getElementById('cfgBannerUrl').value.trim() !== '') {
                 portalConfig.bannerUrl = document.getElementById('cfgBannerUrl').value.trim();
@@ -1068,7 +1137,7 @@
                 const actionBtns = `
                     <button class="btn-action-icon" title="Approve" onclick="updateAppStatus('${app.id}', 'Approved')"><i class="fas fa-check" style="color:var(--accent-green);"></i></button>
                     <button class="btn-action-icon reject" title="Reject" onclick="updateAppStatus('${app.id}', 'Rejected')"><i class="fas fa-xmark" style="color:var(--accent-red);"></i></button>
-                    <button class="btn-action-icon reject" title="Delete from Database" onclick="deleteApplication('${app.id}')"><i class="fas fa-trash"></i></button>
+                    <button class="btn-action-icon reject" title="Delete" onclick="deleteApplication('${app.id}')"><i class="fas fa-trash"></i></button>
                 `;
 
                 if (i < 8) {
@@ -1124,6 +1193,28 @@
             }
         };
 
+        // RELIABLE PDF GENERATOR ENGINE (Fixes PDF Not Downloading)
+        function triggerPDFDownload(element, filename) {
+            document.body.appendChild(element);
+
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.body.removeChild(element);
+                showToast('✅ PDF রিপোর্ট সফলভাবে ডাউনলোড হয়েছে!', 'success');
+            }).catch(err => {
+                if (element.parentNode) document.body.removeChild(element);
+                console.error("PDF Download Error:", err);
+                showToast('PDF তৈরিতে সমস্যা হয়েছে!', 'error');
+            });
+        }
+
         // PDF REPORT EXPORT FUNCTION
         window.exportPDFReport = function(type) {
             let data = loadedApplications;
@@ -1132,7 +1223,7 @@
             }
 
             if (data.length === 0) {
-                showToast(`⚠️ এই ক্যাটাগরিতে (${type}) কোনো আবেদন নেই!`, 'error');
+                showToast(`⚠️ এই ফিল্টারে (${type}) কোনো আবেদন নেই!`, 'error');
                 return;
             }
 
@@ -1183,15 +1274,91 @@
                 </table>
             `;
 
-            const opt = {
-                margin: 10,
-                filename: `CSB_Report_${type}_${Date.now()}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, backgroundColor: '#ffffff' },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
+            triggerPDFDownload(reportContainer, `CSB_Report_${type}_${Date.now()}.pdf`);
+        };
 
-            html2pdf().set(opt).from(reportContainer).save();
+        // 1-DAY SPECIFIC DATE REPORT GENERATOR
+        window.exportDailyReport = function() {
+            const dateVal = document.getElementById('dailyReportDateInput').value;
+            if (!dateVal) {
+                showToast('⚠️ অনুগ্রহ করে একটি নির্দিষ্ট তারিখ নির্বাচন করুন!', 'error');
+                return;
+            }
+
+            const parts = dateVal.split('-');
+            const year = parts[0];
+            const month = parseInt(parts[1], 10);
+            const day = parseInt(parts[2], 10);
+
+            const bengaliNumerals = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+            const toBn = (num) => String(num).split('').map(d => bengaliNumerals[d] || d).join('');
+
+            const searchPatterns = [
+                `${day}/${month}/${year}`,
+                `${toBn(day)}/${toBn(month)}/${toBn(year)}`,
+                `${month}/${day}/${year}`,
+                `${toBn(month)}/${toBn(day)}/${toBn(year)}`,
+                dateVal
+            ];
+
+            const dailyApps = loadedApplications.filter(app => {
+                const appTime = app.createdAt || app.time || '';
+                return searchPatterns.some(pattern => appTime.includes(pattern));
+            });
+
+            if (dailyApps.length === 0) {
+                showToast(`⚠️ নির্বাচিত তারিখে (${dateVal}) কোনো আবেদন পাওয়া যায়নি!`, 'error');
+                return;
+            }
+
+            const reportContainer = document.createElement('div');
+            reportContainer.style.padding = '30px';
+            reportContainer.style.background = '#ffffff';
+            reportContainer.style.color = '#0f172a';
+            reportContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+
+            let rowsHtml = '';
+            dailyApps.forEach((item, index) => {
+                rowsHtml += `
+                    <tr style="border-bottom: 1px solid #e2e8f0; font-size: 11px;">
+                        <td style="padding: 8px;">${index + 1}</td>
+                        <td style="padding: 8px; font-weight:700; font-family:monospace;">${item.id}</td>
+                        <td style="padding: 8px;">${item.fullName || 'N/A'}</td>
+                        <td style="padding: 8px;">${item.category || 'N/A'}</td>
+                        <td style="padding: 8px;">${item.role || 'N/A'}</td>
+                        <td style="padding: 8px;">${item.personalPhone || 'N/A'}</td>
+                        <td style="padding: 8px; font-family:monospace;">${item.tnxId || 'N/A'}</td>
+                        <td style="padding: 8px; font-weight:700;">${item.status || 'Pending'}</td>
+                    </tr>
+                `;
+            });
+
+            reportContainer.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px;">
+                    <h2 style="margin: 0; color: #0f172a;">CYBER SENTINEL BANGLADESH</h2>
+                    <p style="margin: 4px 0 0; font-size: 13px; color: #0284c7; font-weight: 800;">DAILY ADMISSION REPORT: ${dateVal}</p>
+                    <small style="color: #64748b;">এই দিনে মোট আবেদন: <strong>${dailyApps.length}</strong>টি | রিপোর্ট তৈরির সময়: ${new Date().toLocaleString('bn-BD')}</small>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: #f1f5f9; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 8px;">#</th>
+                            <th style="padding: 8px;">আইডি</th>
+                            <th style="padding: 8px;">নাম</th>
+                            <th style="padding: 8px;">ক্যাটাগরি</th>
+                            <th style="padding: 8px;">রোল</th>
+                            <th style="padding: 8px;">মোবাইল</th>
+                            <th style="padding: 8px;">TNX</th>
+                            <th style="padding: 8px;">স্ট্যাটাস</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            `;
+
+            triggerPDFDownload(reportContainer, `CSB_Daily_Report_${dateVal}.pdf`);
         };
 
         // TAB SWITCHER
@@ -1200,11 +1367,13 @@
             document.querySelectorAll('.nav-item button').forEach(b => b.classList.remove('active'));
             
             document.getElementById('tab-' + tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
 
             const titles = {
                 dashboard: 'ড্যাশবোর্ড ওভারভিউ',
-                branding: 'হোম ব্যানার, নোটিশ ও ব্যাচ কন্ট্রোল',
+                branding: 'হোম ব্যানার, লোগো ও ব্যাচ কন্ট্রোল',
                 categories: 'ক্যাটাগরি ও রোল ম্যানেজমেন্ট',
                 fees: 'ফি এবং টেলিগ্রাম লিংক কন্ট্রোল',
                 oath: 'শপথনামা টেক্সট কন্ট্রোল',
