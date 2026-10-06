@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
     <style>
-        /* ===== CSS VARIABLES & RESET ===== */
         :root {
             --primary: #00f5d4;
             --primary-glow: rgba(0, 245, 212, 0.4);
@@ -42,7 +41,6 @@
             color: var(--text-main);
         }
 
-        /* ===== LUXURY CYBER AMBIENCE ===== */
         .ambient-glow {
             position: fixed;
             width: 500px;
@@ -67,7 +65,6 @@
             pointer-events: none;
         }
 
-        /* ===== CONTAINER ===== */
         .container {
             position: relative;
             z-index: 1;
@@ -88,7 +85,6 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* ===== HEADER & LOGO ===== */
         .welcome-section {
             text-align: center;
             padding: 10px 0 24px;
@@ -145,7 +141,6 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* ===== NAVIGATION BUTTONS ===== */
         .home-buttons {
             display: flex;
             justify-content: center;
@@ -179,11 +174,7 @@
             color: #030712;
             box-shadow: 0 6px 20px rgba(0, 245, 212, 0.2);
         }
-        .home-btn.primary:hover {
-            box-shadow: 0 10px 30px rgba(0, 245, 212, 0.35);
-        }
 
-        /* ===== PAYMENT CARD ===== */
         .payment-card {
             background: linear-gradient(135deg, rgba(0, 245, 212, 0.04), rgba(14, 165, 233, 0.02));
             border: 1px solid rgba(0, 245, 212, 0.2);
@@ -196,11 +187,7 @@
             gap: 16px;
             flex-wrap: wrap;
         }
-        .payment-card .left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .payment-card .left { display: flex; align-items: center; gap: 16px; }
         .payment-card .icon-box {
             background: rgba(0, 245, 212, 0.1);
             width: 52px;
@@ -212,20 +199,9 @@
             font-size: 22px;
             color: var(--primary);
         }
-        .payment-card .info h4 {
-            font-size: 17px;
-            font-weight: 700;
-        }
-        .payment-card .info p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        .payment-card .info strong {
-            color: var(--primary);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
-        }
+        .payment-card .info h4 { font-size: 17px; font-weight: 700; }
+        .payment-card .info p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+        .payment-card .info strong { color: var(--primary); font-family: 'JetBrains Mono', monospace; font-size: 15px; }
         .payment-card .right {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -237,12 +213,8 @@
             align-items: center;
             gap: 10px;
         }
-        .payment-card .right .number {
-            color: var(--primary);
-            font-weight: 700;
-        }
+        .payment-card .right .number { color: var(--primary); font-weight: 700; }
 
-        /* ===== INPUT ELEMENTS ===== */
         .form-wrapper { display: none; }
         .form-wrapper.active { display: block; animation: containerIn 0.5s ease forwards; }
 
@@ -261,15 +233,9 @@
             gap: 8px;
             transition: all 0.3s ease;
         }
-        .back-btn:hover {
-            color: var(--primary);
-            border-color: var(--primary);
-            transform: translateX(-4px);
-        }
+        .back-btn:hover { color: var(--primary); border-color: var(--primary); transform: translateX(-4px); }
 
-        .form-group {
-            margin-bottom: 22px;
-        }
+        .form-group { margin-bottom: 22px; }
         .form-group label {
             display: flex;
             align-items: center;
@@ -325,7 +291,6 @@
             gap: 16px;
         }
 
-        /* ===== FILE UPLOAD ===== */
         .file-upload-wrapper { position: relative; }
         .file-upload-wrapper input[type="file"] {
             position: absolute;
@@ -357,12 +322,7 @@
             border-radius: 8px;
             font-weight: 700;
         }
-        .file-upload-wrapper:hover .file-upload-area {
-            border-color: var(--primary);
-            background: rgba(0, 245, 212, 0.02);
-        }
 
-        /* ===== VIDEO RECORDER ===== */
         .video-recorder {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -384,14 +344,10 @@
             font-size: 12px;
             color: var(--text-muted);
         }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #475569;
-        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #475569; }
         .dot.recording { background: var(--accent-red); animation: pulseLive 1s infinite; }
         .dot.ready { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        @keyframes pulseLive { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         .video-recorder video {
             width: 100%;
@@ -401,11 +357,7 @@
             object-fit: cover;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .recorder-controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
+        .recorder-controls { display: flex; gap: 10px; margin-top: 12px; }
         .btn-recorder {
             flex: 1;
             padding: 10px;
@@ -418,14 +370,12 @@
             justify-content: center;
             align-items: center;
             gap: 6px;
-            transition: all 0.25s ease;
         }
         .btn-recorder.start { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #030712; }
         .btn-recorder.stop { background: var(--accent-red); color: #fff; }
         .btn-recorder.download { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); }
         .btn-recorder:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* ===== OATH BOX ===== */
         .oath-box {
             background: rgba(0, 245, 212, 0.02);
             border-left: 3px solid var(--primary);
@@ -442,19 +392,9 @@
             align-items: center;
             gap: 8px;
         }
-        .oath-text {
-            color: var(--text-muted);
-            font-size: 13px;
-            line-height: 1.7;
-        }
+        .oath-text { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
         .oath-text .highlight { color: #fff; font-weight: 600; }
-        .oath-amen {
-            text-align: right;
-            color: var(--primary);
-            font-weight: 700;
-            margin-top: 8px;
-            font-size: 14px;
-        }
+        .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 8px; font-size: 14px; }
 
         .lock-badge {
             display: inline-flex;
@@ -469,12 +409,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* ===== SUBMIT & FOOTER ===== */
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
         .btn-submit {
             flex: 2;
             padding: 16px 24px;
@@ -492,10 +427,7 @@
             align-items: center;
             gap: 8px;
         }
-        .btn-submit:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 245, 212, 0.35);
-        }
+        .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 245, 212, 0.35); }
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-reset {
@@ -508,11 +440,6 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .btn-reset:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
         }
 
         .form-footer {
@@ -527,7 +454,6 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* ===== PROGRESS & TOAST & MODAL ===== */
         .upload-progress {
             display: none;
             margin: 15px 0;
@@ -543,12 +469,7 @@
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             transition: width 0.4s ease;
         }
-        .status-text {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-align: center;
-            margin-top: 6px;
-        }
+        .status-text { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 6px; }
 
         .toast {
             position: fixed;
@@ -637,7 +558,6 @@
     <div class="grid-bg"></div>
 
     <div class="container" id="mainContainer">
-
         <!-- LANDING -->
         <div id="landingPage">
             <div class="welcome-section">
@@ -666,7 +586,7 @@
                     <p><i class="fas fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>
                 </div>
                 <div id="liveTime" style="margin-top:14px; font-size:11px; color:#475569; text-align:center; font-family:'JetBrains Mono', monospace;">
-                    <i class="fas fa-clock"></i> লাইভ আপডেট: <span id="liveTimeDisplay">--:--:--</span>
+                    <i class="fas fa-clock"></i> লাইভ ফায়ারস্টোর সিঙ্ক: <span id="liveTimeDisplay">--:--:--</span>
                 </div>
             </div>
         </div>
@@ -876,7 +796,7 @@
                 </div>
 
                 <div class="form-footer">
-                    <span><i class="fas fa-shield" style="color:var(--primary);"></i> End-to-End Encrypted</span>
+                    <span><i class="fas fa-shield" style="color:var(--primary);"></i> Cloud Firestore Sync</span>
                     <span>v3.5 Enterprise · 2026</span>
                 </div>
             </form>
@@ -888,7 +808,7 @@
         <div class="modal-content">
             <i class="fas fa-circle-check icon"></i>
             <h2>আবেদন সফল!</h2>
-            <p>আপনার আবেদনটি সফলভাবে জমা নেওয়া হয়েছে।<br><strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span></strong><br>ভবিষ্যতে স্ট্যাটাস চেক করার জন্য আইডিটি সংরক্ষণ করুন।</p>
+            <p>আপনার আবেদনটি ফায়ারস্টোর ও চ্যানেলে জমা হয়েছে।<br><strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span></strong><br>ভবিষ্যতে স্ট্যাটাস চেক করার জন্য আইডিটি সংরক্ষণ করুন।</p>
             <button class="btn-modal" onclick="closeModal()">ঠিক আছে</button>
         </div>
     </div>
@@ -906,9 +826,27 @@
         <span id="toastMessage"></span>
     </div>
 
-    <script>
+    <!-- FIREBASE & APPLICATION SCRIPTS -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // ফায়ারবেস কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQUF7WzlgooRi3cpQ3Kz6Ed7XEs3txZis",
+            authDomain: "csb-team-addmission.firebaseapp.com",
+            projectId: "csb-team-addmission",
+            storageBucket: "csb-team-addmission.firebasestorage.app",
+            messagingSenderId: "701813947891",
+            appId: "1:701813947891:web:8536e058bdc3c5a2a5a686",
+            measurementId: "G-PNQ70ZYZ81"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         // ===================================================================
-        // HIGH-GRADE SOURCE CODE PROTECTION (Anti-Theft)
+        // SECURITY (Anti-DevTools & Anti-Theft)
         // ===================================================================
         document.addEventListener('contextmenu', (e) => {
             e.preventDefault();
@@ -927,20 +865,16 @@
                 return false;
             }
         });
-
-        // ড্র্যাগ অ্যান্ড ড্রপ লক
         document.addEventListener('dragstart', (e) => e.preventDefault());
 
         // ===================================================================
-        // CONFIG
+        // TELEGRAM CONFIG
         // ===================================================================
         const BOT_TOKEN = '8677605758:AAHJs_SE2YmS0g0RVfuesZuXVKAJ3O5CjiM';
         const CHANNEL_ID_SUBMIT = '-1004341639499';
         const CHANNEL_ID_APPROVE = '-1003891211232';
 
-        // ===================================================================
-        // DOM REFS & NAVIGATION
-        // ===================================================================
+        // DOM REFERENCES
         const landingPage = document.getElementById('landingPage');
         const formWrapper = document.getElementById('formWrapper');
         const registerBtn = document.getElementById('registerBtn');
@@ -985,29 +919,37 @@
             window.open('https://wa.me/+601130345524', '_blank');
         });
 
-        // URL চেক করে অ্যাডমিন হ্যান্ডলার
-        window.addEventListener('DOMContentLoaded', () => {
+        // ===================================================================
+        // ADMIN APPROVE / REJECT (Synced with Firestore)
+        // ===================================================================
+        window.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             const action = params.get('action');
             const trackId = params.get('id');
 
             if (action && trackId) {
-                let localData = localStorage.getItem(trackId);
-                if (localData) {
-                    let parsed = JSON.parse(localData);
-                    if (action === 'approve') {
-                        parsed.status = 'Approved';
-                        parsed.time = new Date().toLocaleString('bn-BD');
-                        localStorage.setItem(trackId, JSON.stringify(parsed));
-                        showToast(`✅ ID: ${trackId} অনুমোদিত হয়েছে!`, 'success');
-                        sendToApproveChannel(trackId, parsed);
-                    } else if (action === 'reject') {
-                        parsed.status = 'Rejected';
-                        parsed.time = new Date().toLocaleString('bn-BD');
-                        localStorage.setItem(trackId, JSON.stringify(parsed));
-                        showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
-                        sendRejectionNotice(trackId, parsed);
+                try {
+                    const docRef = doc(db, "applications", trackId);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const existingData = docSnap.data();
+                        const updateTime = new Date().toLocaleString('bn-BD');
+
+                        if (action === 'approve') {
+                            await updateDoc(docRef, { status: 'Approved', updateTime: updateTime });
+                            showToast(`✅ ID: ${trackId} অনুমোদিত হয়েছে!`, 'success');
+                            sendToApproveChannel(trackId, { ...existingData, time: updateTime });
+                        } else if (action === 'reject') {
+                            await updateDoc(docRef, { status: 'Rejected', updateTime: updateTime });
+                            showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
+                            sendRejectionNotice(trackId, { ...existingData, time: updateTime });
+                        }
+                    } else {
+                        showToast(`⚠️ ID: ${trackId} ফায়ারস্টোরে পাওয়া যায়নি`, 'error');
                     }
+                } catch (err) {
+                    console.error("Firestore action error:", err);
                 }
             }
         });
@@ -1015,7 +957,7 @@
         async function sendToApproveChannel(trackId, data) {
             const text = `🎉 **নতুন আবেদন অনুমোদিত (APPROVED)** 🎉\n` +
                          `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                         `👤 নাম: ${data.name}\n` +
+                         `👤 নাম: ${data.fullName || data.name}\n` +
                          `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
                          `🏠 ঠিকানা: ${data.address || 'N/A'}\n` +
                          `📧 ইমেইল: ${data.email || 'N/A'}\n` +
@@ -1026,7 +968,7 @@
                          `🧾 TNX ID: ${data.tnxId || 'N/A'}\n` +
                          `📞 অভিভাবক: ${data.guardianPhone || 'N/A'}\n` +
                          `📱 নিজের: ${data.personalPhone || 'N/A'}\n` +
-                         `📅 সময়: ${data.time}\n` +
+                         `📅 অনুমোদন সময়: ${data.time}\n` +
                          `━━━━━━━━━━━━━━━━━━━━━━\n` +
                          `🛡️ Cyber Sentinel Bangladesh`;
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -1039,9 +981,9 @@
         async function sendRejectionNotice(trackId, data) {
             const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n` +
                          `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                         `👤 নাম: ${data.name}\n` +
+                         `👤 নাম: ${data.fullName || data.name}\n` +
                          `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
-                         `⚠️ আপনার তথ্যে গরমিল বা পেমেন্ট সংক্রান্ত অসঙ্গতি পাওয়া গেছে। পুনরায় সঠিক তথ্যে আবেদন করুন।\n` +
+                         `⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n` +
                          `━━━━━━━━━━━━━━━━━━━━━━\n` +
                          `🛡️ Cyber Sentinel Bangladesh`;
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -1052,65 +994,71 @@
         }
 
         // ===================================================================
-        // TRACKING SYSTEM
+        // TRACKING SYSTEM (Reads Directly from Cloud Firestore)
         // ===================================================================
-        trackSubmitBtn.addEventListener('click', () => {
+        trackSubmitBtn.addEventListener('click', async () => {
             const id = trackInput.value.trim().toUpperCase();
             if (!id) { showToast('⚠️ আইডি লিখুন', 'error'); return; }
 
-            const localData = localStorage.getItem(id);
-            let status = 'Pending';
-            let name = 'আবেদনকারী';
-            let role = 'CSB Member';
-            let gender = 'Male';
-            let now = new Date().toLocaleString('bn-BD');
+            trackResult.innerHTML = `<p style="color:var(--primary);"><i class="fas fa-spinner fa-spin"></i> ডাটাবেজে খোঁজা হচ্ছে...</p>`;
 
-            if (localData) {
-                const parsed = JSON.parse(localData);
-                status = parsed.status || 'Pending';
-                name = parsed.name || name;
-                role = parsed.role || role;
-                gender = parsed.gender || 'Male';
-                now = parsed.time || now;
-            } else {
-                const appData = { name: "New User", role: "Trainee", gender: "Male", status: status, time: now };
-                localStorage.setItem(id, JSON.stringify(appData));
-            }
+            try {
+                const docRef = doc(db, "applications", id);
+                const docSnap = await getDoc(docRef);
 
-            let color = '#ffa94d';
-            let icon = '⏳';
-            let joinLinkHtml = '';
-            
-            if (status === 'Approved') {
-                color = '#00f5d4';
-                icon = '✅';
-                let targetGroupLink = gender === 'Female' ? 'https://t.me/+tSQK_jWEeWU0YjI1' : 'https://t.me/+iK88FtiL2YNmZjE1';
+                if (!docSnap.exists()) {
+                    trackResult.innerHTML = `
+                        <div style="background:rgba(244,63,94,0.06); border-radius:14px; padding:16px; border:1px solid rgba(244,63,94,0.2); margin-top:12px;">
+                            <p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p>
+                            <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আইডি সঠিক কিনা যাচাই করুন অথবা পুনরায় আবেদন করুন।</p>
+                        </div>
+                    `;
+                    return;
+                }
 
-                joinLinkHtml = `
-                    <div style="margin-top: 15px; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 15px; text-align: center;">
-                        <p style="color: var(--primary); font-weight: 600; font-size: 13px; margin-bottom: 10px;">অভিনন্দন! আবেদন গৃহীত হয়েছে।</p>
-                        <a href="${targetGroupLink}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #030712; padding: 10px 22px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                            <i class="fab fa-telegram"></i> অফিসিয়াল গ্রুপে জয়েন করুন
-                        </a>
+                const data = docSnap.data();
+                const status = data.status || 'Pending';
+                const time = data.updateTime || data.createdAt || 'N/A';
+                const gender = data.gender || 'Male';
+
+                let color = '#ffa94d';
+                let icon = '⏳';
+                let joinLinkHtml = '';
+
+                if (status === 'Approved') {
+                    color = '#00f5d4';
+                    icon = '✅';
+                    let targetGroupLink = gender === 'Female' ? 'https://t.me/+tSQK_jWEeWU0YjI1' : 'https://t.me/+iK88FtiL2YNmZjE1';
+
+                    joinLinkHtml = `
+                        <div style="margin-top: 15px; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 15px; text-align: center;">
+                            <p style="color: var(--primary); font-weight: 600; font-size: 13px; margin-bottom: 10px;">🎉 অভিনন্দন! আপনার আবেদনটি অনুমোদিত হয়েছে।</p>
+                            <a href="${targetGroupLink}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #030712; padding: 10px 22px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                                <i class="fab fa-telegram"></i> অফিসিয়াল গ্রুপে জয়েন করুন
+                            </a>
+                        </div>
+                    `;
+                } else if (status === 'Rejected') {
+                    color = '#f43f5e';
+                    icon = '❌';
+                    joinLinkHtml = `
+                        <div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;">
+                            <p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে। অনুগ্রহ করে সঠিক তথ্যে আবার চেষ্টা করুন।</p>
+                        </div>
+                    `;
+                }
+
+                trackResult.innerHTML = `
+                    <div style="background:rgba(255,255,255,0.02); border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.06); margin-top:12px;">
+                        <p style="font-size:15px; font-weight:700; color:#fff;">আইডি: <span style="color:var(--primary); font-family:'JetBrains Mono', monospace;">${id}</span></p>
+                        <p style="margin-top:6px; font-size:14px; font-weight:600;">স্ট্যাটাস: <span style="color:${color};">${icon}${status}</span></p>
+                        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${time}</p>${joinLinkHtml}
                     </div>
                 `;
-            } else if (status === 'Rejected') {
-                color = '#f43f5e';
-                icon = '❌';
-                joinLinkHtml = `
-                    <div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;">
-                        <p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আপনার আবেদন বাতিল করা হয়েছে। সঠিক তথ্য প্রদান করে পুনরায় চেষ্টা করুন।</p>
-                    </div>
-                `;
+            } catch (err) {
+                console.error(err);
+                trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি। রুলস চেক করুন।</p>`;
             }
-
-            trackResult.innerHTML = `
-                <div style="background:rgba(255,255,255,0.02); border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.06); margin-top:12px;">
-                    <p style="font-size:15px; font-weight:700; color:#fff;">আইডি: <span style="color:var(--primary); font-family:'JetBrains Mono', monospace;">${id}</span></p>
-                    <p style="margin-top:6px; font-size:14px; font-weight:600;">স্ট্যাটাস: <span style="color:${color};">${icon}${status}</span></p>
-                    <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${now}</p>${joinLinkHtml}
-                </div>
-            `;
         });
 
         // ===================================================================
@@ -1124,8 +1072,8 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        function closeModal() { document.getElementById('successModal').classList.remove('show'); }
-        function closeErrorModal() { document.getElementById('errorModal').classList.remove('show'); }
+        window.closeModal = function() { document.getElementById('successModal').classList.remove('show'); };
+        window.closeErrorModal = function() { document.getElementById('errorModal').classList.remove('show'); };
 
         let mediaRecorder, recordedChunks = [], stream = null, isCameraReady = false, recordedBlob = null;
         const previewVideo = document.getElementById('previewVideo');
@@ -1170,7 +1118,7 @@
 
             mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.onstop = () => {
-                if (!recordedChunks.length) { showToast('⚠️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
+                if (!recordedChunks.length) { showToast('⚠️️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
                 recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
                 const url = URL.createObjectURL(recordedBlob);
                 
@@ -1186,7 +1134,7 @@
                 recordingDot.className = 'dot ready';
                 startBtn.disabled = false;
                 stopBtn.disabled = true;
-                showToast('✅ ভিডিও সফলভাবে রেকর্ড হয়েছে', 'success');
+                showToast('✅ ভিডিও রেকর্ড সম্পন্ন হয়েছে', 'success');
             };
 
             mediaRecorder.start();
@@ -1222,7 +1170,7 @@
         }
 
         // ===================================================================
-        // FORM SUBMISSION (Original Logic)
+        // FORM SUBMIT -> SYNC TO FIRESTORE + TELEGRAM
         // ===================================================================
         document.getElementById('csbForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -1257,10 +1205,13 @@
                     }
                 }
 
-                if (localStorage.getItem(`TNX_${formData.tnxId}`) !== null) {
+                // Check duplicate TNX in Firestore
+                const tnxCheckRef = doc(db, "transactions", formData.tnxId);
+                const tnxSnap = await getDoc(tnxCheckRef);
+                if (tnxSnap.exists()) {
                     document.getElementById('errorMessage').innerHTML = `
                         <p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p>
-                        <p style="margin-top:4px;">রেফারেন্স আইডিটি (${formData.tnxId}) পূর্বে ব্যবহৃত হয়েছে। সঠিক ট্রানজেকশন আইডি দিন।</p>
+                        <p style="margin-top:4px;">রেফারেন্স আইডিটি (${formData.tnxId}) পূর্বে ব্যবহার করা হয়েছে। নতুন TNX দিয়ে চেষ্টা করুন।</p>
                     `;
                     document.getElementById('errorModal').classList.add('show');
                     submitBtn.classList.remove('loading');
@@ -1288,7 +1239,7 @@
                     return;
                 }
                 if (!recordedBlob) {
-                    showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড আবশ্যক', 'error');
+                    showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড বাধ্যতামূলক', 'error');
                     submitBtn.classList.remove('loading');
                     submitBtn.disabled = false;
                     return;
@@ -1305,26 +1256,25 @@
                     }
                 }
 
-                updateProgress(15, 'তথ্য প্রসেসিং হচ্ছে...');
+                updateProgress(15, 'ফায়ারস্টোর ডাটাবেজে সেভ হচ্ছে...');
                 const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+                const currentTime = new Date().toLocaleString('bn-BD');
 
-                const appData = {
-                    name: formData.fullName,
-                    role: formData.role,
-                    gender: formData.gender, 
-                    address: formData.address,
-                    email: formData.email,
-                    whatsapp: formData.whatsapp,
-                    telegram: formData.telegram,
-                    tnxId: formData.tnxId,
-                    guardianPhone: formData.guardianPhone,
-                    personalPhone: formData.personalPhone,
+                // SAVE TO FIRESTORE DATABASE
+                await setDoc(doc(db, "applications", trackId), {
+                    ...formData,
                     status: 'Pending',
-                    time: new Date().toLocaleString('bn-BD')
-                };
-                localStorage.setItem(trackId, JSON.stringify(appData));
-                localStorage.setItem(`TNX_${formData.tnxId}`, "USED");
+                    createdAt: currentTime,
+                    updateTime: currentTime
+                });
 
+                // Lock transaction ID in Firestore
+                await setDoc(doc(db, "transactions", formData.tnxId), {
+                    trackId: trackId,
+                    usedAt: currentTime
+                });
+
+                updateProgress(35, 'টেলিগ্রাম চ্যানেলে পাঠানো হচ্ছে...');
                 const caption = `🛡️ **CSB NEW ADMISSION FORM** 🛡️\n` +
                                 `━━━━━━━━━━━━━━━━━━━━━━\n` +
                                 `👤 নাম: ${formData.fullName}\n` +
@@ -1343,9 +1293,8 @@
                                 `📱 নিজের: ${formData.personalPhone}\n` +
                                 `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
                                 `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                                `📅 আবেদন টাইম: ${new Date().toLocaleString('bn-BD')}`;
+                                `📅 আবেদন টাইম: ${currentTime}`;
 
-                updateProgress(35, 'ছবি আপলোড প্রসেস হচ্ছে...');
                 const mediaGroup = new FormData();
                 mediaGroup.append('chat_id', CHANNEL_ID_SUBMIT);
                 mediaGroup.append('file1', document.getElementById('photo1').files[0], 'photo1.jpg');
@@ -1367,7 +1316,7 @@
                 });
                 if (!albumRes.ok) throw new Error('Telegram media upload error');
 
-                updateProgress(75, 'শপথনামা ভিডিও সেন্ড হচ্ছে...');
+                updateProgress(75, 'শপথনামা ভিডিও আপলোড হচ্ছে...');
                 const videoData = new FormData();
                 videoData.append('chat_id', CHANNEL_ID_SUBMIT);
                 videoData.append('video', recordedBlob, `oath_${trackId}.mp4`);
@@ -1386,7 +1335,7 @@
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, { method: 'POST', body: docData });
                 }
 
-                updateProgress(90, 'কনফার্মেশন রেডি হচ্ছে...');
+                updateProgress(90, 'অ্যাকশন লিংক সেট করা হচ্ছে...');
                 const webAppBaseUrl = window.location.href.split('?')[0]; 
                 const inlineKeyboard = {
                     inline_keyboard: [[
@@ -1426,7 +1375,8 @@
                 }, 1800);
 
             } catch (err) {
-                document.getElementById('errorMessage').textContent = 'টেলিগ্রাম সার্ভারে সাবমিট করা যায়নি। ফাইল সাইজ বা নেটওয়ার্ক চেক করুন। (' + err.message + ')';
+                console.error(err);
+                document.getElementById('errorMessage').textContent = 'ত্রুটি দেখা দিয়েছে। ইন্টারনেট বা পারমিশন চেক করুন। (' + err.message + ')';
                 document.getElementById('errorModal').classList.add('show');
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
@@ -1434,7 +1384,7 @@
             }
         });
 
-        // FORM RESET
+        // RESET
         document.querySelector('.btn-reset').addEventListener('click', (e) => {
             e.preventDefault();
             if (confirm('সব ফিল্ড মুছে ফেলতে চান?')) {
