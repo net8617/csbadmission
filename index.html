@@ -94,10 +94,27 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             filter: drop-shadow(0 0 25px var(--primary-glow));
             display: inline-block;
         }
+
+        /* Banner styling between logo and title */
+        #bannerWrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 6px 0 16px;
+        }
+        #csbDynamicBanner {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            object-fit: cover;
+        }
+
         .welcome-section h1 {
             font-size: 36px;
             font-weight: 800;
@@ -396,19 +413,6 @@
         .oath-text .highlight { color: #fff; font-weight: 600; }
         .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 8px; font-size: 14px; }
 
-        .lock-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 8px 18px;
-            border-radius: 9999px;
-            font-size: 12px;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
         .btn-submit {
             flex: 2;
@@ -561,8 +565,15 @@
         <!-- LANDING -->
         <div id="landingPage">
             <div class="welcome-section" id="welcomeSection">
-                <!-- Dynamic Banner will appear here automatically if uploaded via Admin -->
+                <!-- 1. CSB LOGO -->
                 <div class="csb-logo"><i class="fas fa-shield-halved"></i></div>
+
+                <!-- 2. DYNAMIC BANNER (Placed right above "Cyber Sentinel Bangladesh") -->
+                <div id="bannerWrapper" style="display:none;">
+                    <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" />
+                </div>
+
+                <!-- 3. TITLE -->
                 <h1>Cyber Sentinel Bangladesh</h1>
                 <div class="sub" id="displayBatchSub">OFFICIAL ADMISSION PORTAL · BATCH 8-9</div>
                 <div class="badge-batch" id="displayBatchBadge">
@@ -587,7 +598,7 @@
                     <p><i class="fas fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>
                 </div>
                 <div id="liveTime" style="margin-top:14px; font-size:11px; color:#475569; text-align:center; font-family:'JetBrains Mono', monospace;">
-                    <i class="fas fa-clock"></i> লাইভ ফায়ারস্টোর সিঙ্ক: <span id="liveTimeDisplay">--:--:--</span>
+                    <i class="fas fa-clock"></i> লাইভ আপডেট: <span id="liveTimeDisplay">--:--:--</span>
                 </div>
             </div>
         </div>
@@ -778,9 +789,14 @@
                     </div>
                 </div>
 
+                <!-- CATEGORY SELECTION FIELD (Previously Locked Badge) -->
                 <div class="form-group">
-                    <label style="opacity:0.6;"><i class="fas fa-shield-halved"></i> ক্যাটাগরি ডেটা লক</label>
-                    <div class="lock-badge" id="displayCategoryLock"><i class="fas fa-lock" style="color:var(--primary);"></i> Category: NEW STUDENTS</div>
+                    <label><i class="fas fa-layer-group"></i><span class="step-num">19</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
+                    <select class="form-control" id="category" required>
+                        <option value="NEW STUDENTS">NEW STUDENTS</option>
+                        <option value="EX-STUDENTS">EX-STUDENTS</option>
+                        <option value="EXECUTIVE">EXECUTIVE</option>
+                    </select>
                 </div>
 
                 <div class="upload-progress" id="uploadProgress">
@@ -796,8 +812,9 @@
                     <button type="reset" class="btn-reset"><i class="fas fa-rotate-left"></i> রিসেট</button>
                 </div>
 
+                <!-- FOOTER BRANDING UPDATED -->
                 <div class="form-footer">
-                    <span><i class="fas fa-shield" style="color:var(--primary);"></i> Cloud Firestore Sync</span>
+                    <span><i class="fas fa-shield-halved" style="color:var(--primary);"></i> CSB Team Official</span>
                     <span>v3.5 Enterprise · 2026</span>
                 </div>
             </form>
@@ -846,7 +863,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // অ্যাডমিন থেকে পাওয়া ডাইনামিক কনফিগ ভেরিয়েবল
         let activePortalConfig = {
             maleLink: 'https://t.me/+iK88FtiL2YNmZjE1',
             femaleLink: 'https://t.me/+tSQK_jWEeWU0YjI1'
@@ -860,22 +876,14 @@
                 const cfg = snap.data();
                 activePortalConfig = { ...activePortalConfig, ...cfg };
 
-                // ১. ব্যানার আপডেট
-                let bannerElem = document.getElementById('csbDynamicBanner');
+                // ১. ব্যানার আপডেট (Cyber Sentinel Bangladesh লেখার ঠিক উপরে)
+                const bannerWrap = document.getElementById('bannerWrapper');
+                const bannerImg = document.getElementById('csbDynamicBanner');
                 if (cfg.bannerUrl && cfg.bannerUrl.trim() !== '') {
-                    if (!bannerElem) {
-                        bannerElem = document.createElement('img');
-                        bannerElem.id = 'csbDynamicBanner';
-                        bannerElem.style.maxWidth = '100%';
-                        bannerElem.style.borderRadius = '16px';
-                        bannerElem.style.marginBottom = '20px';
-                        bannerElem.style.border = '1px solid var(--card-border)';
-                        bannerElem.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
-                        document.getElementById('welcomeSection').prepend(bannerElem);
-                    }
-                    bannerElem.src = cfg.bannerUrl;
-                } else if (bannerElem) {
-                    bannerElem.remove();
+                    bannerImg.src = cfg.bannerUrl;
+                    bannerWrap.style.display = 'flex';
+                } else {
+                    bannerWrap.style.display = 'none';
                 }
 
                 // ২. ব্যাচ টেক্সট ও সাবটাইটেল
@@ -899,9 +907,18 @@
                     document.getElementById('displayOathText').innerHTML = cfg.oathText.replace(/\n/g, '<br>');
                 }
 
-                // ৫. ক্যাটাগরি লক ব্যাজ
-                if (cfg.categories && cfg.categories.length > 0) {
-                    document.getElementById('displayCategoryLock').innerHTML = `<i class="fas fa-lock" style="color:var(--primary);"></i> Category: ${cfg.categories[0]}`;
+                // ৫. ক্যাটাগরি অপশন সিঙ্ক
+                if (cfg.categories && Array.isArray(cfg.categories) && cfg.categories.length > 0) {
+                    const catSelect = document.getElementById('category');
+                    const currentCat = catSelect.value;
+                    catSelect.innerHTML = '';
+                    cfg.categories.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c;
+                        opt.textContent = c;
+                        if (c === currentCat) opt.selected = true;
+                        catSelect.appendChild(opt);
+                    });
                 }
 
                 // ৬. ড্রপডাউন রোল তালিকা সিঙ্ক
@@ -1034,6 +1051,7 @@
                          `━━━━━━━━━━━━━━━━━━━━━━\n` +
                          `👤 নাম: ${data.fullName || data.name}\n` +
                          `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
+                         `📂 ক্যাটাগরি: ${data.category || 'N/A'}\n` +
                          `🏠 ঠিকানা: ${data.address || 'N/A'}\n` +
                          `📧 ইমেইল: ${data.email || 'N/A'}\n` +
                          `📱 WhatsApp: ${data.whatsapp || 'N/A'}\n` +
@@ -1104,7 +1122,6 @@
                     color = '#00f5d4';
                     icon = '✅';
                     
-                    // অ্যাডমিন প্যানেল থেকে আসা ডায়নামিক লিংক নির্বাচন
                     let targetGroupLink = (gender === 'Female') 
                         ? (activePortalConfig.femaleLink || 'https://t.me/+tSQK_jWEeWU0YjI1') 
                         : (activePortalConfig.maleLink || 'https://t.me/+iK88FtiL2YNmZjE1');
@@ -1197,7 +1214,7 @@
 
             mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.onstop = () => {
-                if (!recordedChunks.length) { showToast('⚠️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
+                if (!recordedChunks.length) { showToast('⚠️️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
                 recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
                 const url = URL.createObjectURL(recordedBlob);
                 
@@ -1270,6 +1287,7 @@
                     dob: document.getElementById('dob').value,
                     gender: document.getElementById('gender').value,
                     role: document.getElementById('role').value,
+                    category: document.getElementById('category').value,
                     tnxId: document.getElementById('tnxId').value.trim().toUpperCase(),
                     guardianPhone: document.getElementById('guardianPhone').value.trim(),
                     personalPhone: document.getElementById('personalPhone').value.trim(),
@@ -1328,7 +1346,7 @@
                 for (let id of fileIds) {
                     const inp = document.getElementById(id);
                     if (!inp.files || !inp.files.length) {
-                        showToast('⚠️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error');
+                        showToast('⚠️️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error');
                         submitBtn.classList.remove('loading');
                         submitBtn.disabled = false;
                         return;
@@ -1357,6 +1375,7 @@
                 const caption = `🛡️ **CSB NEW ADMISSION FORM** 🛡️\n` +
                                 `━━━━━━━━━━━━━━━━━━━━━━\n` +
                                 `👤 নাম: ${formData.fullName}\n` +
+                                `📂 ক্যাটাগরি: ${formData.category}\n` +
                                 `🏠 ঠিকানা: ${formData.address}\n` +
                                 `📧 ইমেইল: ${formData.email}\n` +
                                 `📱 WhatsApp: ${formData.whatsapp}\n` +
@@ -1365,7 +1384,7 @@
                                 `🔗 FB লিংক: ${formData.fbLink}\n` +
                                 `🪪 NID: ${formData.nidNumber}\n` +
                                 `📅 জন্ম: ${formData.dob}\n` +
-                                `⚧️️ জেন্ডার: ${formData.gender}\n` +
+                                `⚧️ জেন্ডার: ${formData.gender}\n` +
                                 `🗂️ রোল: ${formData.role}\n` +
                                 `🧾 TNX ID: ${formData.tnxId}\n` +
                                 `📞 অভিভাবক: ${formData.guardianPhone}\n` +
