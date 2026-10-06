@@ -6,8 +6,8 @@
     <title>CSB Admission Portal | Cyber Sentinel Bangladesh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-    <!-- PDF Generation Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- HTML2CANVAS for High-Quality Direct PNG Slip Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #00f5d4;
@@ -15,7 +15,7 @@
             --secondary: #0ea5e9;
             --accent-red: #f43f5e;
             --bg-base: #030712;
-            --card-bg: rgba(15, 23, 42, 0.7);
+            --card-bg: rgba(15, 23, 42, 0.75);
             --card-border: rgba(255, 255, 255, 0.08);
             --input-bg: rgba(2, 6, 23, 0.65);
             --text-main: #f8fafc;
@@ -26,8 +26,12 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
+        }
+
+        /* কপি ও পেস্ট উন্মুক্ত রাখা হয়েছে */
+        input, textarea, select {
+            user-select: text !important;
+            -webkit-user-select: text !important;
         }
 
         body {
@@ -91,14 +95,27 @@
             text-align: center;
             padding: 10px 0 24px;
         }
-        .welcome-section .csb-logo {
+
+        /* ডাইনামিক লোগো কন্টেইনার */
+        .brand-logo-container {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .brand-logo-container img {
+            max-width: 90px;
+            max-height: 90px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px var(--primary-glow));
+            border-radius: 16px;
+        }
+        .brand-logo-container .default-icon {
             font-size: 56px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
             filter: drop-shadow(0 0 25px var(--primary-glow));
-            display: inline-block;
         }
 
         #bannerWrapper {
@@ -117,7 +134,7 @@
         }
 
         .welcome-section h1 {
-            font-size: 36px;
+            font-size: 34px;
             font-weight: 800;
             letter-spacing: -0.5px;
             background: linear-gradient(180deg, #fff 0%, #cbd5e1 100%);
@@ -132,11 +149,35 @@
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
         }
+
+        /* রিয়েল-টাইম ক্লক ও ক্যালেন্ডার বার */
+        .realtime-meta-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0 5px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .realtime-meta-bar span {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            padding: 5px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .realtime-meta-bar i { color: var(--primary); }
+
         .badge-batch {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-top: 18px;
+            margin-top: 10px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 6px 18px;
@@ -414,8 +455,16 @@
             flex: 1;
             overflow: hidden;
         }
-        .file-upload-area .icon { font-size: 18px; color: var(--primary); flex-shrink: 0; }
-        .file-upload-area .info { min-width: 0; flex: 1; overflow: hidden; }
+        .file-upload-area .icon { 
+            font-size: 18px; 
+            color: var(--primary); 
+            flex-shrink: 0; 
+        }
+        .file-upload-area .info { 
+            min-width: 0; 
+            flex: 1; 
+            overflow: hidden;
+        }
         .file-upload-area .info .main {
             font-size: 12.5px;
             color: var(--text-muted);
@@ -663,15 +712,27 @@
         <!-- LANDING -->
         <div id="landingPage">
             <div class="welcome-section" id="welcomeSection">
-                <div class="csb-logo"><i class="fas fa-shield-halved"></i></div>
+                
+                <!-- 1. DYNAMIC LOGO (Admin Upload or Default) -->
+                <div class="brand-logo-container" id="brandLogoContainer">
+                    <i class="fas fa-shield-halved default-icon" id="defaultLogoIcon"></i>
+                    <img id="adminLogoImage" src="" alt="CSB Logo" style="display:none;" />
+                </div>
 
-                <!-- DYNAMIC BANNER (Strictly above title) -->
+                <!-- 2. DYNAMIC BANNER -->
                 <div id="bannerWrapper">
                     <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" />
                 </div>
 
                 <h1>Cyber Sentinel Bangladesh</h1>
                 <div class="sub" id="displayBatchSub">OFFICIAL ADMISSION PORTAL · BATCH 8-9</div>
+                
+                <!-- 3. REALTIME CLOCK & CALENDAR BAR -->
+                <div class="realtime-meta-bar">
+                    <span><i class="fas fa-calendar-day"></i> <strong id="liveDateDisplay">--</strong></span>
+                    <span><i class="fas fa-clock"></i> <strong id="liveClockDisplay">--:--:--</strong></span>
+                </div>
+
                 <div class="badge-batch" id="displayBatchBadge">
                     <i class="fas fa-users" style="color:var(--primary);"></i> <span id="batchTitleText">ব্যাচ ৮-৯ · ২০২৬</span>
                     <span class="live-counter"><i class="fas fa-circle"></i> LIVE</span>
@@ -707,7 +768,7 @@
                 </button>
             </div>
 
-            <!-- 1. LIVE ADMIN NOTICE BOX -->
+            <!-- LIVE ADMIN NOTICE BOX -->
             <div class="portal-notice-box" id="portalNoticeBox">
                 <h5><i class="fas fa-bullhorn"></i> জরুরি নোটিশ</h5>
                 <p id="portalNoticeText">পোর্টালের সকল তথ্য সঠিকভাবে পূরণ করুন।</p>
@@ -786,7 +847,7 @@
                     </div>
                 </div>
 
-                <!-- 2. NID / BIRTH CERTIFICATE TYPE SELECTOR -->
+                <!-- NID / BIRTH CERTIFICATE TYPE SELECTOR -->
                 <div class="form-group">
                     <label><i class="fas fa-id-card"></i><span class="step-num">10</span> সনদের ধরন নির্বাচন করুন<span class="required">*</span></label>
                     <div class="doc-type-toggle">
@@ -848,7 +909,7 @@
                     </div>
                 </div>
 
-                <!-- 3. CATEGORY BEFORE GENDER & ROLE -->
+                <!-- CATEGORY & GENDER -->
                 <div class="row-2">
                     <div class="form-group">
                         <label><i class="fas fa-layer-group"></i><span class="step-num">14A</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
@@ -876,7 +937,7 @@
                     </select>
                 </div>
 
-                <!-- 4. PAYMENT CARD POSITIONED RIGHT BEFORE TNX INPUT -->
+                <!-- PAYMENT CARD POSITIONED RIGHT BEFORE TNX INPUT -->
                 <div class="payment-card">
                     <div class="left">
                         <div class="icon-box"><i class="fas fa-wallet"></i></div>
@@ -929,7 +990,7 @@
                     </div>
                 </div>
 
-                <!-- 5. PROGRESS BAR WITH LIVE PERCENTAGE -->
+                <!-- PROGRESS BAR WITH LIVE PERCENTAGE -->
                 <div class="upload-progress" id="uploadProgress">
                     <div class="bar" id="progressBar"></div>
                     <div class="status-text" id="progressStatus">প্রসেসিং হচ্ছে... (০%)</div>
@@ -963,7 +1024,7 @@
                 </strong>
                 <button type="button" class="copy-btn" onclick="copyText('trackingIdDisplay')" style="margin-left: 6px;"><i class="fas fa-copy"></i> কপি</button>
                 <br><br>
-                আপনার অফিশিয়াল স্লিপটি PDF আকারে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।
+                আপনার অফিশিয়াল স্লিপটি <strong>PNG ছবি</strong> হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।
             </p>
             <button class="btn-modal" onclick="closeModal()">ঠিক আছে</button>
         </div>
@@ -1001,6 +1062,7 @@
         const db = getFirestore(app);
 
         let activePortalConfig = {
+            logoUrl: '',
             maleLink: 'https://t.me/+iK88FtiL2YNmZjE1',
             femaleLink: 'https://t.me/+tSQK_jWEeWU0YjI1',
             categoryFees: {},
@@ -1047,11 +1109,36 @@
             }
         };
 
+        // REALTIME CLOCK & DATE FUNCTION
+        function updateLiveDateTime() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('bn-BD', { hour12: true });
+            
+            document.getElementById('liveDateDisplay').textContent = dateStr;
+            document.getElementById('liveClockDisplay').textContent = timeStr;
+            document.getElementById('liveTimeDisplay').textContent = timeStr;
+        }
+        updateLiveDateTime();
+        setInterval(updateLiveDateTime, 1000);
+
         // LIVE FIRESTORE LISTENER
         onSnapshot(doc(db, "settings", "portalConfig"), (snap) => {
             if (snap.exists()) {
                 const cfg = snap.data();
                 activePortalConfig = { ...activePortalConfig, ...cfg };
+
+                // ডাইনামিক লোগো সিঙ্ক
+                const defaultIcon = document.getElementById('defaultLogoIcon');
+                const adminLogoImg = document.getElementById('adminLogoImage');
+                if (cfg.logoUrl && cfg.logoUrl.trim() !== '') {
+                    adminLogoImg.src = cfg.logoUrl;
+                    adminLogoImg.style.display = 'block';
+                    defaultIcon.style.display = 'none';
+                } else {
+                    adminLogoImg.style.display = 'none';
+                    defaultIcon.style.display = 'inline-block';
+                }
 
                 // নোটিশ বক্স
                 const noticeBox = document.getElementById('portalNoticeBox');
@@ -1136,15 +1223,6 @@
         }
         document.getElementById('category').addEventListener('change', updateCategoryContext);
 
-        // SECURITY LOCKS
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast('⚠️ রাইট ক্লিক করা নিষিদ্ধ (CSB Security)', 'error'); });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.ctrlKey && ['U','S'].includes(e.key.toUpperCase()))) {
-                e.preventDefault(); showToast('⚠️ সোর্স কোড দেখা বা কপি করা সম্পূর্ণ নিষিদ্ধ!', 'error'); return false;
-            }
-        });
-        document.addEventListener('dragstart', (e) => e.preventDefault());
-
         // DOM REFERENCES
         const landingPage = document.getElementById('landingPage');
         const formWrapper = document.getElementById('formWrapper');
@@ -1156,13 +1234,6 @@
         const trackInput = document.getElementById('trackInput');
         const trackSubmitBtn = document.getElementById('trackSubmitBtn');
         const trackResult = document.getElementById('trackResult');
-        const liveTimeDisplay = document.getElementById('liveTimeDisplay');
-
-        function updateLiveTime() {
-            liveTimeDisplay.textContent = new Date().toLocaleTimeString('bn-BD', { hour12: false });
-        }
-        updateLiveTime();
-        setInterval(updateLiveTime, 1000);
 
         registerBtn.addEventListener('click', () => {
             landingPage.style.display = 'none';
@@ -1241,7 +1312,7 @@
         }
 
         async function sendRejectionNotice(trackId, data) {
-            const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
+            const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️️ Cyber Sentinel Bangladesh`;
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1386,6 +1457,7 @@
             if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
         });
 
+        // ফাইলে বড় নাম ওভারফ্লো ছাড়া প্রদর্শন
         document.querySelectorAll('.file-upload-wrapper input[type="file"]').forEach(input => {
             input.addEventListener('change', function() {
                 const area = this.closest('.file-upload-wrapper').querySelector('.file-upload-area');
@@ -1410,81 +1482,94 @@
             if (pct >= 100) setTimeout(() => prog.classList.remove('show'), 2500);
         }
 
-        // PERFECTED AUTOMATIC PDF GENERATOR (Fixes blank page permanently)
-        function generateAutoPDF(trackId, formData, currentTime) {
-            const pdfContainer = document.createElement('div');
-            pdfContainer.style.width = '650px';
-            pdfContainer.style.background = '#ffffff';
-            pdfContainer.style.color = '#0f172a';
-            pdfContainer.style.padding = '40px';
-            pdfContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-            pdfContainer.style.border = '2px solid #0f172a';
-            pdfContainer.style.borderRadius = '12px';
+        // DIRECT HIGH-RES PNG SLIP EXPORT (PDF চিরতরে বাদ দিয়ে PNG ইমেজ জেনারেশন)
+        async function generateAutoPNG(trackId, formData, currentTime) {
+            const card = document.createElement('div');
+            card.style.position = 'fixed';
+            card.style.left = '-9999px';
+            card.style.top = '0';
+            card.style.width = '600px';
+            card.style.background = '#090e1a';
+            card.style.color = '#f8fafc';
+            card.style.padding = '35px';
+            card.style.borderRadius = '20px';
+            card.style.border = '2px solid #00f5d4';
+            card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8)';
+            card.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
 
-            pdfContainer.innerHTML = `
-                <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 14px; margin-bottom: 20px;">
-                    <h1 style="color: #0f172a; font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">CYBER SENTINEL BANGLADESH</h1>
-                    <p style="font-size: 12px; color: #475569; letter-spacing: 2px; font-weight: 700; margin-top: 4px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
+            card.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 16px; margin-bottom: 22px;">
+                    <h2 style="color: #00f5d4; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">CYBER SENTINEL BANGLADESH</h2>
+                    <p style="font-size: 11.5px; color: #94a3b8; letter-spacing: 2px; font-weight: 700; margin-top: 5px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
                 </div>
                 
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13.5px;">
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; width: 40%; font-weight: 600;">ট্র্যাকিং আইডি:</td>
-                        <td style="padding: 9px 0; font-weight: 800; color: #0284c7; font-family: monospace;">${trackId}</td>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13.5px; line-height: 1.6;">
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; width: 42%; font-weight: 600;">ট্র্যাকিং আইডি:</td>
+                        <td style="padding: 9px 0; font-weight: 800; color: #00f5d4; font-family: monospace; font-size: 14.5px;">${trackId}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">আবেদনকারীর নাম:</td>
-                        <td style="padding: 9px 0; font-weight: 700; color: #0f172a;">${formData.fullName}</td>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনকারীর নাম:</td>
+                        <td style="padding: 9px 0; font-weight: 700; color: #fff;">${formData.fullName}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">মোবাইল নম্বর:</td>
-                        <td style="padding: 9px 0; font-weight: 600; color: #0f172a;">${formData.personalPhone}</td>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">মোবাইল নম্বর:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.personalPhone}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">ইমেইল:</td>
-                        <td style="padding: 9px 0; font-weight: 600; color: #0f172a;">${formData.email}</td>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ইমেইল:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${formData.email}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">ক্যাটাগরি:</td>
-                        <td style="padding: 9px 0; font-weight: 600; color: #0f172a;">${formData.category}</td>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ক্যাটাগরি:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #0ea5e9;">${formData.category}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">নির্বাচিত রোল:</td>
-                        <td style="padding: 9px 0; font-weight: 600; color: #0f172a;">${formData.role}</td>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">নির্বাচিত রোল:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.role}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">সনদের ধরন ও নম্বর:</td>
-                        <td style="padding: 9px 0; font-weight: 600; color: #0f172a;">${formData.docType} (${formData.nidNumber})</td>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">সনদের ধরন ও নম্বর:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.docType} (${formData.nidNumber})</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">পেমেন্ট রেফারেন্স (TNX):</td>
-                        <td style="padding: 9px 0; font-weight: 700; color: #0f172a; font-family: monospace;">${formData.tnxId}</td>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">পেমেন্ট রেফারেন্স (TNX):</td>
+                        <td style="padding: 9px 0; font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">আবেদনের সময়:</td>
-                        <td style="padding: 9px 0; font-weight: 600; color: #0f172a;">${currentTime}</td>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনের সময়:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${currentTime}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 9px 0; color: #64748b; font-weight: 600;">বর্তমান অবস্থা:</td>
-                        <td style="padding: 9px 0; font-weight: 800; color: #d97706;">Pending (যাচাই চলছে)</td>
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">বর্তমান অবস্থা:</td>
+                        <td style="padding: 9px 0; font-weight: 800; color: #f59e0b;">Pending (যাচাই চলছে)</td>
                     </tr>
                 </table>
 
-                <div style="border-top: 1px dashed #cbd5e1; padding-top: 14px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.6;">
-                    <p>এই স্লিপটি আপনার আবেদনের অফিশিয়াল প্রমাণপত্র। ট্র্যাকিং প্যানেল থেকে নিয়মিত স্ট্যাটাস চেক করুন।</p>
-                    <p style="margin-top: 4px; font-weight: 700; color: #0f172a;">🛡️ Cyber Sentinel Bangladesh · Official Admission Desk</p>
+                <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 14px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.5;">
+                    <p>এই স্লিপটি আপনার অফিশিয়াল প্রমাণপত্র। ট্র্যাকিং প্যানেল থেকে নিয়মিত স্ট্যাটাস চেক করুন।</p>
+                    <p style="margin-top: 3px; font-weight: 700; color: #00f5d4;">🛡️ Cyber Sentinel Bangladesh · Official Desk</p>
                 </div>
             `;
 
-            const opt = {
-                margin: [10, 10, 10, 10],
-                filename: `CSB_Slip_${trackId}.pdf`,
-                image: { type: 'jpeg', quality: 1.0 },
-                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+            document.body.appendChild(card);
 
-            html2pdf().set(opt).from(pdfContainer).save();
+            try {
+                const canvas = await html2canvas(card, {
+                    scale: 2,
+                    backgroundColor: '#090e1a',
+                    useCORS: true
+                });
+
+                const link = document.createElement('a');
+                link.download = `CSB_Slip_${trackId}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error("PNG Gen Error:", err);
+            } finally {
+                document.body.removeChild(card);
+            }
         }
 
         // FORM SUBMISSION ENGINE
@@ -1531,7 +1616,7 @@
                         submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
                     }
                 } catch(e) {
-                    console.log("Offline or rules passed");
+                    console.log("Validation bypassed");
                 }
 
                 if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { showToast('⚠️ সঠিক ইমেইল দিন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
@@ -1593,7 +1678,7 @@
                     });
                 }
 
-                updateProgress(80, 'অ্যাকশন কন্ট্রোল ও পিডিএফ তৈরি হচ্ছে...');
+                updateProgress(80, 'অ্যাকশন কন্ট্রোল ও PNG তৈরি হচ্ছে...');
 
                 // ACTION PANEL MESSAGE
                 const webAppBaseUrl = window.location.href.split('?')[0];
@@ -1629,8 +1714,8 @@
                     });
                 }
 
-                // AUTOMATIC PDF DOWNLOAD TRIGGER
-                generateAutoPDF(trackId, formData, currentTime);
+                // AUTOMATIC PNG SLIP DOWNLOAD TRIGGER
+                await generateAutoPNG(trackId, formData, currentTime);
 
                 updateProgress(100, 'সম্পন্ন হয়েছে!');
                 document.getElementById('trackingIdDisplay').textContent = trackId;
