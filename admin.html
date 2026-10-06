@@ -259,7 +259,6 @@
         }
         .btn-primary:hover { box-shadow: 0 6px 20px var(--primary-glow); transform: translateY(-1px); }
 
-        /* Dynamic Tags & Tables */
         .tag-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .tag-item {
             background: rgba(255, 255, 255, 0.04);
@@ -302,7 +301,6 @@
         .btn-action-icon:hover { color: var(--primary); background: rgba(255,255,255,0.05); }
         .btn-action-icon.reject:hover { color: var(--accent-red); }
 
-        /* Toast */
         .toast {
             position: fixed;
             top: 24px;
@@ -440,6 +438,7 @@
                                 <tr>
                                     <th>আইডি</th>
                                     <th>নাম</th>
+                                    <th>ক্যাটাগরি</th>
                                     <th>রোল</th>
                                     <th>TNX আইডি</th>
                                     <th>স্ট্যাটাস</th>
@@ -447,7 +446,7 @@
                                 </tr>
                             </thead>
                             <tbody id="recentTableBody">
-                                <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">লোড হচ্ছে...</td></tr>
+                                <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">লোড হচ্ছে...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -458,14 +457,22 @@
             <div class="content-panel" id="tab-branding">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-image"></i> হোম ব্যানার ম্যানেজমেন্ট</h3>
+                        <h3><i class="fas fa-image"></i> হোম ব্যানার আপলোড ও কন্ট্রোল</h3>
                     </div>
-                    <div class="form-group">
-                        <label>ব্যানার ইমেজ ডিরেক্ট URL (Cyber Sentinel Bangladesh লেখার উপরে শো করবে)</label>
-                        <input type="url" id="cfgBannerUrl" class="form-control" placeholder="https://i.ibb.co/banner.png" />
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>সরাসরি ছবি আপলোড করুন (Local File Upload)</label>
+                            <input type="file" id="cfgBannerFileInput" class="form-control" accept="image/*" />
+                        </div>
+                        <div class="form-group">
+                            <label>অথবা ইমেজ URL দিন</label>
+                            <input type="url" id="cfgBannerUrl" class="form-control" placeholder="https://i.ibb.co/banner.png" />
+                        </div>
                     </div>
                     <div id="bannerPreviewBox" style="margin-top: 10px; display: none;">
-                        <img id="bannerImgPreview" src="" alt="Banner Preview" style="max-height: 120px; border-radius: 12px; border: 1px solid var(--card-border);" />
+                        <img id="bannerImgPreview" src="" alt="Banner Preview" style="max-height: 140px; border-radius: 12px; border: 1px solid var(--card-border);" />
+                        <br>
+                        <button type="button" class="btn-action-icon reject" onclick="removeBanner()" style="margin-top: 6px;"><i class="fas fa-trash"></i> ব্যানার সরান</button>
                     </div>
                 </div>
 
@@ -518,49 +525,72 @@
                 </div>
             </div>
 
-            <!-- TAB 4: FEES & GROUP LINKS -->
+            <!-- TAB 4: FEES & GROUP LINKS (CATEGORY-WISE) -->
             <div class="content-panel" id="tab-fees">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-hand-holding-dollar"></i> ফর্ম ফি এবং পেমেন্ট নম্বর</h3>
+                        <h3><i class="fas fa-hand-holding-dollar"></i> ক্যাটাগরি অনুযায়ী ফর্ম ফি ও পেমেন্ট নম্বর</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>সাধারণ পেমেন্ট নম্বর</label>
+                        <input type="text" id="cfgPaymentNumber" class="form-control" placeholder="01971138617" />
+                    </div>
+                    
+                    <div style="border-top: 1px dashed var(--card-border); padding-top: 16px; margin-top: 10px;">
+                        <h4 style="font-size: 13px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-list-check"></i> ক্যাটাগরি ভিত্তিক ফি নির্ধারণ:</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>ক্যাটাগরি বাছাই করুন</label>
+                                <select id="feeCategorySelect" class="form-control" onchange="loadCategoryFee()"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>এই ক্যাটাগরির ফি (টাকায়)</label>
+                                <input type="number" id="categoryFeeInput" class="form-control" placeholder="যেমন: 50" />
+                            </div>
+                        </div>
+                        <button class="btn-primary" onclick="saveCategoryFee()"><i class="fas fa-check"></i> এই ক্যাটাগরির ফি সেট করুন</button>
+                        <div id="categoryFeesSummary" style="margin-top: 15px; font-size: 12px; color: var(--text-muted);"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fab fa-telegram"></i> ক্যাটাগরি ভিত্তিক Telegram Group Links (Gender-wise)</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>ক্যাটাগরি বাছাই করুন</label>
+                        <select id="linkCategorySelect" class="form-control" onchange="loadCategoryLinks()"></select>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>ফর্ম ফি (টাকায়)</label>
-                            <input type="number" id="cfgFormFee" class="form-control" placeholder="50" />
+                            <label>পুরুষ সদস্যদের লিংক (Male Group)</label>
+                            <input type="url" id="categoryMaleLink" class="form-control" placeholder="https://t.me/+..." />
                         </div>
                         <div class="form-group">
-                            <label>পেমেন্ট মোবাইল নম্বর</label>
-                            <input type="text" id="cfgPaymentNumber" class="form-control" placeholder="01971138617" />
+                            <label>নারী সদস্যদের লিংক (Female Group)</label>
+                            <input type="url" id="categoryFemaleLink" class="form-control" placeholder="https://t.me/+..." />
                         </div>
                     </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fab fa-telegram"></i> Gender-wise Telegram Group Links</h3>
-                    </div>
-                    <div class="form-group">
-                        <label>পুরুষ সদস্যদের লিংক (Male Group)</label>
-                        <input type="url" id="cfgMaleLink" class="form-control" placeholder="https://t.me/+iK88FtiL2YNmZjE1" />
-                    </div>
-                    <div class="form-group">
-                        <label>নারী সদস্যদের লিংক (Female Group)</label>
-                        <input type="url" id="cfgFemaleLink" class="form-control" placeholder="https://t.me/+tSQK_jWEeWU0YjI1" />
-                    </div>
+                    <button class="btn-primary" onclick="saveCategoryLinks()"><i class="fas fa-check"></i> এই ক্যাটাগরির লিংক সেট করুন</button>
+                    <div id="categoryLinksSummary" style="margin-top: 15px; font-size: 12px; color: var(--text-muted);"></div>
                 </div>
             </div>
 
-            <!-- TAB 5: OATH MANAGEMENT -->
+            <!-- TAB 5: OATH MANAGEMENT (CATEGORY-WISE) -->
             <div class="content-panel" id="tab-oath">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-scroll"></i> শপথনামা কন্ট্রোল</h3>
+                        <h3><i class="fas fa-scroll"></i> ক্যাটাগরি অনুযায়ী শপথনামা কন্ট্রোল</h3>
                     </div>
                     <div class="form-group">
-                        <label>শপথনামার টেক্সট (ইউজার প্যানেলে সরাসরি পরিবর্তন হবে)</label>
-                        <textarea id="cfgOathText" class="form-control" style="min-height: 160px;"></textarea>
+                        <label>ক্যাটাগরি বাছাই করুন</label>
+                        <select id="oathCategorySelect" class="form-control" onchange="loadCategoryOath()"></select>
                     </div>
+                    <div class="form-group">
+                        <label>এই ক্যাটাগরির শপথনামা টেক্সট</label>
+                        <textarea id="categoryOathInput" class="form-control" style="min-height: 160px;"></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="saveCategoryOath()"><i class="fas fa-check"></i> এই ক্যাটাগরির শপথনামা সেভ করুন</button>
                 </div>
             </div>
 
@@ -576,6 +606,7 @@
                                 <tr>
                                     <th>আইডি</th>
                                     <th>নাম</th>
+                                    <th>ক্যাটাগরি</th>
                                     <th>যোগাযোগ</th>
                                     <th>জেন্ডার ও রোল</th>
                                     <th>TNX আইডি</th>
@@ -603,7 +634,6 @@
             collection, onSnapshot, query, orderBy, limit 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // আপনার ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyDQUF7WzlgooRi3cpQ3Kz6Ed7XEs3txZis",
             authDomain: "csb-team-addmission.firebaseapp.com",
@@ -622,7 +652,6 @@
             bannerUrl: '',
             batchTitle: 'ব্যাচ ৮-৯ · ২০২৬',
             batchSub: 'OFFICIAL ADMISSION PORTAL · BATCH 8-9',
-            formFee: '50',
             paymentNumber: '01971138617',
             categories: ['NEW STUDENTS', 'EX-STUDENTS', 'EXECUTIVE'],
             roles: [
@@ -630,19 +659,17 @@
                 'Security Researcher', 'Network Security Engineer', 
                 'Digital Forensics Expert', 'GRC Specialist', 'CSB Trainee'
             ],
-            maleLink: 'https://t.me/+iK88FtiL2YNmZjE1',
-            femaleLink: 'https://t.me/+tSQK_jWEeWU0YjI1',
-            oathText: `“আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।\nআমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো। সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো।\nআমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”`
+            categoryFees: {},
+            categoryLinks: {},
+            categoryOaths: {},
+            defaultOathText: `“আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।\nআমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো। সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো।\nআমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”`
         };
 
-        // ==========================================
-        // AUTHENTICATION & SESSION
-        // ==========================================
+        // AUTHENTICATION
         const loginWrap = document.getElementById('loginWrap');
         const adminLayout = document.getElementById('adminLayout');
         const loginForm = document.getElementById('adminLoginForm');
 
-        // সেশন চেক
         if (sessionStorage.getItem('CSB_ADMIN_LOGGED') === 'true') {
             unlockDashboard();
         }
@@ -652,7 +679,6 @@
             const u = document.getElementById('adminUser').value.trim();
             const p = document.getElementById('adminPass').value.trim();
 
-            // মাস্টার ক্রেডেনশিয়ালস
             if (u === 'admin@csb.org' && p === 'csb@2026') {
                 sessionStorage.setItem('CSB_ADMIN_LOGGED', 'true');
                 unlockDashboard();
@@ -674,9 +700,36 @@
             bindApplicationsStream();
         }
 
-        // ==========================================
+        // BANNER LOCAL FILE UPLOAD (Converts to Base64)
+        document.getElementById('cfgBannerFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('⚠️ ছবির সাইজ ২ মেগাবাইটের বেশি হওয়া যাবে না!', 'error');
+                    this.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    portalConfig.bannerUrl = event.target.result;
+                    document.getElementById('cfgBannerUrl').value = '';
+                    document.getElementById('bannerPreviewBox').style.display = 'block';
+                    document.getElementById('bannerImgPreview').src = portalConfig.bannerUrl;
+                    showToast('ছবি রেডি! এবার "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        window.removeBanner = function() {
+            portalConfig.bannerUrl = '';
+            document.getElementById('cfgBannerUrl').value = '';
+            document.getElementById('cfgBannerFileInput').value = '';
+            document.getElementById('bannerPreviewBox').style.display = 'none';
+            syncAllToFirestore();
+        };
+
         // FIRESTORE CONFIG LOAD & SAVE
-        // ==========================================
         async function loadRemoteConfig() {
             try {
                 const cfgRef = doc(db, "settings", "portalConfig");
@@ -694,33 +747,29 @@
             document.getElementById('cfgBannerUrl').value = portalConfig.bannerUrl || '';
             document.getElementById('cfgBatchTitle').value = portalConfig.batchTitle || '';
             document.getElementById('cfgBatchSub').value = portalConfig.batchSub || '';
-            document.getElementById('cfgFormFee').value = portalConfig.formFee || '50';
             document.getElementById('cfgPaymentNumber').value = portalConfig.paymentNumber || '';
-            document.getElementById('cfgMaleLink').value = portalConfig.maleLink || '';
-            document.getElementById('cfgFemaleLink').value = portalConfig.femaleLink || '';
-            document.getElementById('cfgOathText').value = portalConfig.oathText || '';
 
             document.getElementById('statBatch').textContent = portalConfig.batchTitle || 'Batch 8-9';
 
-            // ব্যানার প্রিভিউ
             if (portalConfig.bannerUrl) {
                 document.getElementById('bannerPreviewBox').style.display = 'block';
                 document.getElementById('bannerImgPreview').src = portalConfig.bannerUrl;
+            } else {
+                document.getElementById('bannerPreviewBox').style.display = 'none';
             }
 
             renderCategories();
             renderRoles();
+            populateCategoryDropdowns();
         }
 
         window.syncAllToFirestore = async function() {
-            portalConfig.bannerUrl = document.getElementById('cfgBannerUrl').value.trim();
+            if (document.getElementById('cfgBannerUrl').value.trim() !== '') {
+                portalConfig.bannerUrl = document.getElementById('cfgBannerUrl').value.trim();
+            }
             portalConfig.batchTitle = document.getElementById('cfgBatchTitle').value.trim();
             portalConfig.batchSub = document.getElementById('cfgBatchSub').value.trim();
-            portalConfig.formFee = document.getElementById('cfgFormFee').value.trim();
             portalConfig.paymentNumber = document.getElementById('cfgPaymentNumber').value.trim();
-            portalConfig.maleLink = document.getElementById('cfgMaleLink').value.trim();
-            portalConfig.femaleLink = document.getElementById('cfgFemaleLink').value.trim();
-            portalConfig.oathText = document.getElementById('cfgOathText').value.trim();
 
             try {
                 await setDoc(doc(db, "settings", "portalConfig"), portalConfig);
@@ -731,9 +780,7 @@
             }
         };
 
-        // ==========================================
         // CATEGORY & ROLE MANAGEMENT
-        // ==========================================
         function renderCategories() {
             const list = document.getElementById('categoryTagList');
             const select = document.getElementById('roleCategorySelect');
@@ -753,19 +800,46 @@
             });
         }
 
+        function populateCategoryDropdowns() {
+            const feeSelect = document.getElementById('feeCategorySelect');
+            const linkSelect = document.getElementById('linkCategorySelect');
+            const oathSelect = document.getElementById('oathCategorySelect');
+
+            feeSelect.innerHTML = '';
+            linkSelect.innerHTML = '';
+            oathSelect.innerHTML = '';
+
+            portalConfig.categories.forEach(cat => {
+                const opt1 = document.createElement('option'); opt1.value = cat; opt1.textContent = cat; feeSelect.appendChild(opt1);
+                const opt2 = document.createElement('option'); opt2.value = cat; opt2.textContent = cat; linkSelect.appendChild(opt2);
+                const opt3 = document.createElement('option'); opt3.value = cat; opt3.textContent = cat; oathSelect.appendChild(opt3);
+            });
+
+            loadCategoryFee();
+            loadCategoryLinks();
+            loadCategoryOath();
+            renderCategorySummaries();
+        }
+
         window.addCategory = function() {
             const val = document.getElementById('newCategoryInput').value.trim();
             if (val && !portalConfig.categories.includes(val)) {
                 portalConfig.categories.push(val);
                 document.getElementById('newCategoryInput').value = '';
                 renderCategories();
+                populateCategoryDropdowns();
                 syncAllToFirestore();
             }
         };
 
         window.removeCategory = function(index) {
+            const removed = portalConfig.categories[index];
             portalConfig.categories.splice(index, 1);
+            if (portalConfig.categoryFees) delete portalConfig.categoryFees[removed];
+            if (portalConfig.categoryLinks) delete portalConfig.categoryLinks[removed];
+            if (portalConfig.categoryOaths) delete portalConfig.categoryOaths[removed];
             renderCategories();
+            populateCategoryDropdowns();
             syncAllToFirestore();
         };
 
@@ -796,9 +870,79 @@
             syncAllToFirestore();
         };
 
-        // ==========================================
+        // CATEGORY-WISE FEES
+        window.loadCategoryFee = function() {
+            const cat = document.getElementById('feeCategorySelect').value;
+            const fee = (portalConfig.categoryFees && portalConfig.categoryFees[cat]) ? portalConfig.categoryFees[cat] : '50';
+            document.getElementById('categoryFeeInput').value = fee;
+        };
+
+        window.saveCategoryFee = function() {
+            const cat = document.getElementById('feeCategorySelect').value;
+            const fee = document.getElementById('categoryFeeInput').value.trim();
+            if (!portalConfig.categoryFees) portalConfig.categoryFees = {};
+            portalConfig.categoryFees[cat] = fee || '50';
+            renderCategorySummaries();
+            syncAllToFirestore();
+            showToast(`✅ ${cat} এর জন্য ফি ${fee} টাকা সেট হয়েছে`, 'success');
+        };
+
+        // CATEGORY-WISE TELEGRAM LINKS
+        window.loadCategoryLinks = function() {
+            const cat = document.getElementById('linkCategorySelect').value;
+            const links = (portalConfig.categoryLinks && portalConfig.categoryLinks[cat]) ? portalConfig.categoryLinks[cat] : {};
+            document.getElementById('categoryMaleLink').value = links.male || '';
+            document.getElementById('categoryFemaleLink').value = links.female || '';
+        };
+
+        window.saveCategoryLinks = function() {
+            const cat = document.getElementById('linkCategorySelect').value;
+            const male = document.getElementById('categoryMaleLink').value.trim();
+            const female = document.getElementById('categoryFemaleLink').value.trim();
+            if (!portalConfig.categoryLinks) portalConfig.categoryLinks = {};
+            portalConfig.categoryLinks[cat] = { male, female };
+            renderCategorySummaries();
+            syncAllToFirestore();
+            showToast(`✅ ${cat} এর টেলিগ্রাম লিংক সেভ হয়েছে`, 'success');
+        };
+
+        // CATEGORY-WISE OATH
+        window.loadCategoryOath = function() {
+            const cat = document.getElementById('oathCategorySelect').value;
+            const oath = (portalConfig.categoryOaths && portalConfig.categoryOaths[cat]) 
+                ? portalConfig.categoryOaths[cat] 
+                : portalConfig.defaultOathText;
+            document.getElementById('categoryOathInput').value = oath;
+        };
+
+        window.saveCategoryOath = function() {
+            const cat = document.getElementById('oathCategorySelect').value;
+            const oath = document.getElementById('categoryOathInput').value.trim();
+            if (!portalConfig.categoryOaths) portalConfig.categoryOaths = {};
+            portalConfig.categoryOaths[cat] = oath;
+            syncAllToFirestore();
+            showToast(`✅ ${cat} এর শপথনামা সেভ হয়েছে`, 'success');
+        };
+
+        function renderCategorySummaries() {
+            let feeHtml = '<strong>বর্তমান ফি কনফিগ:</strong> ';
+            if (portalConfig.categoryFees) {
+                for (let c in portalConfig.categoryFees) {
+                    feeHtml += `<span style="margin-right:12px; color:var(--primary);">${c}: ${portalConfig.categoryFees[c]}৳</span>`;
+                }
+            }
+            document.getElementById('categoryFeesSummary').innerHTML = feeHtml;
+
+            let linkHtml = '<strong>বর্তমান লিংক কনফিগ:</strong><br>';
+            if (portalConfig.categoryLinks) {
+                for (let c in portalConfig.categoryLinks) {
+                    linkHtml += `• <b>${c}:</b> Male: ${portalConfig.categoryLinks[c].male ? 'সেট আছে' : 'নেই'}, Female: ${portalConfig.categoryLinks[c].female ? 'সেট আছে' : 'নেই'}<br>`;
+                }
+            }
+            document.getElementById('categoryLinksSummary').innerHTML = linkHtml;
+        }
+
         // REALTIME APPLICATIONS MONITORING
-        // ==========================================
         function bindApplicationsStream() {
             const q = collection(db, "applications");
             onSnapshot(q, (snapshot) => {
@@ -829,8 +973,8 @@
             allBody.innerHTML = '';
 
             if (apps.length === 0) {
-                recentBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">কোনো আবেদন জমা পড়েনি</td></tr>`;
-                allBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">কোনো আবেদন জমা পড়েনি</td></tr>`;
+                recentBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">কোনো আবেদন জমা পড়েনি</td></tr>`;
+                allBody.innerHTML = `<tr><td colspan="8" style="text-align:center;">কোনো আবেদন জমা পড়েনি</td></tr>`;
                 return;
             }
 
@@ -846,6 +990,7 @@
                         <tr>
                             <td><strong style="color:var(--primary); font-family:'JetBrains Mono';">${app.id}</strong></td>
                             <td>${app.fullName || app.name || 'N/A'}</td>
+                            <td><span style="color:var(--secondary); font-weight:600;">${app.category || 'N/A'}</span></td>
                             <td>${app.role || 'N/A'}</td>
                             <td><code style="color:var(--primary);">${app.tnxId || 'N/A'}</code></td>
                             <td>${statusBadge}</td>
@@ -858,6 +1003,7 @@
                     <tr>
                         <td><strong style="color:var(--primary); font-family:'JetBrains Mono';">${app.id}</strong></td>
                         <td>${app.fullName || app.name || 'N/A'}</td>
+                        <td><span style="color:var(--secondary); font-weight:600;">${app.category || 'N/A'}</span></td>
                         <td>${app.personalPhone || 'N/A'}<br><small style="color:var(--text-muted);">${app.email || ''}</small></td>
                         <td>${app.gender || 'N/A'} - ${app.role || 'N/A'}</td>
                         <td><code style="color:var(--primary);">${app.tnxId || 'N/A'}</code></td>
@@ -880,9 +1026,7 @@
             }
         };
 
-        // ==========================================
         // TAB SWITCHER
-        // ==========================================
         window.switchTab = function(tabId) {
             document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item button').forEach(b => b.classList.remove('active'));
