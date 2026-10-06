@@ -560,12 +560,13 @@
     <div class="container" id="mainContainer">
         <!-- LANDING -->
         <div id="landingPage">
-            <div class="welcome-section">
+            <div class="welcome-section" id="welcomeSection">
+                <!-- Dynamic Banner will appear here automatically if uploaded via Admin -->
                 <div class="csb-logo"><i class="fas fa-shield-halved"></i></div>
                 <h1>Cyber Sentinel Bangladesh</h1>
-                <div class="sub">OFFICIAL ADMISSION PORTAL · BATCH 8-9</div>
-                <div class="badge-batch">
-                    <i class="fas fa-users" style="color:var(--primary);"></i> ব্যাচ ৮-৯ · ২০২৬
+                <div class="sub" id="displayBatchSub">OFFICIAL ADMISSION PORTAL · BATCH 8-9</div>
+                <div class="badge-batch" id="displayBatchBadge">
+                    <i class="fas fa-users" style="color:var(--primary);"></i> <span id="batchTitleText">ব্যাচ ৮-৯ · ২০২৬</span>
                     <span class="live-counter"><i class="fas fa-circle"></i> LIVE</span>
                 </div>
             </div>
@@ -603,8 +604,8 @@
                 <div class="left">
                     <div class="icon-box"><i class="fas fa-wallet"></i></div>
                     <div class="info">
-                        <h4>ফর্ম ফি: ৫০ টাকা</h4>
-                        <p><i class="fas fa-phone" style="color:var(--primary); margin-right:4px;"></i> <strong>01971138617</strong> (বিকাশ, নগদ, রকেট)</p>
+                        <h4 id="displayFormFee">ফর্ম ফি: ৫০ টাকা</h4>
+                        <p><i class="fas fa-phone" style="color:var(--primary); margin-right:4px;"></i> <strong id="displayPaymentPhone">01971138617</strong> (বিকাশ, নগদ, রকেট)</p>
                     </div>
                 </div>
                 <div class="right">
@@ -663,7 +664,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-image"></i><span class="step-num">09</span> পাসপোর্ট ছবি (২য়)<span class="required">*</span></label>
+                        <label><i class="fas fa-image"></i><span class="step-num">09</span> পাসপোর্ট ছবি (২য়)<span class="required">*</span></label>
                         <div class="file-upload-wrapper">
                             <input type="file" accept="image/*" id="photo2" required>
                             <div class="file-upload-area">
@@ -715,7 +716,7 @@
                     </div>
                     <div class="oath-box">
                         <div class="oath-title"><i class="fas fa-shield"></i> শপথনামা</div>
-                        <div class="oath-text">
+                        <div class="oath-text" id="displayOathText">
                             “আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।<br>
                             <span class="highlight">আমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো।</span> সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো।<br>
                             আমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”
@@ -779,7 +780,7 @@
 
                 <div class="form-group">
                     <label style="opacity:0.6;"><i class="fas fa-shield-halved"></i> ক্যাটাগরি ডেটা লক</label>
-                    <div class="lock-badge"><i class="fas fa-lock" style="color:var(--primary);"></i> Category: NEW STUDENTS</div>
+                    <div class="lock-badge" id="displayCategoryLock"><i class="fas fa-lock" style="color:var(--primary);"></i> Category: NEW STUDENTS</div>
                 </div>
 
                 <div class="upload-progress" id="uploadProgress">
@@ -808,7 +809,7 @@
         <div class="modal-content">
             <i class="fas fa-circle-check icon"></i>
             <h2>আবেদন সফল!</h2>
-            <p>আপনার আবেদনটি ফায়ারস্টোর ও চ্যানেলে জমা হয়েছে।<br><strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span></strong><br>ভবিষ্যতে স্ট্যাটাস চেক করার জন্য আইডিটি সংরক্ষণ করুন।</p>
+            <p>আপনার আবেদনটি ফায়ারস্টোর ও চ্যানেলে জমা হয়েছে।<br><strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span></strong><br>ভবিষ্যতে স্ট্যাটাস চেক করার জন্য আইডিটি সংরক্ষণ করুন।</p>
             <button class="btn-modal" onclick="closeModal()">ঠিক আছে</button>
         </div>
     </div>
@@ -816,7 +817,7 @@
     <div class="modal-overlay" id="errorModal">
         <div class="modal-content">
             <i class="fas fa-circle-exclamation icon error"></i>
-            <h2>সমস্যা হয়েছে</h2>
+            <h2>সমস্যা হয়েছে</h2>
             <div id="errorMessage" style="font-size:13.5px; color:var(--text-muted); margin-bottom:20px;"></div>
             <button class="btn-modal error" onclick="closeErrorModal()">আবার চেষ্টা করুন</button>
         </div>
@@ -829,9 +830,9 @@
     <!-- FIREBASE & APPLICATION SCRIPTS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ফায়ারবেস কনফিগারেশন
+        // ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyDQUF7WzlgooRi3cpQ3Kz6Ed7XEs3txZis",
             authDomain: "csb-team-addmission.firebaseapp.com",
@@ -844,6 +845,80 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // অ্যাডমিন থেকে পাওয়া ডাইনামিক কনফিগ ভেরিয়েবল
+        let activePortalConfig = {
+            maleLink: 'https://t.me/+iK88FtiL2YNmZjE1',
+            femaleLink: 'https://t.me/+tSQK_jWEeWU0YjI1'
+        };
+
+        // ===================================================================
+        // ADMIN PANEL REAL-TIME SYNC ENGINE (Live Firestore Listener)
+        // ===================================================================
+        onSnapshot(doc(db, "settings", "portalConfig"), (snap) => {
+            if (snap.exists()) {
+                const cfg = snap.data();
+                activePortalConfig = { ...activePortalConfig, ...cfg };
+
+                // ১. ব্যানার আপডেট
+                let bannerElem = document.getElementById('csbDynamicBanner');
+                if (cfg.bannerUrl && cfg.bannerUrl.trim() !== '') {
+                    if (!bannerElem) {
+                        bannerElem = document.createElement('img');
+                        bannerElem.id = 'csbDynamicBanner';
+                        bannerElem.style.maxWidth = '100%';
+                        bannerElem.style.borderRadius = '16px';
+                        bannerElem.style.marginBottom = '20px';
+                        bannerElem.style.border = '1px solid var(--card-border)';
+                        bannerElem.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+                        document.getElementById('welcomeSection').prepend(bannerElem);
+                    }
+                    bannerElem.src = cfg.bannerUrl;
+                } else if (bannerElem) {
+                    bannerElem.remove();
+                }
+
+                // ২. ব্যাচ টেক্সট ও সাবটাইটেল
+                if (cfg.batchTitle) {
+                    document.getElementById('batchTitleText').textContent = cfg.batchTitle;
+                }
+                if (cfg.batchSub) {
+                    document.getElementById('displayBatchSub').textContent = cfg.batchSub;
+                }
+
+                // ৩. ফি এবং পেমেন্ট নম্বর
+                if (cfg.formFee) {
+                    document.getElementById('displayFormFee').textContent = `ফর্ম ফি: ${cfg.formFee} টাকা`;
+                }
+                if (cfg.paymentNumber) {
+                    document.getElementById('displayPaymentPhone').textContent = cfg.paymentNumber;
+                }
+
+                // ৪. শপথনামা লাইভ আপডেট
+                if (cfg.oathText) {
+                    document.getElementById('displayOathText').innerHTML = cfg.oathText.replace(/\n/g, '<br>');
+                }
+
+                // ৫. ক্যাটাগরি লক ব্যাজ
+                if (cfg.categories && cfg.categories.length > 0) {
+                    document.getElementById('displayCategoryLock').innerHTML = `<i class="fas fa-lock" style="color:var(--primary);"></i> Category: ${cfg.categories[0]}`;
+                }
+
+                // ৬. ড্রপডাউন রোল তালিকা সিঙ্ক
+                if (cfg.roles && Array.isArray(cfg.roles) && cfg.roles.length > 0) {
+                    const roleSelect = document.getElementById('role');
+                    const currentVal = roleSelect.value;
+                    roleSelect.innerHTML = '<option value="">সিলেক্ট করুন</option>';
+                    cfg.roles.forEach(r => {
+                        const opt = document.createElement('option');
+                        opt.value = r;
+                        opt.textContent = r;
+                        if (r === currentVal) opt.selected = true;
+                        roleSelect.appendChild(opt);
+                    });
+                }
+            }
+        });
 
         // ===================================================================
         // SECURITY (Anti-DevTools & Anti-Theft)
@@ -938,15 +1013,15 @@
 
                         if (action === 'approve') {
                             await updateDoc(docRef, { status: 'Approved', updateTime: updateTime });
-                            showToast(`✅ ID: ${trackId} অনুমোদিত হয়েছে!`, 'success');
+                            showToast(`✅ ID: ${trackId} অনুমোদিত হয়েছে!`, 'success');
                             sendToApproveChannel(trackId, { ...existingData, time: updateTime });
                         } else if (action === 'reject') {
                             await updateDoc(docRef, { status: 'Rejected', updateTime: updateTime });
-                            showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
+                            showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
                             sendRejectionNotice(trackId, { ...existingData, time: updateTime });
                         }
                     } else {
-                        showToast(`⚠️ ID: ${trackId} ফায়ারস্টোরে পাওয়া যায়নি`, 'error');
+                        showToast(`⚠️ ID: ${trackId} ফায়ারস্টোরে পাওয়া যায়নি`, 'error');
                     }
                 } catch (err) {
                     console.error("Firestore action error:", err);
@@ -968,7 +1043,7 @@
                          `🧾 TNX ID: ${data.tnxId || 'N/A'}\n` +
                          `📞 অভিভাবক: ${data.guardianPhone || 'N/A'}\n` +
                          `📱 নিজের: ${data.personalPhone || 'N/A'}\n` +
-                         `📅 অনুমোদন সময়: ${data.time}\n` +
+                         `📅 অনুমোদন সময়: ${data.time}\n` +
                          `━━━━━━━━━━━━━━━━━━━━━━\n` +
                          `🛡️ Cyber Sentinel Bangladesh`;
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -983,7 +1058,7 @@
                          `━━━━━━━━━━━━━━━━━━━━━━\n` +
                          `👤 নাম: ${data.fullName || data.name}\n` +
                          `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
-                         `⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n` +
+                         `⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n` +
                          `━━━━━━━━━━━━━━━━━━━━━━\n` +
                          `🛡️ Cyber Sentinel Bangladesh`;
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -994,7 +1069,7 @@
         }
 
         // ===================================================================
-        // TRACKING SYSTEM (Reads Directly from Cloud Firestore)
+        // TRACKING SYSTEM (Dynamic Gender Links via Admin Config)
         // ===================================================================
         trackSubmitBtn.addEventListener('click', async () => {
             const id = trackInput.value.trim().toUpperCase();
@@ -1009,7 +1084,7 @@
                 if (!docSnap.exists()) {
                     trackResult.innerHTML = `
                         <div style="background:rgba(244,63,94,0.06); border-radius:14px; padding:16px; border:1px solid rgba(244,63,94,0.2); margin-top:12px;">
-                            <p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p>
+                            <p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p>
                             <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আইডি সঠিক কিনা যাচাই করুন অথবা পুনরায় আবেদন করুন।</p>
                         </div>
                     `;
@@ -1028,11 +1103,15 @@
                 if (status === 'Approved') {
                     color = '#00f5d4';
                     icon = '✅';
-                    let targetGroupLink = gender === 'Female' ? 'https://t.me/+tSQK_jWEeWU0YjI1' : 'https://t.me/+iK88FtiL2YNmZjE1';
+                    
+                    // অ্যাডমিন প্যানেল থেকে আসা ডায়নামিক লিংক নির্বাচন
+                    let targetGroupLink = (gender === 'Female') 
+                        ? (activePortalConfig.femaleLink || 'https://t.me/+tSQK_jWEeWU0YjI1') 
+                        : (activePortalConfig.maleLink || 'https://t.me/+iK88FtiL2YNmZjE1');
 
                     joinLinkHtml = `
                         <div style="margin-top: 15px; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 15px; text-align: center;">
-                            <p style="color: var(--primary); font-weight: 600; font-size: 13px; margin-bottom: 10px;">🎉 অভিনন্দন! আপনার আবেদনটি অনুমোদিত হয়েছে।</p>
+                            <p style="color: var(--primary); font-weight: 600; font-size: 13px; margin-bottom: 10px;">🎉 অভিনন্দন! আপনার আবেদনটি অনুমোদিত হয়েছে।</p>
                             <a href="${targetGroupLink}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #030712; padding: 10px 22px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 13px;">
                                 <i class="fab fa-telegram"></i> অফিসিয়াল গ্রুপে জয়েন করুন
                             </a>
@@ -1043,7 +1122,7 @@
                     icon = '❌';
                     joinLinkHtml = `
                         <div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;">
-                            <p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে। অনুগ্রহ করে সঠিক তথ্যে আবার চেষ্টা করুন।</p>
+                            <p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে। অনুগ্রহ করে সঠিক তথ্যে আবার চেষ্টা করুন।</p>
                         </div>
                     `;
                 }
@@ -1052,12 +1131,12 @@
                     <div style="background:rgba(255,255,255,0.02); border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.06); margin-top:12px;">
                         <p style="font-size:15px; font-weight:700; color:#fff;">আইডি: <span style="color:var(--primary); font-family:'JetBrains Mono', monospace;">${id}</span></p>
                         <p style="margin-top:6px; font-size:14px; font-weight:600;">স্ট্যাটাস: <span style="color:${color};">${icon}${status}</span></p>
-                        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${time}</p>${joinLinkHtml}
+                        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${time}</p>${joinLinkHtml}
                     </div>
                 `;
             } catch (err) {
                 console.error(err);
-                trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি। রুলস চেক করুন।</p>`;
+                trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি। রুলস চেক করুন।</p>`;
             }
         });
 
@@ -1118,7 +1197,7 @@
 
             mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.onstop = () => {
-                if (!recordedChunks.length) { showToast('⚠️️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
+                if (!recordedChunks.length) { showToast('⚠️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
                 recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
                 const url = URL.createObjectURL(recordedBlob);
                 
@@ -1134,7 +1213,7 @@
                 recordingDot.className = 'dot ready';
                 startBtn.disabled = false;
                 stopBtn.disabled = true;
-                showToast('✅ ভিডিও রেকর্ড সম্পন্ন হয়েছে', 'success');
+                showToast('✅ ভিডিও রেকর্ড সম্পন্ন হয়েছে', 'success');
             };
 
             mediaRecorder.start();
@@ -1210,8 +1289,8 @@
                 const tnxSnap = await getDoc(tnxCheckRef);
                 if (tnxSnap.exists()) {
                     document.getElementById('errorMessage').innerHTML = `
-                        <p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p>
-                        <p style="margin-top:4px;">রেফারেন্স আইডিটি (${formData.tnxId}) পূর্বে ব্যবহার করা হয়েছে। নতুন TNX দিয়ে চেষ্টা করুন।</p>
+                        <p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p>
+                        <p style="margin-top:4px;">রেফারেন্স আইডিটি (${formData.tnxId}) পূর্বে ব্যবহার করা হয়েছে। নতুন TNX দিয়ে চেষ্টা করুন।</p>
                     `;
                     document.getElementById('errorModal').classList.add('show');
                     submitBtn.classList.remove('loading');
@@ -1249,14 +1328,14 @@
                 for (let id of fileIds) {
                     const inp = document.getElementById(id);
                     if (!inp.files || !inp.files.length) {
-                        showToast('⚠️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error');
+                        showToast('⚠️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error');
                         submitBtn.classList.remove('loading');
                         submitBtn.disabled = false;
                         return;
                     }
                 }
 
-                updateProgress(15, 'ফায়ারস্টোর ডাটাবেজে সেভ হচ্ছে...');
+                updateProgress(15, 'ফায়ারস্টোর ডাটাবেজে সেভ হচ্ছে...');
                 const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
                 const currentTime = new Date().toLocaleString('bn-BD');
 
@@ -1286,7 +1365,7 @@
                                 `🔗 FB লিংক: ${formData.fbLink}\n` +
                                 `🪪 NID: ${formData.nidNumber}\n` +
                                 `📅 জন্ম: ${formData.dob}\n` +
-                                `⚧️ জেন্ডার: ${formData.gender}\n` +
+                                `⚧️️ জেন্ডার: ${formData.gender}\n` +
                                 `🗂️ রোল: ${formData.role}\n` +
                                 `🧾 TNX ID: ${formData.tnxId}\n` +
                                 `📞 অভিভাবক: ${formData.guardianPhone}\n` +
@@ -1376,7 +1455,7 @@
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('errorMessage').textContent = 'ত্রুটি দেখা দিয়েছে। ইন্টারনেট বা পারমিশন চেক করুন। (' + err.message + ')';
+                document.getElementById('errorMessage').textContent = 'ত্রুটি দেখা দিয়েছে। ইন্টারনেট বা পারমিশন চেক করুন। (' + err.message + ')';
                 document.getElementById('errorModal').classList.add('show');
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
@@ -1394,7 +1473,7 @@
                 recordedChunks = [];
                 if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; isCameraReady = false; previewVideo.srcObject = null; }
                 document.getElementById('uploadProgress').classList.remove('show');
-                showToast('ফর্ম রিসেট করা হয়েছে', 'success');
+                showToast('ফর্ম রিসেট করা হয়েছে', 'success');
             }
         });
     </script>
