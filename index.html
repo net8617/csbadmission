@@ -6,6 +6,8 @@
     <title>CSB Admission Portal | Cyber Sentinel Bangladesh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #00f5d4;
@@ -13,9 +15,9 @@
             --secondary: #0ea5e9;
             --accent-red: #f43f5e;
             --bg-base: #030712;
-            --card-bg: rgba(15, 23, 42, 0.65);
+            --card-bg: rgba(15, 23, 42, 0.7);
             --card-border: rgba(255, 255, 255, 0.08);
-            --input-bg: rgba(2, 6, 23, 0.6);
+            --input-bg: rgba(2, 6, 23, 0.65);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -99,19 +101,18 @@
             display: inline-block;
         }
 
-        /* Banner styling between logo and title */
         #bannerWrapper {
             width: 100%;
-            display: flex;
+            display: none;
             justify-content: center;
-            margin: 6px 0 16px;
+            margin: 10px 0 18px;
         }
         #csbDynamicBanner {
             max-width: 100%;
-            max-height: 180px;
-            border-radius: 16px;
+            max-height: 190px;
+            border-radius: 18px;
             border: 1px solid var(--card-border);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
             object-fit: cover;
         }
 
@@ -545,6 +546,18 @@
         .btn-submit.loading .spinner { display: inline-block; }
         .btn-submit.loading .btn-text { display: none; }
 
+        /* Hidden Receipt Template for PDF Export */
+        #pdfReceiptTemplate {
+            display: none;
+            background: #0b1120;
+            color: #fff;
+            padding: 35px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            border: 2px solid #00f5d4;
+            border-radius: 12px;
+            width: 600px;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 26px 18px; border-radius: 20px; }
             .row-2 { grid-template-columns: 1fr; gap: 0; }
@@ -565,15 +578,13 @@
         <!-- LANDING -->
         <div id="landingPage">
             <div class="welcome-section" id="welcomeSection">
-                <!-- 1. CSB LOGO -->
                 <div class="csb-logo"><i class="fas fa-shield-halved"></i></div>
 
-                <!-- 2. DYNAMIC BANNER (Placed right above "Cyber Sentinel Bangladesh") -->
-                <div id="bannerWrapper" style="display:none;">
-                    <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" />
+                <!-- DYNAMIC BANNER (Placed strictly above title) -->
+                <div id="bannerWrapper">
+                    <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" onerror="this.parentElement.style.display='none';" />
                 </div>
 
-                <!-- 3. TITLE -->
                 <h1>Cyber Sentinel Bangladesh</h1>
                 <div class="sub" id="displayBatchSub">OFFICIAL ADMISSION PORTAL · BATCH 8-9</div>
                 <div class="badge-batch" id="displayBatchBadge">
@@ -588,8 +599,8 @@
                 <button class="home-btn" id="supportBtn"><i class="fas fa-headset"></i> সাপোর্ট</button>
             </div>
 
-            <div class="tracking-panel" id="trackingPanel" style="display:none; margin-top:25px; padding:22px; background:rgba(0,0,0,0.3); border-radius:18px; border:1px solid rgba(255,255,255,0.08);">
-                <h3 style="font-size:17px; font-weight:700;"><i class="fas fa-magnifying-glass" style="color:var(--primary); margin-right:8px;"></i> আবেদন ট্র্যাক করুন</h3>
+            <div class="tracking-panel" id="trackingPanel" style="display:none; margin-top:25px; padding:24px; background:rgba(0,0,0,0.35); border-radius:20px; border:1px solid rgba(0,245,212,0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <h3 style="font-size:18px; font-weight:700;"><i class="fas fa-magnifying-glass" style="color:var(--primary); margin-right:8px;"></i> আবেদন ট্র্যাক করুন</h3>
                 <div style="display:flex; gap:10px; margin: 16px 0; flex-wrap:wrap;">
                     <input type="text" id="trackInput" class="form-control" style="flex:2; min-width:200px;" placeholder="আইডি লিখুন (যেমন: CSB-2026-0012)" />
                     <button class="home-btn primary" id="trackSubmitBtn" style="padding:12px 24px;"><i class="fas fa-arrow-right"></i> চেক করুন</button>
@@ -789,7 +800,7 @@
                     </div>
                 </div>
 
-                <!-- CATEGORY SELECTION FIELD (Previously Locked Badge) -->
+                <!-- CATEGORY SELECTION -->
                 <div class="form-group">
                     <label><i class="fas fa-layer-group"></i><span class="step-num">19</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
                     <select class="form-control" id="category" required>
@@ -812,7 +823,6 @@
                     <button type="reset" class="btn-reset"><i class="fas fa-rotate-left"></i> রিসেট</button>
                 </div>
 
-                <!-- FOOTER BRANDING UPDATED -->
                 <div class="form-footer">
                     <span><i class="fas fa-shield-halved" style="color:var(--primary);"></i> CSB Team Official</span>
                     <span>v3.5 Enterprise · 2026</span>
@@ -821,12 +831,12 @@
         </div>
     </div>
 
-    <!-- MODALS -->
+    <!-- SUCCESS MODAL -->
     <div class="modal-overlay" id="successModal">
         <div class="modal-content">
             <i class="fas fa-circle-check icon"></i>
             <h2>আবেদন সফল!</h2>
-            <p>আপনার আবেদনটি ফায়ারস্টোর ও চ্যানেলে জমা হয়েছে।<br><strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span></strong><br>ভবিষ্যতে স্ট্যাটাস চেক করার জন্য আইডিটি সংরক্ষণ করুন।</p>
+            <p>আপনার আবেদনটি ফায়ারস্টোর ও চ্যানেলে জমা হয়েছে।<br><strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span></strong><br>আপনার অফিশিয়াল স্লিপটি PDF হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।</p>
             <button class="btn-modal" onclick="closeModal()">ঠিক আছে</button>
         </div>
     </div>
@@ -844,12 +854,33 @@
         <span id="toastMessage"></span>
     </div>
 
-    <!-- FIREBASE & APPLICATION SCRIPTS -->
+    <!-- HIDDEN RECEIPT CONTAINER FOR PDF EXPORT -->
+    <div id="pdfReceiptTemplate">
+        <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 18px; margin-bottom: 20px;">
+            <h2 style="color: #00f5d4; font-size: 24px; margin-bottom: 4px;">CYBER SENTINEL BANGLADESH</h2>
+            <p style="font-size: 13px; color: #94a3b8; letter-spacing: 2px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
+        </div>
+        <div style="margin: 20px 0; font-size: 14px; line-height: 2;">
+            <p><strong>ট্র্যাকিং আইডি:</strong> <span id="pdfTrackId" style="color:#00f5d4; font-family:'JetBrains Mono'; font-weight:700;"></span></p>
+            <p><strong>আবেদনকারীর নাম:</strong> <span id="pdfName"></span></p>
+            <p><strong>ক্যাটাগরি:</strong> <span id="pdfCategory"></span></p>
+            <p><strong>নির্বাচিত রোল:</strong> <span id="pdfRole"></span></p>
+            <p><strong>মোবাইল নম্বর:</strong> <span id="pdfPhone"></span></p>
+            <p><strong>পেমেন্ট রেফারেন্স (TNX):</strong> <span id="pdfTnx" style="color:#0ea5e9; font-family:'JetBrains Mono';"></span></p>
+            <p><strong>আবেদনের তারিখ ও সময়:</strong> <span id="pdfTime"></span></p>
+            <p><strong>বর্তমান স্ট্যাটাস:</strong> <span style="color:#ffa94d; font-weight:700;">Pending (যাচাই চলছে)</span></p>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; text-align: center; font-size: 11px; color: #64748b;">
+            <p>এই স্লিপটি সংরক্ষণ করুন এবং অফিসিয়াল পোর্টাল থেকে স্ট্যাটাস ট্র্যাক করুন।</p>
+            <p style="margin-top: 4px; color: #00f5d4;">🛡️ Cyber Sentinel Bangladesh · All Rights Reserved</p>
+        </div>
+    </div>
+
+    <!-- FIREBASE & CORE SCRIPTS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyDQUF7WzlgooRi3cpQ3Kz6Ed7XEs3txZis",
             authDomain: "csb-team-addmission.firebaseapp.com",
@@ -868,15 +899,17 @@
             femaleLink: 'https://t.me/+tSQK_jWEeWU0YjI1'
         };
 
-        // ===================================================================
-        // ADMIN PANEL REAL-TIME SYNC ENGINE (Live Firestore Listener)
-        // ===================================================================
+        const BOT_TOKEN = '8677605758:AAHJs_SE2YmS0g0RVfuesZuXVKAJ3O5CjiM';
+        const CHANNEL_ID_SUBMIT = '-1004341639499';
+        const CHANNEL_ID_APPROVE = '-1003891211232';
+
+        // LIVE FIRESTORE CONFIG LISTENER
         onSnapshot(doc(db, "settings", "portalConfig"), (snap) => {
             if (snap.exists()) {
                 const cfg = snap.data();
                 activePortalConfig = { ...activePortalConfig, ...cfg };
 
-                // ১. ব্যানার আপডেট (Cyber Sentinel Bangladesh লেখার ঠিক উপরে)
+                // ব্যানার হ্যান্ডলার
                 const bannerWrap = document.getElementById('bannerWrapper');
                 const bannerImg = document.getElementById('csbDynamicBanner');
                 if (cfg.bannerUrl && cfg.bannerUrl.trim() !== '') {
@@ -886,50 +919,31 @@
                     bannerWrap.style.display = 'none';
                 }
 
-                // ২. ব্যাচ টেক্সট ও সাবটাইটেল
-                if (cfg.batchTitle) {
-                    document.getElementById('batchTitleText').textContent = cfg.batchTitle;
-                }
-                if (cfg.batchSub) {
-                    document.getElementById('displayBatchSub').textContent = cfg.batchSub;
-                }
+                if (cfg.batchTitle) document.getElementById('batchTitleText').textContent = cfg.batchTitle;
+                if (cfg.batchSub) document.getElementById('displayBatchSub').textContent = cfg.batchSub;
+                if (cfg.formFee) document.getElementById('displayFormFee').textContent = `ফর্ম ফি: ${cfg.formFee} টাকা`;
+                if (cfg.paymentNumber) document.getElementById('displayPaymentPhone').textContent = cfg.paymentNumber;
+                if (cfg.oathText) document.getElementById('displayOathText').innerHTML = cfg.oathText.replace(/\n/g, '<br>');
 
-                // ৩. ফি এবং পেমেন্ট নম্বর
-                if (cfg.formFee) {
-                    document.getElementById('displayFormFee').textContent = `ফর্ম ফি: ${cfg.formFee} টাকা`;
-                }
-                if (cfg.paymentNumber) {
-                    document.getElementById('displayPaymentPhone').textContent = cfg.paymentNumber;
-                }
-
-                // ৪. শপথনামা লাইভ আপডেট
-                if (cfg.oathText) {
-                    document.getElementById('displayOathText').innerHTML = cfg.oathText.replace(/\n/g, '<br>');
-                }
-
-                // ৫. ক্যাটাগরি অপশন সিঙ্ক
                 if (cfg.categories && Array.isArray(cfg.categories) && cfg.categories.length > 0) {
                     const catSelect = document.getElementById('category');
                     const currentCat = catSelect.value;
                     catSelect.innerHTML = '';
                     cfg.categories.forEach(c => {
                         const opt = document.createElement('option');
-                        opt.value = c;
-                        opt.textContent = c;
+                        opt.value = c; opt.textContent = c;
                         if (c === currentCat) opt.selected = true;
                         catSelect.appendChild(opt);
                     });
                 }
 
-                // ৬. ড্রপডাউন রোল তালিকা সিঙ্ক
                 if (cfg.roles && Array.isArray(cfg.roles) && cfg.roles.length > 0) {
                     const roleSelect = document.getElementById('role');
                     const currentVal = roleSelect.value;
                     roleSelect.innerHTML = '<option value="">সিলেক্ট করুন</option>';
                     cfg.roles.forEach(r => {
                         const opt = document.createElement('option');
-                        opt.value = r;
-                        opt.textContent = r;
+                        opt.value = r; opt.textContent = r;
                         if (r === currentVal) opt.selected = true;
                         roleSelect.appendChild(opt);
                     });
@@ -937,36 +951,16 @@
             }
         });
 
-        // ===================================================================
-        // SECURITY (Anti-DevTools & Anti-Theft)
-        // ===================================================================
-        document.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            showToast('⚠️ রাইট ক্লিক করা নিষিদ্ধ (CSB Security)', 'error');
-        });
-
+        // SECURITY LOCKS
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast('⚠️ রাইট ক্লিক করা নিষিদ্ধ (CSB Security)', 'error'); });
         document.addEventListener('keydown', (e) => {
-            if (
-                e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || 
-                (e.ctrlKey && e.key.toUpperCase() === 'U') ||
-                (e.ctrlKey && e.key.toUpperCase() === 'S')
-            ) {
-                e.preventDefault();
-                showToast('⚠️ সোর্স কোড দেখা বা কপি করা সম্পূর্ণ নিষিদ্ধ!', 'error');
-                return false;
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || (e.ctrlKey && ['U','S'].includes(e.key.toUpperCase()))) {
+                e.preventDefault(); showToast('⚠️ সোর্স কোড দেখা বা কপি করা সম্পূর্ণ নিষিদ্ধ!', 'error'); return false;
             }
         });
         document.addEventListener('dragstart', (e) => e.preventDefault());
 
-        // ===================================================================
-        // TELEGRAM CONFIG
-        // ===================================================================
-        const BOT_TOKEN = '8677605758:AAHJs_SE2YmS0g0RVfuesZuXVKAJ3O5CjiM';
-        const CHANNEL_ID_SUBMIT = '-1004341639499';
-        const CHANNEL_ID_APPROVE = '-1003891211232';
-
-        // DOM REFERENCES
+        // DOM ELEMENTS
         const landingPage = document.getElementById('landingPage');
         const formWrapper = document.getElementById('formWrapper');
         const registerBtn = document.getElementById('registerBtn');
@@ -980,8 +974,7 @@
         const liveTimeDisplay = document.getElementById('liveTimeDisplay');
 
         function updateLiveTime() {
-            const now = new Date();
-            liveTimeDisplay.textContent = now.toLocaleTimeString('bn-BD', { hour12: false });
+            liveTimeDisplay.textContent = new Date().toLocaleTimeString('bn-BD', { hour12: false });
         }
         updateLiveTime();
         setInterval(updateLiveTime, 1000);
@@ -1007,17 +1000,14 @@
             }
         });
 
-        supportBtn.addEventListener('click', () => {
-            window.open('https://wa.me/+601130345524', '_blank');
-        });
+        supportBtn.addEventListener('click', () => { window.open('https://wa.me/+601130345524', '_blank'); });
 
-        // ===================================================================
-        // ADMIN APPROVE / REJECT (Synced with Firestore)
-        // ===================================================================
+        // URL ACTION HANDLER (Auto removes telegram inline buttons on Approve/Reject)
         window.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             const action = params.get('action');
             const trackId = params.get('id');
+            const msgId = params.get('msg_id');
 
             if (action && trackId) {
                 try {
@@ -1037,33 +1027,28 @@
                             showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
                             sendRejectionNotice(trackId, { ...existingData, time: updateTime });
                         }
-                    } else {
-                        showToast(`⚠️ ID: ${trackId} ফায়ারস্টোরে পাওয়া যায়নি`, 'error');
+
+                        // বাটন মুছে ফেলা (Remove inline buttons immediately)
+                        if (msgId) {
+                            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    chat_id: CHANNEL_ID_SUBMIT,
+                                    message_id: parseInt(msgId),
+                                    reply_markup: { inline_keyboard: [] }
+                                })
+                            });
+                        }
                     }
                 } catch (err) {
-                    console.error("Firestore action error:", err);
+                    console.error("Action Error:", err);
                 }
             }
         });
 
         async function sendToApproveChannel(trackId, data) {
-            const text = `🎉 **নতুন আবেদন অনুমোদিত (APPROVED)** 🎉\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                         `👤 নাম: ${data.fullName || data.name}\n` +
-                         `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
-                         `📂 ক্যাটাগরি: ${data.category || 'N/A'}\n` +
-                         `🏠 ঠিকানা: ${data.address || 'N/A'}\n` +
-                         `📧 ইমেইল: ${data.email || 'N/A'}\n` +
-                         `📱 WhatsApp: ${data.whatsapp || 'N/A'}\n` +
-                         `✈️ Telegram: ${data.telegram || 'N/A'}\n` +
-                         `⚧️ জেন্ডার: ${data.gender}\n` +
-                         `🗂️ রোল: ${data.role}\n` +
-                         `🧾 TNX ID: ${data.tnxId || 'N/A'}\n` +
-                         `📞 অভিভাবক: ${data.guardianPhone || 'N/A'}\n` +
-                         `📱 নিজের: ${data.personalPhone || 'N/A'}\n` +
-                         `📅 অনুমোদন সময়: ${data.time}\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                         `🛡️ Cyber Sentinel Bangladesh`;
+            const text = `🎉 **নতুন আবেদন অনুমোদিত (APPROVED)** 🎉\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n📂 ক্যাটাগরি: ${data.category || 'N/A'}\n🏠 ঠিকানা: ${data.address || 'N/A'}\n📧 ইমেইল: ${data.email || 'N/A'}\n📱 WhatsApp: ${data.whatsapp || 'N/A'}\n✈️ Telegram: ${data.telegram || 'N/A'}\n⚧️ জেন্ডার: ${data.gender}\n🗂️ রোল: ${data.role}\n🧾 TNX ID: ${data.tnxId || 'N/A'}\n📞 অভিভাবক: ${data.guardianPhone || 'N/A'}\n📱 নিজের: ${data.personalPhone || 'N/A'}\n📅 অনুমোদন সময়: ${data.time}\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1072,13 +1057,7 @@
         }
 
         async function sendRejectionNotice(trackId, data) {
-            const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                         `👤 নাম: ${data.fullName || data.name}\n` +
-                         `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
-                         `⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                         `🛡️ Cyber Sentinel Bangladesh`;
+            const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1086,9 +1065,7 @@
             });
         }
 
-        // ===================================================================
-        // TRACKING SYSTEM (Dynamic Gender Links via Admin Config)
-        // ===================================================================
+        // TRACKING SYSTEM
         trackSubmitBtn.addEventListener('click', async () => {
             const id = trackInput.value.trim().toUpperCase();
             if (!id) { showToast('⚠️ আইডি লিখুন', 'error'); return; }
@@ -1100,12 +1077,7 @@
                 const docSnap = await getDoc(docRef);
 
                 if (!docSnap.exists()) {
-                    trackResult.innerHTML = `
-                        <div style="background:rgba(244,63,94,0.06); border-radius:14px; padding:16px; border:1px solid rgba(244,63,94,0.2); margin-top:12px;">
-                            <p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p>
-                            <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আইডি সঠিক কিনা যাচাই করুন অথবা পুনরায় আবেদন করুন।</p>
-                        </div>
-                    `;
+                    trackResult.innerHTML = `<div style="background:rgba(244,63,94,0.06); border-radius:14px; padding:16px; border:1px solid rgba(244,63,94,0.2); margin-top:12px;"><p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p></div>`;
                     return;
                 }
 
@@ -1121,7 +1093,6 @@
                 if (status === 'Approved') {
                     color = '#00f5d4';
                     icon = '✅';
-                    
                     let targetGroupLink = (gender === 'Female') 
                         ? (activePortalConfig.femaleLink || 'https://t.me/+tSQK_jWEeWU0YjI1') 
                         : (activePortalConfig.maleLink || 'https://t.me/+iK88FtiL2YNmZjE1');
@@ -1137,29 +1108,21 @@
                 } else if (status === 'Rejected') {
                     color = '#f43f5e';
                     icon = '❌';
-                    joinLinkHtml = `
-                        <div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;">
-                            <p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে। অনুগ্রহ করে সঠিক তথ্যে আবার চেষ্টা করুন।</p>
-                        </div>
-                    `;
+                    joinLinkHtml = `<div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;"><p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে।</p></div>`;
                 }
 
                 trackResult.innerHTML = `
                     <div style="background:rgba(255,255,255,0.02); border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.06); margin-top:12px;">
-                        <p style="font-size:15px; font-weight:700; color:#fff;">আইডি: <span style="color:var(--primary); font-family:'JetBrains Mono', monospace;">${id}</span></p>
-                        <p style="margin-top:6px; font-size:14px; font-weight:600;">স্ট্যাটাস: <span style="color:${color};">${icon}${status}</span></p>
+                        <p style="font-size:15px; font-weight:700; color:#fff;">আইডি: <span style="color:var(--primary); font-family:'JetBrains Mono';">${id}</span></p>
+                        <p style="margin-top:6px; font-size:14px; font-weight:600;">স্ট্যাটাস: <span style="color:${color};">${icon} ${status}</span></p>
                         <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${time}</p>${joinLinkHtml}
                     </div>
                 `;
             } catch (err) {
-                console.error(err);
-                trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি। রুলস চেক করুন।</p>`;
+                trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি।</p>`;
             }
         });
 
-        // ===================================================================
-        // UTILITIES & RECORDER
-        // ===================================================================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.className = 'toast ' + type;
@@ -1171,6 +1134,7 @@
         window.closeModal = function() { document.getElementById('successModal').classList.remove('show'); };
         window.closeErrorModal = function() { document.getElementById('errorModal').classList.remove('show'); };
 
+        // VIDEO RECORDER
         let mediaRecorder, recordedChunks = [], stream = null, isCameraReady = false, recordedBlob = null;
         const previewVideo = document.getElementById('previewVideo');
         const startBtn = document.getElementById('startRecord');
@@ -1182,10 +1146,7 @@
         async function initCamera() {
             if (isCameraReady) return true;
             try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-                    audio: true
-                });
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: true });
                 previewVideo.srcObject = stream;
                 isCameraReady = true;
                 recordingStatus.textContent = 'Ready';
@@ -1201,31 +1162,19 @@
         startBtn.addEventListener('click', async () => {
             const cameraStarted = await initCamera();
             if (!cameraStarted || !stream) { showToast('⚠️ ক্যামেরা ব্যবহারের অনুমতি দিন', 'error'); return; }
-            
             recordedChunks = [];
             recordedBlob = null;
-            
-            try {
-                mediaRecorder = new MediaRecorder(stream);
-            } catch (err) {
-                showToast('⚠️ ভিডিও রেকর্ডিং ব্রাউজারে সাপোর্ট করছে না', 'error');
-                return;
-            }
+            try { mediaRecorder = new MediaRecorder(stream); } catch (err) { showToast('⚠️ ভিডিও রেকর্ডিং ব্রাউজারে সাপোর্ট করছে না', 'error'); return; }
 
             mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.onstop = () => {
-                if (!recordedChunks.length) { showToast('⚠️️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
+                if (!recordedChunks.length) { showToast('⚠ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
                 recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
                 const url = URL.createObjectURL(recordedBlob);
-                
                 downloadBtn.disabled = false;
                 downloadBtn.onclick = () => {
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `csb_oath_${Date.now()}.webm`;
-                    a.click();
+                    const a = document.createElement('a'); a.href = url; a.download = `csb_oath_${Date.now()}.webm`; a.click();
                 };
-
                 recordingStatus.textContent = 'Saved';
                 recordingDot.className = 'dot ready';
                 startBtn.disabled = false;
@@ -1242,32 +1191,51 @@
         });
 
         stopBtn.addEventListener('click', () => {
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                mediaRecorder.stop();
-            }
+            if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
         });
 
         document.querySelectorAll('.file-upload-wrapper input[type="file"]').forEach(input => {
             input.addEventListener('change', function() {
                 const area = this.closest('.file-upload-wrapper').querySelector('.file-upload-area');
-                const span = area.querySelector('.info .main span');
-                span.textContent = this.files.length ? this.files[0].name : 'ফাইল বেছে নিন';
+                area.querySelector('.info .main span').textContent = this.files.length ? this.files[0].name : 'ফাইল বেছে নিন';
             });
         });
 
         function updateProgress(pct, status) {
             const prog = document.getElementById('uploadProgress');
-            const bar = document.getElementById('progressBar');
-            const st = document.getElementById('progressStatus');
             prog.classList.add('show');
-            bar.style.width = pct + '%';
-            st.textContent = status;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressStatus').textContent = status;
             if (pct >= 100) setTimeout(() => prog.classList.remove('show'), 2000);
         }
 
-        // ===================================================================
-        // FORM SUBMIT -> SYNC TO FIRESTORE + TELEGRAM
-        // ===================================================================
+        // AUTOMATIC PDF GENERATION FUNCTION
+        function generateAutoPDF(trackId, formData, currentTime) {
+            document.getElementById('pdfTrackId').textContent = trackId;
+            document.getElementById('pdfName').textContent = formData.fullName;
+            document.getElementById('pdfCategory').textContent = formData.category;
+            document.getElementById('pdfRole').textContent = formData.role;
+            document.getElementById('pdfPhone').textContent = formData.personalPhone;
+            document.getElementById('pdfTnx').textContent = formData.tnxId;
+            document.getElementById('pdfTime').textContent = currentTime;
+
+            const element = document.getElementById('pdfReceiptTemplate');
+            element.style.display = 'block';
+
+            const opt = {
+                margin: 10,
+                filename: `CSB_Slip_${trackId}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, backgroundColor: '#0b1120' },
+                jsPDF: { unit: 'mm', format: 'a5', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.display = 'none';
+            });
+        }
+
+        // FORM SUBMISSION (Combined Telegram Payload + Auto PDF Download)
         document.getElementById('csbForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
@@ -1296,60 +1264,31 @@
                 for (let k in formData) {
                     if (!formData[k]) {
                         showToast('⚠️ সব তথ্য সঠিকভাবে পূরণ করুন', 'error');
-                        submitBtn.classList.remove('loading');
-                        submitBtn.disabled = false;
-                        return;
+                        submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
                     }
                 }
 
-                // Check duplicate TNX in Firestore
                 const tnxCheckRef = doc(db, "transactions", formData.tnxId);
                 const tnxSnap = await getDoc(tnxCheckRef);
                 if (tnxSnap.exists()) {
-                    document.getElementById('errorMessage').innerHTML = `
-                        <p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p>
-                        <p style="margin-top:4px;">রেফারেন্স আইডিটি (${formData.tnxId}) পূর্বে ব্যবহার করা হয়েছে। নতুন TNX দিয়ে চেষ্টা করুন।</p>
-                    `;
+                    document.getElementById('errorMessage').innerHTML = `<p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p><p style="margin-top:4px;">নতুন TNX দিয়ে চেষ্টা করুন।</p>`;
                     document.getElementById('errorModal').classList.add('show');
-                    submitBtn.classList.remove('loading');
-                    submitBtn.disabled = false;
-                    return;
+                    submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
                 }
 
-                if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                    showToast('⚠️ সঠিক ইমেইল দিন', 'error');
-                    submitBtn.classList.remove('loading');
-                    submitBtn.disabled = false;
-                    return;
-                }
+                if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { showToast('⚠️ সঠিক ইমেইল দিন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
                 const phoneRegex = /^01[3-9]\d{8}$/;
                 if (!phoneRegex.test(formData.whatsapp) || !phoneRegex.test(formData.guardianPhone) || !phoneRegex.test(formData.personalPhone)) {
-                    showToast('⚠️ সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)', 'error');
-                    submitBtn.classList.remove('loading');
-                    submitBtn.disabled = false;
-                    return;
+                    showToast('⚠️ সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
                 }
-                if (!formData.fbLink.match(/^https?:\/\/(www\.)?facebook\.com\/.+/)) {
-                    showToast('⚠️ সঠিক ফেসবুক লিংক দিন', 'error');
-                    submitBtn.classList.remove('loading');
-                    submitBtn.disabled = false;
-                    return;
-                }
-                if (!recordedBlob) {
-                    showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড বাধ্যতামূলক', 'error');
-                    submitBtn.classList.remove('loading');
-                    submitBtn.disabled = false;
-                    return;
-                }
+                if (!formData.fbLink.match(/^https?:\/\/(www\.)?facebook\.com\/.+/)) { showToast('⚠️ সঠিক ফেসবুক লিংক দিন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
+                if (!recordedBlob) { showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড বাধ্যতামূলক', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
 
                 const fileIds = ['photo1', 'photo2', 'nid', 'paymentScreenshot'];
                 for (let id of fileIds) {
                     const inp = document.getElementById(id);
                     if (!inp.files || !inp.files.length) {
-                        showToast('⚠️️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error');
-                        submitBtn.classList.remove('loading');
-                        submitBtn.disabled = false;
-                        return;
+                        showToast('⚠️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
                     }
                 }
 
@@ -1357,101 +1296,73 @@
                 const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
                 const currentTime = new Date().toLocaleString('bn-BD');
 
-                // SAVE TO FIRESTORE DATABASE
                 await setDoc(doc(db, "applications", trackId), {
-                    ...formData,
-                    status: 'Pending',
-                    createdAt: currentTime,
-                    updateTime: currentTime
+                    ...formData, status: 'Pending', createdAt: currentTime, updateTime: currentTime
                 });
+                await setDoc(doc(db, "transactions", formData.tnxId), { trackId: trackId, usedAt: currentTime });
 
-                // Lock transaction ID in Firestore
-                await setDoc(doc(db, "transactions", formData.tnxId), {
-                    trackId: trackId,
-                    usedAt: currentTime
-                });
+                updateProgress(40, 'টেলিগ্রাম চ্যানেলে পাঠানো হচ্ছে (একীভূত মিডিয়া)...');
+                const caption = `🛡️ **CSB NEW ADMISSION FORM** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: ${formData.email}\n📱 WhatsApp: ${formData.whatsapp}\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 NID: ${formData.nidNumber}\n📅 জন্ম: ${formData.dob}\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n🧾 TNX ID: ${formData.tnxId}\n📞 অভিভাবক: ${formData.guardianPhone}\n📱 নিজের: ${formData.personalPhone}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন টাইম: ${currentTime}`;
 
-                updateProgress(35, 'টেলিগ্রাম চ্যানেলে পাঠানো হচ্ছে...');
-                const caption = `🛡️ **CSB NEW ADMISSION FORM** 🛡️\n` +
-                                `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                                `👤 নাম: ${formData.fullName}\n` +
-                                `📂 ক্যাটাগরি: ${formData.category}\n` +
-                                `🏠 ঠিকানা: ${formData.address}\n` +
-                                `📧 ইমেইল: ${formData.email}\n` +
-                                `📱 WhatsApp: ${formData.whatsapp}\n` +
-                                `✈️ Telegram: ${formData.telegram}\n` +
-                                `📘 FB নাম: ${formData.fbName}\n` +
-                                `🔗 FB লিংক: ${formData.fbLink}\n` +
-                                `🪪 NID: ${formData.nidNumber}\n` +
-                                `📅 জন্ম: ${formData.dob}\n` +
-                                `⚧️ জেন্ডার: ${formData.gender}\n` +
-                                `🗂️ রোল: ${formData.role}\n` +
-                                `🧾 TNX ID: ${formData.tnxId}\n` +
-                                `📞 অভিভাবক: ${formData.guardianPhone}\n` +
-                                `📱 নিজের: ${formData.personalPhone}\n` +
-                                `🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n` +
-                                `━━━━━━━━━━━━━━━━━━━━━━\n` +
-                                `📅 আবেদন টাইম: ${currentTime}`;
-
+                // COMBINED MEDIA GROUP: ALL PHOTOS + VIDEO IN 1 POST
                 const mediaGroup = new FormData();
                 mediaGroup.append('chat_id', CHANNEL_ID_SUBMIT);
                 mediaGroup.append('file1', document.getElementById('photo1').files[0], 'photo1.jpg');
                 mediaGroup.append('file2', document.getElementById('photo2').files[0], 'photo2.jpg');
                 mediaGroup.append('file3', document.getElementById('nid').files[0], 'nid.jpg');
                 mediaGroup.append('file4', document.getElementById('paymentScreenshot').files[0], 'screenshot.jpg');
+                mediaGroup.append('videoFile', recordedBlob, `oath_${trackId}.mp4`);
 
                 const mediaData = [
                     { type: 'photo', media: 'attach://file1', caption: caption },
                     { type: 'photo', media: 'attach://file2' },
                     { type: 'photo', media: 'attach://file3' },
-                    { type: 'photo', media: 'attach://file4' }
+                    { type: 'photo', media: 'attach://file4' },
+                    { type: 'video', media: 'attach://videoFile' }
                 ];
                 mediaGroup.append('media', JSON.stringify(mediaData));
 
                 const albumRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
-                    method: 'POST',
-                    body: mediaGroup
+                    method: 'POST', body: mediaGroup
                 });
                 if (!albumRes.ok) throw new Error('Telegram media upload error');
 
-                updateProgress(75, 'শপথনামা ভিডিও আপলোড হচ্ছে...');
-                const videoData = new FormData();
-                videoData.append('chat_id', CHANNEL_ID_SUBMIT);
-                videoData.append('video', recordedBlob, `oath_${trackId}.mp4`);
-                videoData.append('caption', `📹 শপথনামা ভিডিও\nID: \`${trackId}\`\nনাম: ${formData.fullName}`);
+                updateProgress(85, 'অ্যাকশন কন্ট্রোল ও পিডিএফ তৈরি হচ্ছে...');
 
-                const videoRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                    method: 'POST',
-                    body: videoData
-                });
-
-                if (!videoRes.ok) {
-                    const docData = new FormData();
-                    docData.append('chat_id', CHANNEL_ID_SUBMIT);
-                    docData.append('document', recordedBlob, `oath_${trackId}.webm`);
-                    docData.append('caption', `📹 ব্যাকআপ শপথনামা ভিডিও ফাইল\nID: \`${trackId}\``);
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, { method: 'POST', body: docData });
-                }
-
-                updateProgress(90, 'অ্যাকশন লিংক সেট করা হচ্ছে...');
-                const webAppBaseUrl = window.location.href.split('?')[0]; 
-                const inlineKeyboard = {
-                    inline_keyboard: [[
-                        { text: '✅ Approve', url: `${webAppBaseUrl}?action=approve&id=${trackId}` }, 
-                        { text: '❌ Reject', url: `${webAppBaseUrl}?action=reject&id=${trackId}` }
-                    ]]
-                };
-
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                // ACTION PANEL MESSAGE
+                const webAppBaseUrl = window.location.href.split('?')[0];
+                const actionMsgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         chat_id: CHANNEL_ID_SUBMIT, 
                         text: `🚨 **CSB ACTION PANEL** 🚨\nID: \`${trackId}\`\nনাম: ${formData.fullName}\nরোল: ${formData.role}`, 
-                        parse_mode: 'Markdown',
-                        reply_markup: inlineKeyboard 
+                        parse_mode: 'Markdown'
                     })
                 });
+                const actionData = await actionMsgRes.json();
+                const actionMsgId = actionData.result ? actionData.result.message_id : '';
+
+                // INLINE BUTTONS WITH MSG_ID TO REMOVE AUTOMATICALLY
+                const inlineKeyboard = {
+                    inline_keyboard: [[
+                        { text: '✅ Approve', url: `${webAppBaseUrl}?action=approve&id=${trackId}&msg_id=${actionMsgId}` }, 
+                        { text: '❌ Reject', url: `${webAppBaseUrl}?action=reject&id=${trackId}&msg_id=${actionMsgId}` }
+                    ]]
+                };
+
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHANNEL_ID_SUBMIT,
+                        message_id: actionMsgId,
+                        reply_markup: inlineKeyboard
+                    })
+                });
+
+                // AUTOMATIC PDF DOWNLOAD TRIGGER
+                generateAutoPDF(trackId, formData, currentTime);
 
                 updateProgress(100, 'সম্পন্ন হয়েছে!');
                 document.getElementById('trackingIdDisplay').textContent = trackId;
@@ -1474,7 +1385,7 @@
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('errorMessage').textContent = 'ত্রুটি দেখা দিয়েছে। ইন্টারনেট বা পারমিশন চেক করুন। (' + err.message + ')';
+                document.getElementById('errorMessage').textContent = 'ত্রুটি দেখা দিয়েছে। ফাইল সাইজ বা নেটওয়ার্ক চেক করুন। (' + err.message + ')';
                 document.getElementById('errorModal').classList.add('show');
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
@@ -1482,7 +1393,7 @@
             }
         });
 
-        // RESET
+        // FORM RESET
         document.querySelector('.btn-reset').addEventListener('click', (e) => {
             e.preventDefault();
             if (confirm('সব ফিল্ড মুছে ফেলতে চান?')) {
