@@ -6,6 +6,8 @@
     <title>CSB Master Admin Engine | Cyber Sentinel Bangladesh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <!-- PDF Export Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #00f5d4;
@@ -162,6 +164,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 14px;
         }
         .top-bar h1 { font-size: 24px; font-weight: 800; }
         .top-bar p { font-size: 13px; color: var(--text-muted); }
@@ -220,6 +224,8 @@
             margin-bottom: 20px;
             padding-bottom: 14px;
             border-bottom: 1px solid var(--card-border);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .card-header h3 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .card-header h3 i { color: var(--primary); }
@@ -258,6 +264,22 @@
             transition: 0.25s;
         }
         .btn-primary:hover { box-shadow: 0 6px 20px var(--primary-glow); transform: translateY(-1px); }
+
+        .btn-report {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            color: #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+        .btn-report:hover { border-color: var(--primary); color: var(--primary); }
 
         .tag-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .tag-item {
@@ -367,11 +389,11 @@
 
             <ul class="nav-menu">
                 <li class="nav-item"><button class="active" onclick="switchTab('dashboard')"><i class="fas fa-chart-pie"></i> ওভারভিউ</button></li>
-                <li class="nav-item"><button onclick="switchTab('branding')"><i class="fas fa-image"></i> ব্যানার ও ব্যাচ</button></li>
+                <li class="nav-item"><button onclick="switchTab('branding')"><i class="fas fa-image"></i> ব্যানার, নোটিশ ও ব্যাচ</button></li>
                 <li class="nav-item"><button onclick="switchTab('categories')"><i class="fas fa-layer-group"></i> ক্যাটাগরি ও রোল</button></li>
                 <li class="nav-item"><button onclick="switchTab('fees')"><i class="fas fa-wallet"></i> ফি ও টেলিগ্রাম লিংক</button></li>
                 <li class="nav-item"><button onclick="switchTab('oath')"><i class="fas fa-scroll"></i> শপথনামা কন্ট্রোল</button></li>
-                <li class="nav-item"><button onclick="switchTab('applications')"><i class="fas fa-users-viewfinder"></i> সকল আবেদন</button></li>
+                <li class="nav-item"><button onclick="switchTab('applications')"><i class="fas fa-users-viewfinder"></i> সকল আবেদন ও রিপোর্ট</button></li>
             </ul>
 
             <div class="admin-profile">
@@ -453,8 +475,18 @@
                 </div>
             </div>
 
-            <!-- TAB 2: BRANDING (BANNER & BATCH) -->
+            <!-- TAB 2: BRANDING (BANNER, NOTICE & BATCH) -->
             <div class="content-panel" id="tab-branding">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bullhorn"></i> ইউজার প্যানেল লাইভ নোটিশ বক্স</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>জরুরি নোটিশ টেক্সট (সেভ করলে সরাসরি রেজিস্ট্রেশন পেজের উপরে শো করবে)</label>
+                        <textarea id="cfgNoticeText" class="form-control" placeholder="যেমন: সার্ভার রক্ষণাবেক্ষণের জন্য সাময়িক বিলম্ব হতে পারে..."></textarea>
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-image"></i> হোম ব্যানার আপলোড ও কন্ট্রোল</h3>
@@ -508,20 +540,20 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-user-shield"></i> রোল ম্যানেজমেন্ট</h3>
+                        <h3><i class="fas fa-user-shield"></i> ক্যাটাগরি ভিত্তিক রোল ম্যানেজমেন্ট</h3>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>ক্যাটাগরি নির্বাচন</label>
-                            <select id="roleCategorySelect" class="form-control"></select>
+                            <label>ক্যাটাগরি নির্বাচন করুন</label>
+                            <select id="roleCategorySelect" class="form-control" onchange="renderCategoryRoles()"></select>
                         </div>
                         <div class="form-group">
-                            <label>রোল নাম</label>
+                            <label>এই ক্যাটাগরিতে নতুন রোল নাম</label>
                             <input type="text" id="newRoleInput" class="form-control" placeholder="যেমন: Cyber Security Analyst" />
                         </div>
                     </div>
-                    <button class="btn-primary" onclick="addRole()"><i class="fas fa-plus"></i> রোল যোগ করুন</button>
-                    <div class="tag-wrap" id="roleTagList" style="margin-top: 15px;"></div>
+                    <button class="btn-primary" onclick="addRoleToCategory()"><i class="fas fa-plus"></i> এই ক্যাটাগরিতে রোল যোগ করুন</button>
+                    <div class="tag-wrap" id="categoryRoleTagList" style="margin-top: 15px;"></div>
                 </div>
             </div>
 
@@ -594,12 +626,35 @@
                 </div>
             </div>
 
-            <!-- TAB 6: ALL APPLICATIONS -->
+            <!-- TAB 6: ALL APPLICATIONS, SEARCH & PDF REPORTS -->
             <div class="content-panel" id="tab-applications">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-users"></i> সমস্ত আবেদনকারীদের তালিকা</h3>
+                        <h3><i class="fas fa-users"></i> সমস্ত আবেদন ও রিপোর্ট কন্ট্রোল</h3>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn-report" onclick="exportPDFReport('All')"><i class="fas fa-file-pdf"></i> সকল আবেদন PDF</button>
+                            <button class="btn-report" onclick="exportPDFReport('Approved')"><i class="fas fa-file-circle-check"></i> অনুমোদিত PDF</button>
+                            <button class="btn-report" onclick="exportPDFReport('Pending')"><i class="fas fa-file-circle-exclamation"></i> পেন্ডিং PDF</button>
+                        </div>
                     </div>
+
+                    <!-- Live Search & Filter Bar -->
+                    <div class="form-grid" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label>লাইভ সার্চ (আইডি, নাম, মোবাইল বা TNX দিয়ে)</label>
+                            <input type="text" id="appSearchInput" class="form-control" placeholder="যেমন: CSB-2026 বা 019..." oninput="filterApplications()" />
+                        </div>
+                        <div class="form-group">
+                            <label>স্ট্যাটাস ফিল্টার</label>
+                            <select id="appStatusFilter" class="form-control" onchange="filterApplications()">
+                                <option value="All">সকল স্ট্যাটাস</option>
+                                <option value="Pending">Pending (পেন্ডিং)</option>
+                                <option value="Approved">Approved (অনুমোদিত)</option>
+                                <option value="Rejected">Rejected (বাতিল)</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div style="overflow-x: auto;">
                         <table>
                             <thead>
@@ -630,7 +685,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
-            getFirestore, doc, getDoc, setDoc, updateDoc, 
+            getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
             collection, onSnapshot, query, orderBy, limit 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -647,23 +702,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // গ্লোবাল স্টেট
         let portalConfig = {
             bannerUrl: '',
+            notice: '',
             batchTitle: 'ব্যাচ ৮-৯ · ২০২৬',
             batchSub: 'OFFICIAL ADMISSION PORTAL · BATCH 8-9',
             paymentNumber: '01971138617',
             categories: ['NEW STUDENTS', 'EX-STUDENTS', 'EXECUTIVE'],
-            roles: [
-                'Cyber Security Analyst', 'Ethical Hacker', 
-                'Security Researcher', 'Network Security Engineer', 
-                'Digital Forensics Expert', 'GRC Specialist', 'CSB Trainee'
-            ],
+            categoryRoles: {},
             categoryFees: {},
             categoryLinks: {},
             categoryOaths: {},
             defaultOathText: `“আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।\nআমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো। সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো।\nআমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”`
         };
+
+        let loadedApplications = [];
 
         // AUTHENTICATION
         const loginWrap = document.getElementById('loginWrap');
@@ -700,12 +753,12 @@
             bindApplicationsStream();
         }
 
-        // BANNER LOCAL FILE UPLOAD (Converts to Base64)
+        // BANNER LOCAL FILE UPLOAD (Base64)
         document.getElementById('cfgBannerFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 if (file.size > 2 * 1024 * 1024) {
-                    showToast('⚠️ ছবির সাইজ ২ মেগাবাইটের বেশি হওয়া যাবে না!', 'error');
+                    showToast('⚠️️ ছবির সাইজ ২ মেগাবাইটের বেশি হওয়া যাবে না!', 'error');
                     this.value = '';
                     return;
                 }
@@ -744,11 +797,11 @@
         }
 
         function renderConfigToUI() {
+            document.getElementById('cfgNoticeText').value = portalConfig.notice || '';
             document.getElementById('cfgBannerUrl').value = portalConfig.bannerUrl || '';
             document.getElementById('cfgBatchTitle').value = portalConfig.batchTitle || '';
             document.getElementById('cfgBatchSub').value = portalConfig.batchSub || '';
             document.getElementById('cfgPaymentNumber').value = portalConfig.paymentNumber || '';
-
             document.getElementById('statBatch').textContent = portalConfig.batchTitle || 'Batch 8-9';
 
             if (portalConfig.bannerUrl) {
@@ -759,11 +812,12 @@
             }
 
             renderCategories();
-            renderRoles();
             populateCategoryDropdowns();
+            renderCategoryRoles();
         }
 
         window.syncAllToFirestore = async function() {
+            portalConfig.notice = document.getElementById('cfgNoticeText').value.trim();
             if (document.getElementById('cfgBannerUrl').value.trim() !== '') {
                 portalConfig.bannerUrl = document.getElementById('cfgBannerUrl').value.trim();
             }
@@ -780,7 +834,7 @@
             }
         };
 
-        // CATEGORY & ROLE MANAGEMENT
+        // CATEGORY & CATEGORY-SPECIFIC ROLES
         function renderCategories() {
             const list = document.getElementById('categoryTagList');
             const select = document.getElementById('roleCategorySelect');
@@ -794,8 +848,7 @@
                 list.appendChild(tag);
 
                 const opt = document.createElement('option');
-                opt.value = cat;
-                opt.textContent = cat;
+                opt.value = cat; opt.textContent = cat;
                 select.appendChild(opt);
             });
         }
@@ -805,9 +858,7 @@
             const linkSelect = document.getElementById('linkCategorySelect');
             const oathSelect = document.getElementById('oathCategorySelect');
 
-            feeSelect.innerHTML = '';
-            linkSelect.innerHTML = '';
-            oathSelect.innerHTML = '';
+            feeSelect.innerHTML = ''; linkSelect.innerHTML = ''; oathSelect.innerHTML = '';
 
             portalConfig.categories.forEach(cat => {
                 const opt1 = document.createElement('option'); opt1.value = cat; opt1.textContent = cat; feeSelect.appendChild(opt1);
@@ -828,6 +879,7 @@
                 document.getElementById('newCategoryInput').value = '';
                 renderCategories();
                 populateCategoryDropdowns();
+                renderCategoryRoles();
                 syncAllToFirestore();
             }
         };
@@ -835,42 +887,58 @@
         window.removeCategory = function(index) {
             const removed = portalConfig.categories[index];
             portalConfig.categories.splice(index, 1);
+            if (portalConfig.categoryRoles) delete portalConfig.categoryRoles[removed];
             if (portalConfig.categoryFees) delete portalConfig.categoryFees[removed];
             if (portalConfig.categoryLinks) delete portalConfig.categoryLinks[removed];
             if (portalConfig.categoryOaths) delete portalConfig.categoryOaths[removed];
             renderCategories();
             populateCategoryDropdowns();
+            renderCategoryRoles();
             syncAllToFirestore();
         };
 
-        function renderRoles() {
-            const list = document.getElementById('roleTagList');
+        window.renderCategoryRoles = function() {
+            const selectedCat = document.getElementById('roleCategorySelect').value;
+            const list = document.getElementById('categoryRoleTagList');
             list.innerHTML = '';
-            portalConfig.roles.forEach((role, index) => {
+
+            if (!portalConfig.categoryRoles) portalConfig.categoryRoles = {};
+            const roles = portalConfig.categoryRoles[selectedCat] || [];
+
+            roles.forEach((role, idx) => {
                 const tag = document.createElement('div');
                 tag.className = 'tag-item';
-                tag.innerHTML = `<span>${role}</span> <i class="fas fa-times" onclick="removeRole(${index})"></i>`;
+                tag.innerHTML = `<span>${role}</span> <i class="fas fa-times" onclick="removeRoleFromCategory('${selectedCat}', ${idx})"></i>`;
                 list.appendChild(tag);
             });
-        }
+        };
 
-        window.addRole = function() {
+        window.addRoleToCategory = function() {
+            const selectedCat = document.getElementById('roleCategorySelect').value;
             const val = document.getElementById('newRoleInput').value.trim();
-            if (val && !portalConfig.roles.includes(val)) {
-                portalConfig.roles.push(val);
+            if (!selectedCat || !val) return;
+
+            if (!portalConfig.categoryRoles) portalConfig.categoryRoles = {};
+            if (!portalConfig.categoryRoles[selectedCat]) portalConfig.categoryRoles[selectedCat] = [];
+
+            if (!portalConfig.categoryRoles[selectedCat].includes(val)) {
+                portalConfig.categoryRoles[selectedCat].push(val);
                 document.getElementById('newRoleInput').value = '';
-                renderRoles();
+                renderCategoryRoles();
+                syncAllToFirestore();
+                showToast(`✅ ${selectedCat} এ রোল '${val}' যোগ হয়েছে`, 'success');
+            }
+        };
+
+        window.removeRoleFromCategory = function(cat, idx) {
+            if (portalConfig.categoryRoles && portalConfig.categoryRoles[cat]) {
+                portalConfig.categoryRoles[cat].splice(idx, 1);
+                renderCategoryRoles();
                 syncAllToFirestore();
             }
         };
 
-        window.removeRole = function(index) {
-            portalConfig.roles.splice(index, 1);
-            renderRoles();
-            syncAllToFirestore();
-        };
-
-        // CATEGORY-WISE FEES
+        // CATEGORY FEES
         window.loadCategoryFee = function() {
             const cat = document.getElementById('feeCategorySelect').value;
             const fee = (portalConfig.categoryFees && portalConfig.categoryFees[cat]) ? portalConfig.categoryFees[cat] : '50';
@@ -887,7 +955,7 @@
             showToast(`✅ ${cat} এর জন্য ফি ${fee} টাকা সেট হয়েছে`, 'success');
         };
 
-        // CATEGORY-WISE TELEGRAM LINKS
+        // CATEGORY TELEGRAM LINKS
         window.loadCategoryLinks = function() {
             const cat = document.getElementById('linkCategorySelect').value;
             const links = (portalConfig.categoryLinks && portalConfig.categoryLinks[cat]) ? portalConfig.categoryLinks[cat] : {};
@@ -906,7 +974,7 @@
             showToast(`✅ ${cat} এর টেলিগ্রাম লিংক সেভ হয়েছে`, 'success');
         };
 
-        // CATEGORY-WISE OATH
+        // CATEGORY OATH
         window.loadCategoryOath = function() {
             const cat = document.getElementById('oathCategorySelect').value;
             const oath = (portalConfig.categoryOaths && portalConfig.categoryOaths[cat]) 
@@ -942,12 +1010,12 @@
             document.getElementById('categoryLinksSummary').innerHTML = linkHtml;
         }
 
-        // REALTIME APPLICATIONS MONITORING
+        // REALTIME APPLICATIONS & LIVE SEARCH
         function bindApplicationsStream() {
             const q = collection(db, "applications");
             onSnapshot(q, (snapshot) => {
                 let total = 0, approved = 0, pending = 0;
-                const apps = [];
+                loadedApplications = [];
 
                 snapshot.forEach(docSnap => {
                     total++;
@@ -955,16 +1023,33 @@
                     data.id = docSnap.id;
                     if (data.status === 'Approved') approved++;
                     else if (data.status === 'Pending') pending++;
-                    apps.push(data);
+                    loadedApplications.push(data);
                 });
 
                 document.getElementById('statTotalApps').textContent = total;
                 document.getElementById('statApproved').textContent = approved;
                 document.getElementById('statPending').textContent = pending;
 
-                renderApplicationsTable(apps);
+                filterApplications();
             });
         }
+
+        window.filterApplications = function() {
+            const query = (document.getElementById('appSearchInput').value || '').trim().toLowerCase();
+            const statusFilter = document.getElementById('appStatusFilter').value;
+
+            const filtered = loadedApplications.filter(app => {
+                const matchStatus = (statusFilter === 'All') || (app.status === statusFilter);
+                const matchQuery = !query || 
+                    (app.id && app.id.toLowerCase().includes(query)) ||
+                    (app.fullName && app.fullName.toLowerCase().includes(query)) ||
+                    (app.personalPhone && app.personalPhone.includes(query)) ||
+                    (app.tnxId && app.tnxId.toLowerCase().includes(query));
+                return matchStatus && matchQuery;
+            });
+
+            renderApplicationsTable(filtered);
+        };
 
         function renderApplicationsTable(apps) {
             const recentBody = document.getElementById('recentTableBody');
@@ -973,8 +1058,8 @@
             allBody.innerHTML = '';
 
             if (apps.length === 0) {
-                recentBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">কোনো আবেদন জমা পড়েনি</td></tr>`;
-                allBody.innerHTML = `<tr><td colspan="8" style="text-align:center;">কোনো আবেদন জমা পড়েনি</td></tr>`;
+                recentBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">কোনো আবেদন পাওয়া যায়নি</td></tr>`;
+                allBody.innerHTML = `<tr><td colspan="8" style="text-align:center;">কোনো আবেদন পাওয়া যায়নি</td></tr>`;
                 return;
             }
 
@@ -983,6 +1068,7 @@
                 const actionBtns = `
                     <button class="btn-action-icon" title="Approve" onclick="updateAppStatus('${app.id}', 'Approved')"><i class="fas fa-check" style="color:var(--accent-green);"></i></button>
                     <button class="btn-action-icon reject" title="Reject" onclick="updateAppStatus('${app.id}', 'Rejected')"><i class="fas fa-xmark" style="color:var(--accent-red);"></i></button>
+                    <button class="btn-action-icon reject" title="Delete from Database" onclick="deleteApplication('${app.id}')"><i class="fas fa-trash"></i></button>
                 `;
 
                 if (i < 8) {
@@ -1026,6 +1112,88 @@
             }
         };
 
+        // DELETE APPLICATION FROM FIRESTORE
+        window.deleteApplication = async function(id) {
+            if (confirm(`⚠️ আপনি কি নিশ্চিতভাবে আবেদন আইডি ${id} সম্পূর্ণ মুছে ফেলতে চান?`)) {
+                try {
+                    await deleteDoc(doc(db, "applications", id));
+                    showToast(`🗑️ আবেদন ${id} সফলভাবে ডিলিট করা হয়েছে!`, 'success');
+                } catch (err) {
+                    showToast('ডিলিট করতে ব্যর্থ: ' + err.message, 'error');
+                }
+            }
+        };
+
+        // PDF REPORT EXPORT FUNCTION
+        window.exportPDFReport = function(type) {
+            let data = loadedApplications;
+            if (type !== 'All') {
+                data = loadedApplications.filter(a => a.status === type);
+            }
+
+            if (data.length === 0) {
+                showToast(`⚠️ এই ক্যাটাগরিতে (${type}) কোনো আবেদন নেই!`, 'error');
+                return;
+            }
+
+            const reportContainer = document.createElement('div');
+            reportContainer.style.padding = '30px';
+            reportContainer.style.background = '#ffffff';
+            reportContainer.style.color = '#0f172a';
+            reportContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+
+            let rowsHtml = '';
+            data.forEach((item, index) => {
+                rowsHtml += `
+                    <tr style="border-bottom: 1px solid #e2e8f0; font-size: 11px;">
+                        <td style="padding: 8px;">${index + 1}</td>
+                        <td style="padding: 8px; font-weight:700; font-family:monospace;">${item.id}</td>
+                        <td style="padding: 8px;">${item.fullName || 'N/A'}</td>
+                        <td style="padding: 8px;">${item.category || 'N/A'}</td>
+                        <td style="padding: 8px;">${item.role || 'N/A'}</td>
+                        <td style="padding: 8px;">${item.personalPhone || 'N/A'}</td>
+                        <td style="padding: 8px; font-family:monospace;">${item.tnxId || 'N/A'}</td>
+                        <td style="padding: 8px; font-weight:700;">${item.status || 'Pending'}</td>
+                    </tr>
+                `;
+            });
+
+            reportContainer.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px;">
+                    <h2 style="margin: 0; color: #0f172a;">CYBER SENTINEL BANGLADESH</h2>
+                    <p style="margin: 4px 0 0; font-size: 12px; color: #64748b; font-weight: 700;">ADMISSION REPORT: ${type.toUpperCase()} CANDIDATES</p>
+                    <small style="color: #94a3b8;">তৈরির সময়: ${new Date().toLocaleString('bn-BD')} | মোট আবেদন: ${data.length}টি</small>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: #f1f5f9; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 8px;">#</th>
+                            <th style="padding: 8px;">আইডি</th>
+                            <th style="padding: 8px;">নাম</th>
+                            <th style="padding: 8px;">ক্যাটাগরি</th>
+                            <th style="padding: 8px;">রোল</th>
+                            <th style="padding: 8px;">মোবাইল</th>
+                            <th style="padding: 8px;">TNX</th>
+                            <th style="padding: 8px;">স্ট্যাটাস</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            `;
+
+            const opt = {
+                margin: 10,
+                filename: `CSB_Report_${type}_${Date.now()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            html2pdf().set(opt).from(reportContainer).save();
+        };
+
         // TAB SWITCHER
         window.switchTab = function(tabId) {
             document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
@@ -1036,11 +1204,11 @@
 
             const titles = {
                 dashboard: 'ড্যাশবোর্ড ওভারভিউ',
-                branding: 'হোম ব্যানার ও ব্যাচ কন্ট্রোল',
+                branding: 'হোম ব্যানার, নোটিশ ও ব্যাচ কন্ট্রোল',
                 categories: 'ক্যাটাগরি ও রোল ম্যানেজমেন্ট',
                 fees: 'ফি এবং টেলিগ্রাম লিংক কন্ট্রোল',
                 oath: 'শপথনামা টেক্সট কন্ট্রোল',
-                applications: 'সকল আবেদনকারীদের তালিকা'
+                applications: 'সকল আবেদন ও রিপোর্ট কন্ট্রোল'
             };
             document.getElementById('panelTitle').textContent = titles[tabId] || 'অ্যাডমিন ড্যাশবোর্ড';
         };
