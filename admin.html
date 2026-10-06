@@ -6,7 +6,7 @@
     <title>CSB Master Admin Engine | Cyber Sentinel Bangladesh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-    <!-- PDF Export Library -->
+    <!-- PDF Export Libraries (html2pdf & jspdf) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -96,6 +96,12 @@
             padding-bottom: 25px;
             border-bottom: 1px solid var(--card-border);
             margin-bottom: 25px;
+        }
+        .sidebar .brand img {
+            max-width: 36px;
+            max-height: 36px;
+            object-fit: contain;
+            border-radius: 8px;
         }
         .sidebar .brand i { font-size: 26px; color: var(--primary); filter: drop-shadow(0 0 10px var(--primary-glow)); }
         .sidebar .brand h3 { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
@@ -372,7 +378,10 @@
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="brand">
-                <i class="fas fa-shield-halved"></i>
+                <div id="sidebarLogoHolder">
+                    <i class="fas fa-shield-halved" id="sidebarDefaultIcon"></i>
+                    <img id="sidebarLogoImg" src="" alt="Logo" style="display: none;" />
+                </div>
                 <div>
                     <h3>CSB PORTAL ENGINE</h3>
                     <span>v4.0 ENTERPRISE ADMIN</span>
@@ -469,14 +478,14 @@
 
             <!-- TAB 2: BRANDING (LOGO, BANNER, NOTICE & BATCH) -->
             <div class="content-panel" id="tab-branding">
-                <!-- 1. DYNAMIC LOGO UPLOAD -->
+                <!-- DYNAMIC LOGO UPLOAD -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-shield-cat"></i> হোম লোগো আপলোড ও কন্ট্রোল</h3>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>সরাসরি লোগো আপলোড করুন (Local File Upload)</label>
+                            <label>সরাসরি লোগো আপলোড করুন (ছবি ফাইল)</label>
                             <input type="file" id="cfgLogoFileInput" class="form-control" accept="image/*" />
                         </div>
                         <div class="form-group">
@@ -491,7 +500,7 @@
                     </div>
                 </div>
 
-                <!-- 2. NOTICE -->
+                <!-- NOTICE -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-bullhorn"></i> ইউজার প্যানেল লাইভ নোটিশ বক্স</h3>
@@ -502,14 +511,14 @@
                     </div>
                 </div>
 
-                <!-- 3. BANNER -->
+                <!-- BANNER -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-image"></i> হোম ব্যানার আপলোড ও কন্ট্রোল</h3>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>সরাসরি ব্যানার আপলোড করুন (Local File Upload)</label>
+                            <label>সরাসরি ব্যানার আপলোড করুন (ছবি ফাইল)</label>
                             <input type="file" id="cfgBannerFileInput" class="form-control" accept="image/*" />
                         </div>
                         <div class="form-group">
@@ -524,7 +533,7 @@
                     </div>
                 </div>
 
-                <!-- 4. BATCH -->
+                <!-- BATCH -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-graduation-cap"></i> ব্যাচ ম্যানেজমেন্ট</h3>
@@ -652,15 +661,16 @@
                             <button class="btn-report" onclick="exportPDFReport('All')"><i class="fas fa-file-pdf"></i> সকল আবেদন PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('Approved')"><i class="fas fa-file-circle-check"></i> অনুমোদিত PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('Pending')"><i class="fas fa-file-circle-exclamation"></i> পেন্ডিং PDF</button>
+                            <button class="btn-report" onclick="exportPDFReport('Rejected')"><i class="fas fa-file-circle-xmark"></i> বাতিল PDF</button>
                         </div>
                     </div>
 
                     <!-- 1 DAY SPECIFIC DATE REPORT GENERATOR -->
-                    <div style="background: rgba(0, 245, 212, 0.03); border: 1px solid rgba(0, 245, 212, 0.15); border-radius: 14px; padding: 16px; margin-bottom: 20px;">
-                        <h4 style="font-size: 13px; color: var(--primary); margin-bottom: 10px;"><i class="fas fa-calendar-day"></i> নির্দিষ্ট ১ দিনের আবেদন রিপোর্ট PDF তৈরি করুন:</h4>
+                    <div style="background: rgba(0, 245, 212, 0.03); border: 1px solid rgba(0, 245, 212, 0.15); border-radius: 14px; padding: 18px; margin-bottom: 20px;">
+                        <h4 style="font-size: 13px; color: var(--primary); margin-bottom: 10px;"><i class="fas fa-calendar-day"></i> নির্দিষ্ট ১ দিনের পূর্ণাঙ্গ আবেদন রিপোর্ট (Approve/Reject সামারি সহ):</h4>
                         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
                             <input type="date" id="dailyReportDateInput" class="form-control" style="max-width: 240px;" />
-                            <button class="btn-primary" onclick="exportDailyReport()" style="padding: 10px 20px;"><i class="fas fa-download"></i> এই দিনের রিপোর্ট PDF ডাউনলোড</button>
+                            <button class="btn-primary" onclick="exportDailyReport()" style="padding: 10px 22px;"><i class="fas fa-download"></i> ১ দিনের রিপোর্ট PDF ডাউনলোড</button>
                         </div>
                     </div>
 
@@ -795,7 +805,7 @@
                     document.getElementById('cfgLogoUrl').value = '';
                     document.getElementById('logoPreviewBox').style.display = 'block';
                     document.getElementById('logoImgPreview').src = portalConfig.logoUrl;
-                    showToast('লোগো সিলেক্ট হয়েছে! এবার "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
+                    showToast('লোগো সিলেক্ট হয়েছে! "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
                 };
                 reader.readAsDataURL(file);
             }
@@ -824,7 +834,7 @@
                     document.getElementById('cfgBannerUrl').value = '';
                     document.getElementById('bannerPreviewBox').style.display = 'block';
                     document.getElementById('bannerImgPreview').src = portalConfig.bannerUrl;
-                    showToast('ব্যানার সিলেক্ট হয়েছে! এবার "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
+                    showToast('ব্যানার সিলেক্ট হয়েছে! "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
                 };
                 reader.readAsDataURL(file);
             }
@@ -861,12 +871,19 @@
             document.getElementById('cfgPaymentNumber').value = portalConfig.paymentNumber || '';
             document.getElementById('statBatch').textContent = portalConfig.batchTitle || 'Batch 8-9';
 
-            // লোগো প্রিভিউ
+            // সাইডবার ও ব্র্যান্ডিং লোগো
+            const sidebarLogoImg = document.getElementById('sidebarLogoImg');
+            const sidebarDefaultIcon = document.getElementById('sidebarDefaultIcon');
             if (portalConfig.logoUrl) {
                 document.getElementById('logoPreviewBox').style.display = 'block';
                 document.getElementById('logoImgPreview').src = portalConfig.logoUrl;
+                sidebarLogoImg.src = portalConfig.logoUrl;
+                sidebarLogoImg.style.display = 'inline-block';
+                sidebarDefaultIcon.style.display = 'none';
             } else {
                 document.getElementById('logoPreviewBox').style.display = 'none';
+                sidebarLogoImg.style.display = 'none';
+                sidebarDefaultIcon.style.display = 'inline-block';
             }
 
             // ব্যানার প্রিভিউ
@@ -898,6 +915,7 @@
                 await setDoc(doc(db, "settings", "portalConfig"), portalConfig);
                 showToast('সব কনফিগারেশন ক্লাউডে লাইভ সেভ হয়েছে!', 'success');
                 document.getElementById('statBatch').textContent = portalConfig.batchTitle;
+                renderConfigToUI();
             } catch (err) {
                 showToast('সেভ করতে ব্যর্থ: ' + err.message, 'error');
             }
@@ -1183,7 +1201,7 @@
 
         // DELETE APPLICATION FROM FIRESTORE
         window.deleteApplication = async function(id) {
-            if (confirm(`⚠️ আপনি কি নিশ্চিতভাবে আবেদন আইডি ${id} সম্পূর্ণ মুছে ফেলতে চান?`)) {
+            if (confirm(`⚠️️ আপনি কি নিশ্চিতভাবে আবেদন আইডি ${id} সম্পূর্ণ মুছে ফেলতে চান?`)) {
                 try {
                     await deleteDoc(doc(db, "applications", id));
                     showToast(`🗑️ আবেদন ${id} সফলভাবে ডিলিট করা হয়েছে!`, 'success');
@@ -1193,8 +1211,15 @@
             }
         };
 
-        // RELIABLE PDF GENERATOR ENGINE (Fixes PDF Not Downloading)
+        // 100% RELIABLE PDF DOWNLOAD ENGINE (With Official Logo)
         function triggerPDFDownload(element, filename) {
+            element.style.position = 'fixed';
+            element.style.left = '0';
+            element.style.top = '0';
+            element.style.zIndex = '-9999';
+            element.style.width = '1000px';
+            element.style.background = '#ffffff';
+
             document.body.appendChild(element);
 
             const opt = {
@@ -1206,7 +1231,7 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                document.body.removeChild(element);
+                if (element.parentNode) document.body.removeChild(element);
                 showToast('✅ PDF রিপোর্ট সফলভাবে ডাউনলোড হয়েছে!', 'success');
             }).catch(err => {
                 if (element.parentNode) document.body.removeChild(element);
@@ -1228,8 +1253,7 @@
             }
 
             const reportContainer = document.createElement('div');
-            reportContainer.style.padding = '30px';
-            reportContainer.style.background = '#ffffff';
+            reportContainer.style.padding = '35px';
             reportContainer.style.color = '#0f172a';
             reportContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
 
@@ -1238,23 +1262,35 @@
                 rowsHtml += `
                     <tr style="border-bottom: 1px solid #e2e8f0; font-size: 11px;">
                         <td style="padding: 8px;">${index + 1}</td>
-                        <td style="padding: 8px; font-weight:700; font-family:monospace;">${item.id}</td>
-                        <td style="padding: 8px;">${item.fullName || 'N/A'}</td>
+                        <td style="padding: 8px; font-weight:700; font-family:monospace; color:#0284c7;">${item.id}</td>
+                        <td style="padding: 8px; font-weight:600;">${item.fullName || 'N/A'}</td>
                         <td style="padding: 8px;">${item.category || 'N/A'}</td>
                         <td style="padding: 8px;">${item.role || 'N/A'}</td>
                         <td style="padding: 8px;">${item.personalPhone || 'N/A'}</td>
                         <td style="padding: 8px; font-family:monospace;">${item.tnxId || 'N/A'}</td>
-                        <td style="padding: 8px; font-weight:700;">${item.status || 'Pending'}</td>
+                        <td style="padding: 8px; font-weight:700; color:${item.status === 'Approved' ? '#16a34a' : (item.status === 'Rejected' ? '#dc2626' : '#d97706')};">${item.status || 'Pending'}</td>
                     </tr>
                 `;
             });
 
+            const logoHtml = portalConfig.logoUrl ? 
+                `<img src="${portalConfig.logoUrl}" style="max-height: 55px; max-width: 55px; object-fit: contain; border-radius: 8px; margin-right: 15px;" />` : '';
+
             reportContainer.innerHTML = `
-                <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px;">
-                    <h2 style="margin: 0; color: #0f172a;">CYBER SENTINEL BANGLADESH</h2>
-                    <p style="margin: 4px 0 0; font-size: 12px; color: #64748b; font-weight: 700;">ADMISSION REPORT: ${type.toUpperCase()} CANDIDATES</p>
-                    <small style="color: #94a3b8;">তৈরির সময়: ${new Date().toLocaleString('bn-BD')} | মোট আবেদন: ${data.length}টি</small>
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 14px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center;">
+                        ${logoHtml}
+                        <div>
+                            <h2 style="margin: 0; color: #0f172a; font-size: 20px; font-weight: 800;">CYBER SENTINEL BANGLADESH</h2>
+                            <p style="margin: 3px 0 0; font-size: 12px; color: #475569; font-weight: 700; letter-spacing: 1px;">OFFICIAL ADMISSION REPORT: ${type.toUpperCase()}</p>
+                        </div>
+                    </div>
+                    <div style="text-align: right; font-size: 11px; color: #64748b;">
+                        <p style="margin: 0;">রিপোর্ট সময়: ${new Date().toLocaleString('bn-BD')}</p>
+                        <p style="margin: 3px 0 0; font-weight: 700; color: #0f172a;">মোট আবেদন: ${data.length}টি</p>
+                    </div>
                 </div>
+
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
                         <tr style="background: #f1f5f9; font-size: 11px; text-transform: uppercase;">
@@ -1277,7 +1313,7 @@
             triggerPDFDownload(reportContainer, `CSB_Report_${type}_${Date.now()}.pdf`);
         };
 
-        // 1-DAY SPECIFIC DATE REPORT GENERATOR
+        // 1-DAY SPECIFIC DATE REPORT GENERATOR (With Full Status Breakdown)
         window.exportDailyReport = function() {
             const dateVal = document.getElementById('dailyReportDateInput').value;
             if (!dateVal) {
@@ -1311,9 +1347,15 @@
                 return;
             }
 
+            let appCount = 0, rejCount = 0, pendCount = 0;
+            dailyApps.forEach(a => {
+                if (a.status === 'Approved') appCount++;
+                else if (a.status === 'Rejected') rejCount++;
+                else pendCount++;
+            });
+
             const reportContainer = document.createElement('div');
-            reportContainer.style.padding = '30px';
-            reportContainer.style.background = '#ffffff';
+            reportContainer.style.padding = '35px';
             reportContainer.style.color = '#0f172a';
             reportContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
 
@@ -1322,23 +1364,43 @@
                 rowsHtml += `
                     <tr style="border-bottom: 1px solid #e2e8f0; font-size: 11px;">
                         <td style="padding: 8px;">${index + 1}</td>
-                        <td style="padding: 8px; font-weight:700; font-family:monospace;">${item.id}</td>
-                        <td style="padding: 8px;">${item.fullName || 'N/A'}</td>
+                        <td style="padding: 8px; font-weight:700; font-family:monospace; color:#0284c7;">${item.id}</td>
+                        <td style="padding: 8px; font-weight:600;">${item.fullName || 'N/A'}</td>
                         <td style="padding: 8px;">${item.category || 'N/A'}</td>
                         <td style="padding: 8px;">${item.role || 'N/A'}</td>
                         <td style="padding: 8px;">${item.personalPhone || 'N/A'}</td>
                         <td style="padding: 8px; font-family:monospace;">${item.tnxId || 'N/A'}</td>
-                        <td style="padding: 8px; font-weight:700;">${item.status || 'Pending'}</td>
+                        <td style="padding: 8px; font-weight:700; color:${item.status === 'Approved' ? '#16a34a' : (item.status === 'Rejected' ? '#dc2626' : '#d97706')};">${item.status || 'Pending'}</td>
                     </tr>
                 `;
             });
 
+            const logoHtml = portalConfig.logoUrl ? 
+                `<img src="${portalConfig.logoUrl}" style="max-height: 55px; max-width: 55px; object-fit: contain; border-radius: 8px; margin-right: 15px;" />` : '';
+
             reportContainer.innerHTML = `
-                <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px;">
-                    <h2 style="margin: 0; color: #0f172a;">CYBER SENTINEL BANGLADESH</h2>
-                    <p style="margin: 4px 0 0; font-size: 13px; color: #0284c7; font-weight: 800;">DAILY ADMISSION REPORT: ${dateVal}</p>
-                    <small style="color: #64748b;">এই দিনে মোট আবেদন: <strong>${dailyApps.length}</strong>টি | রিপোর্ট তৈরির সময়: ${new Date().toLocaleString('bn-BD')}</small>
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 14px; margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center;">
+                        ${logoHtml}
+                        <div>
+                            <h2 style="margin: 0; color: #0f172a; font-size: 20px; font-weight: 800;">CYBER SENTINEL BANGLADESH</h2>
+                            <p style="margin: 3px 0 0; font-size: 12px; color: #0284c7; font-weight: 800;">DAILY ADMISSION AUDIT REPORT: ${dateVal}</p>
+                        </div>
+                    </div>
+                    <div style="text-align: right; font-size: 11px; color: #64748b;">
+                        <p style="margin: 0;">তারিখ: ${dateVal}</p>
+                        <p style="margin: 2px 0 0;">প্রিন্ট সময়: ${new Date().toLocaleTimeString('bn-BD')}</p>
+                    </div>
                 </div>
+
+                <!-- Daily Summary Stats Box in PDF -->
+                <div style="display: flex; gap: 12px; margin-bottom: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 18px; font-size: 12px;">
+                    <div style="flex: 1;"><strong>মোট আবেদন:</strong> ${dailyApps.length}টি</div>
+                    <div style="flex: 1; color: #16a34a;"><strong>অনুমোদিত (Approved):</strong> ${appCount}টি</div>
+                    <div style="flex: 1; color: #dc2626;"><strong>বাতিল (Rejected):</strong> ${rejCount}টি</div>
+                    <div style="flex: 1; color: #d97706;"><strong>পেন্ডিং (Pending):</strong> ${pendCount}টি</div>
+                </div>
+
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
                         <tr style="background: #f1f5f9; font-size: 11px; text-transform: uppercase;">
@@ -1367,8 +1429,8 @@
             document.querySelectorAll('.nav-item button').forEach(b => b.classList.remove('active'));
             
             document.getElementById('tab-' + tabId).classList.add('active');
-            if (event && event.currentTarget) {
-                event.currentTarget.classList.add('active');
+            if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
             }
 
             const titles = {
