@@ -600,19 +600,6 @@
         }
         .btn-modal.error { background: var(--accent-red); color: #fff; }
 
-        .spinner {
-            display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(3, 7, 18, 0.3);
-            border-top: 2px solid #030712;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .btn-submit.loading .spinner { display: inline-block; }
-        .btn-submit.loading .btn-text { display: none; }
-
         /* পেমেন্ট গেটওয়ে পপআপ বক্স */
         .payment-modal-box {
             background: #0b1329;
@@ -647,6 +634,21 @@
             font-family: 'JetBrains Mono', monospace;
             margin-bottom: 22px;
         }
+
+        .copy-btn {
+            background: rgba(0, 245, 212, 0.1);
+            border: 1px solid rgba(0, 245, 212, 0.25);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .copy-btn:hover { background: var(--primary); color: #030712; }
 
         @media (max-width: 768px) {
             .container { padding: 24px 16px; border-radius: 20px; }
@@ -901,10 +903,9 @@
                     <div class="status-text" id="progressStatus">প্রসেসিং হচ্ছে... (০%)</div>
                 </div>
 
-                <!-- NEXT STEP TO AUTO PAYMENT BUTTON -->
+                <!-- NEXT STEP BUTTON -->
                 <div class="btn-group">
                     <button type="button" class="btn-submit" id="nextToPayBtn">
-                        <span class="spinner"></span>
                         <span class="btn-text">পরবর্তী ধাপ (পেমেন্ট করুন) <i class="fas fa-arrow-right" style="margin-left:6px;"></i></span>
                     </button>
                     <button type="reset" class="btn-reset"><i class="fas fa-rotate-left"></i> রিসেট</button>
@@ -938,13 +939,13 @@
             <i class="fas fa-circle-check icon"></i>
             <h2>আবেদন সফল ও অনুমোদিত!</h2>
             <p>
-                আপনার পেমেন্ট সফলভাবে ভেরিফাই হয়েছে এবং আবেদনটি সিস্টেমে জমা পড়েছে।<br>
+                আপনার পেমেন্ট সফলভাবে সম্পন্ন হয়েছে এবং আবেদনটি সিস্টেমে জমা পড়েছে।<br>
                 <strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">
                     ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span>
                 </strong>
                 <button type="button" class="copy-btn" onclick="copyText('trackingIdDisplay')" style="margin-left: 6px;"><i class="fas fa-copy"></i> কপি</button>
                 <br><br>
-                আপনার অফিসিয়াল স্লিপটি <strong>PNG ছবি</strong> হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।
+                আপনার অফিশিয়াল স্লিপটি <strong>PNG ছবি</strong> হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।
             </p>
             <button class="btn-modal" onclick="closeModal()">ঠিক আছে</button>
         </div>
@@ -1317,14 +1318,13 @@
 
             tempFormData = formData;
 
-            // ফি প্রদর্শন ও পেমেন্ট পপআপ ওপেন
             const currentFee = getActiveCategoryFee();
             document.getElementById('payModalFeeDisplay').textContent = `${currentFee} টাকা`;
             document.getElementById('paymentModal').classList.add('show');
         });
 
         // ===================================================================
-        // STEP 2: AUTO PAYMENT GATEWAY INVOCATION & SUBMIT
+        // STEP 2: AUTO PAYMENT GATEWAY (STRICT EXECUTION - NO FAKE SUBMISSION)
         // ===================================================================
         document.getElementById('proceedAutoPayBtn').addEventListener('click', async function() {
             if (!tempFormData) return;
@@ -1336,7 +1336,7 @@
             const callbackUrl = window.location.href.split('?')[0];
 
             try {
-                // ১. পেমেন্ট রিকোয়েস্ট তৈরি
+                // ১. সরাসরি এপিআই কল করে পেমেন্ট লিঙ্ক তৈরি
                 const res = await fetch(AUTOPAY_CREATE_URL, {
                     method: 'POST',
                     headers: {
@@ -1344,10 +1344,10 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        amount: currentFee,
-                        success_url: `${callbackUrl}?status=success`,
-                        cancel_url: `${callbackUrl}?status=cancel`,
-                        webhook_url: `${callbackUrl}?status=webhook`,
+                        amount: String(currentFee),
+                        success_url: `${callbackUrl}?payment_status=success`,
+                        cancel_url: `${callbackUrl}?payment_status=cancel`,
+                        webhook_url: `${callbackUrl}?payment_status=webhook`,
                         metadata: {
                             phone: tempFormData.personalPhone,
                             name: tempFormData.fullName,
@@ -1357,26 +1357,30 @@
                 });
 
                 const paymentData = await res.json();
+                const payUrl = paymentData.payment_url || paymentData.url || (paymentData.data && (paymentData.data.payment_url || paymentData.data.url));
 
-                // যদি ডিরেক্ট পেমেন্ট URL দেয় তবে ইউজারকে রিডাইরেক্ট করা যাবে
-                // অথবা সিম্যুলেটেড ট্রানজেকশন আইডি থাকলে সরাসরি সাবমিট হবে:
-                if (paymentData.payment_url || paymentData.url) {
-                    // সেশন স্টোরেজে ডেটা রেখে পেমেন্টে রিডাইরেক্ট
-                    sessionStorage.setItem('CSB_TEMP_SUBMISSION', JSON.stringify(tempFormData));
-                    window.location.href = paymentData.payment_url || paymentData.url;
-                } else {
-                    // সরাসরি ট্রানজেকশন সফল হলে সাবমিশন এক্সিকিউট করা
-                    const autoTnxId = paymentData.transaction_id || paymentData.tnx_id || ('PAY-' + Math.random().toString(36).substring(2, 10).toUpperCase());
+                if (payUrl) {
+                    // সেশন স্টোরেজে ফর্ম ডেটা সংরক্ষণ করে পেমেন্ট পেজে রিডাইরেক্ট
+                    sessionStorage.setItem('CSB_ACTIVE_REGISTRATION', JSON.stringify(tempFormData));
+                    window.location.href = payUrl;
+                } else if (paymentData.transaction_id || (paymentData.data && paymentData.data.transaction_id)) {
+                    // ইনস্ট্যান্ট সাকসেস হলে
+                    const tnx = paymentData.transaction_id || paymentData.data.transaction_id;
                     document.getElementById('paymentModal').classList.remove('show');
-                    await completeFinalSubmission(tempFormData, autoTnxId);
+                    await completeFinalSubmission(tempFormData, tnx);
+                } else {
+                    throw new Error(paymentData.message || 'পেমেন্ট গেটওয়ে লিঙ্ক পাওয়া যায়নি!');
                 }
 
             } catch (err) {
-                console.error("Payment Gateway Error:", err);
-                // ফেইল-সেফ অটো ট্রানজেকশন ফলব্যাক
-                const fallbackTnx = 'AUTO-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+                console.error("Payment API Error:", err);
+                document.getElementById('errorMessage').innerHTML = `
+                    <p style="color:#fff; font-weight:700;">পেমেন্ট গেটওয়েতে সংযোগ ব্যর্থ হয়েছে!</p>
+                    <p style="margin-top:6px; font-size:12px; color:var(--text-muted);">${err.message}</p>
+                    <p style="margin-top:4px; font-size:12px; color:var(--accent-red);">পেমেন্ট সম্পন্ন না হওয়া পর্যন্ত কোনো আবেদন জমা নেওয়া হবে না।</p>
+                `;
+                document.getElementById('errorModal').classList.add('show');
                 document.getElementById('paymentModal').classList.remove('show');
-                await completeFinalSubmission(tempFormData, fallbackTnx);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fas fa-bolt"></i> পেমেন্ট শুরু করুন`;
@@ -1384,7 +1388,58 @@
         });
 
         // ===================================================================
-        // FINAL SUBMISSION TO FIRESTORE, TELEGRAM & PNG SLIP
+        // CALLBACK HANDLER & PAYMENT VERIFICATION (AFTER RETURNING FROM GATEWAY)
+        // ===================================================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentStatus = urlParams.get('payment_status');
+            const transactionId = urlParams.get('transaction_id') || urlParams.get('tnx_id') || urlParams.get('trxID');
+
+            if (paymentStatus === 'success' && transactionId) {
+                const savedData = sessionStorage.getItem('CSB_ACTIVE_REGISTRATION');
+                if (!savedData) return;
+
+                showToast('🔍 পেমেন্ট গেটওয়ে ভেরিফাই হচ্ছে...', 'success');
+
+                try {
+                    // ২. গেটওয়েতে ট্রানজেকশন ভেরিফিকেশন কল
+                    const vRes = await fetch(AUTOPAY_VERIFY_URL, {
+                        method: 'POST',
+                        headers: {
+                            'API-KEY': AUTOPAY_API_KEY,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            transaction_id: transactionId
+                        })
+                    });
+
+                    const vData = await vRes.json();
+                    const isVerified = (vData.status === 'success' || vData.status === true || (vData.data && vData.data.status === 'COMPLETED'));
+
+                    if (isVerified) {
+                        const parsedData = JSON.parse(savedData);
+                        sessionStorage.removeItem('CSB_ACTIVE_REGISTRATION');
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                        await completeFinalSubmission(parsedData, transactionId);
+                    } else {
+                        throw new Error('পেমেন্ট গেটওয়ে দ্বারা লেনদেনটি ভেরিফাই করা যায়নি!');
+                    }
+                } catch (vErr) {
+                    document.getElementById('errorMessage').innerHTML = `
+                        <p style="color:#fff; font-weight:700;">পেমেন্ট ভেরিফিকেশন ব্যর্থ হয়েছে!</p>
+                        <p style="margin-top:4px; font-size:12px; color:var(--accent-red);">${vErr.message}</p>
+                    `;
+                    document.getElementById('errorModal').classList.add('show');
+                }
+            } else if (paymentStatus === 'cancel') {
+                showToast('❌ পেমেন্ট বাতিল করা হয়েছে। আবেদন জমা হয়নি।', 'error');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+
+        // ===================================================================
+        // FINAL SUBMISSION (Only executed after genuine payment verification)
         // ===================================================================
         async function completeFinalSubmission(formData, tnxId) {
             updateProgress(20, 'ফায়ারস্টোর ডেটাবেজে সেভ হচ্ছে...');
@@ -1398,33 +1453,42 @@
                 await setDoc(doc(db, "applications", trackId), {
                     ...formData,
                     status: 'Pending',
+                    paymentStatus: 'Paid',
                     createdAt: currentTime,
                     updateTime: currentTime
                 });
                 await setDoc(doc(db, "transactions", tnxId), { trackId: trackId, usedAt: currentTime });
 
                 updateProgress(55, 'টেলিগ্রাম চ্যানেলে পাঠানো হচ্ছে...');
-                const caption = `🛡️ **CSB NEW ADMISSION (AUTO PAID)** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: ${formData.email}\n📱 WhatsApp: ${formData.whatsapp}\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 সনদ: ${formData.docType} (${formData.nidNumber})\n📅 জন্ম: ${formData.dob}\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n💳 অটো TNX: \`${tnxId}\`\n📞 অভিভাবক: ${formData.guardianPhone}\n📱 নিজের: ${formData.personalPhone}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন টাইম: ${currentTime}`;
+                const caption = `🛡️ **CSB NEW ADMISSION (AUTO PAID)** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: ${formData.email}\n📱 WhatsApp: ${formData.whatsapp}\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 সনদ: ${formData.docType} (${formData.nidNumber})\n📅 জন্ম: ${formData.dob}\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n💳 ভেরিফাইড TNX: \`${tnxId}\`\n📞 অভিভাবক: ${formData.guardianPhone}\n📱 নিজের: ${formData.personalPhone}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন টাইম: ${currentTime}`;
 
                 // টেলিগ্রাম মিডিয়া সাবমিশন
                 const mediaGroup = new FormData();
                 mediaGroup.append('chat_id', CHANNEL_ID_SUBMIT);
-                mediaGroup.append('file1', document.getElementById('photo1').files[0], 'photo1.jpg');
-                mediaGroup.append('file2', document.getElementById('photo2').files[0], 'photo2.jpg');
-                mediaGroup.append('file3', document.getElementById('nid').files[0], 'nid.jpg');
-                mediaGroup.append('videoFile', recordedBlob, `oath_${trackId}.mp4`);
+                if (document.getElementById('photo1') && document.getElementById('photo1').files.length) {
+                    mediaGroup.append('file1', document.getElementById('photo1').files[0], 'photo1.jpg');
+                    mediaGroup.append('file2', document.getElementById('photo2').files[0], 'photo2.jpg');
+                    mediaGroup.append('file3', document.getElementById('nid').files[0], 'nid.jpg');
+                    if (recordedBlob) mediaGroup.append('videoFile', recordedBlob, `oath_${trackId}.mp4`);
 
-                const mediaData = [
-                    { type: 'photo', media: 'attach://file1', caption: caption },
-                    { type: 'photo', media: 'attach://file2' },
-                    { type: 'photo', media: 'attach://file3' },
-                    { type: 'video', media: 'attach://videoFile' }
-                ];
-                mediaGroup.append('media', JSON.stringify(mediaData));
+                    const mediaData = [
+                        { type: 'photo', media: 'attach://file1', caption: caption },
+                        { type: 'photo', media: 'attach://file2' },
+                        { type: 'photo', media: 'attach://file3' }
+                    ];
+                    if (recordedBlob) mediaData.push({ type: 'video', media: 'attach://videoFile' });
+                    mediaGroup.append('media', JSON.stringify(mediaData));
 
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
-                    method: 'POST', body: mediaGroup
-                }).catch(() => {});
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
+                        method: 'POST', body: mediaGroup
+                    }).catch(() => {});
+                } else {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: CHANNEL_ID_SUBMIT, text: caption, parse_mode: 'Markdown' })
+                    }).catch(() => {});
+                }
 
                 updateProgress(85, 'অ্যাকশন কন্ট্রোল ও PNG তৈরি হচ্ছে...');
 
@@ -1434,7 +1498,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         chat_id: CHANNEL_ID_SUBMIT, 
-                        text: `🚨 **CSB ACTION PANEL** 🚨\nID: \`${trackId}\`\nনাম: ${formData.fullName}\nরোল: ${formData.role}\nTNX: ${tnxId}`, 
+                        text: `🚨 **CSB ACTION PANEL (VERIFIED PAYMENT)** 🚨\nID: \`${trackId}\`\nনাম: ${formData.fullName}\nরোল: ${formData.role}\nTNX: ${tnxId}`, 
                         parse_mode: 'Markdown'
                     })
                 });
@@ -1460,7 +1524,6 @@
                     });
                 }
 
-                // PNG স্লিপ ডাউনলোড
                 await generateAutoPNG(trackId, formData, currentTime);
 
                 updateProgress(100, 'সম্পন্ন হয়েছে!');
@@ -1538,7 +1601,7 @@
                         <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.docType} (${formData.nidNumber})</td>
                     </tr>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">অটো পেমেন্ট TNX:</td>
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">গেটওয়ে লেনদেন (TNX):</td>
                         <td style="padding: 9px 0; font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
@@ -1546,8 +1609,8 @@
                         <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${currentTime}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">বর্তমান অবস্থা:</td>
-                        <td style="padding: 9px 0; font-weight: 800; color: #f59e0b;">Pending (যাচাই চলছে)</td>
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">পেমেন্ট স্ট্যাটাস:</td>
+                        <td style="padding: 9px 0; font-weight: 800; color: #00f5d4;">VERIFIED & PAID</td>
                     </tr>
                 </table>
 
