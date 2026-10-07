@@ -30,43 +30,16 @@
             color: var(--text-main);
         }
         .container {
-            max-width: 520px;
-            width: 100%;
-            background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 35px;
-            text-align: center;
+            max-width: 520px; width: 100%; background: var(--card-bg);
+            backdrop-filter: blur(25px); border: 1px solid var(--card-border);
+            border-radius: 24px; padding: 35px; text-align: center;
             box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
         .pay-success-icon { font-size: 60px; color: var(--accent-green); margin-bottom: 15px; }
         h2 { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 8px; }
         p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
-        .tnx-box {
-            background: rgba(2, 6, 23, 0.8);
-            border: 1px solid var(--card-border);
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #10b981, #00f5d4);
-            border: none;
-            border-radius: 14px;
-            color: #030712;
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
-        }
+        .tnx-box { background: rgba(2, 6, 23, 0.8); border: 1px solid var(--card-border); padding: 12px 18px; border-radius: 12px; font-family: 'JetBrains Mono', monospace; color: var(--primary); font-weight: 700; margin-bottom: 25px; font-size: 14px; }
+        .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, #10b981, #00f5d4); border: none; border-radius: 14px; color: #030712; font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3); }
         .btn-submit:hover:not(:disabled) { transform: translateY(-2px); }
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
         .upload-progress { display: none; margin-top: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 9999px; height: 6px; overflow: hidden; }
@@ -85,7 +58,7 @@
     <div class="container">
         <i class="fas fa-circle-check pay-success-icon"></i>
         <h2>পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!</h2>
-        <p>আপনার ফর্ম ফি সফলভাবে ভেরিফাই করা হয়েছে। আবেদনটি ফায়ারস্টোর ও টেলিগ্রামে চূড়ান্তভাবে জমা দিতে নিচের বাটনে ক্লিক করুন।</p>
+        <p>আপনার ফর্ম ফি ভেরিফাই হয়েছে। আবেদনটি ফায়ারস্টোর ও টেলিগ্রামে চূড়ান্তভাবে জমা দিতে নিচের বাটনে ক্লিক করুন।</p>
         
         <div class="tnx-box">
             TNX ID: <span id="displayTnx">--</span>
@@ -108,7 +81,7 @@
             <p style="font-size:13px; color:var(--text-muted); margin:10px 0;">
                 ট্র্যাকিং আইডি: <strong id="trackingIdDisplay" style="color:var(--primary); font-family:monospace;"></strong>
             </p>
-            <p style="font-size:12px; color:#94a3b8;">আপনার অফিশিয়াল স্লিপটি PNG ছবি হিসেবে ডাউনলোড হয়ে গেছে।</p>
+            <p style="font-size:12px; color:#94a3b8;">আপনার অফিশিয়াল স্লিপটি PNG ছবি হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।</p>
             <button class="btn-modal" onclick="window.location.href='/'">হোমে ফিরুন</button>
         </div>
     </div>
@@ -154,20 +127,37 @@
             document.getElementById('progressStatus').textContent = `${status} (${pct}%)`;
         }
 
+        // Helper: Convert Base64 back to Blob/File for Telegram & PNG
+        const base64ToBlob = (base64Data, contentType = '') => {
+            const sliceSize = 512;
+            const byteCharacters = atob(base64Data.split(',')[1]);
+            const byteArrays = [];
+            for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                const slice = byteCharacters.slice(offset, offset + sliceSize);
+                const byteNumbers = new Array(slice.length);
+                for (let i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                byteArrays.push(byteArray);
+            }
+            return new Blob(byteArrays, { type: contentType });
+        };
+
         document.getElementById('finalSubmitBtn').addEventListener('click', async function() {
             const btn = this;
             btn.disabled = true;
 
             const savedDataStr = localStorage.getItem('CSB_ACTIVE_REGISTRATION');
             if (!savedDataStr) {
-                alert('আবেদনের তথ্য সেশনে পাওয়া যায়নি। দয়া করে আবার ফর্ম পূরণ করুন।');
+                alert('আবেদনের তথ্য পাওয়া যায়নি। দয়া করে আবার ফর্ম পূরণ করুন।');
                 window.location.href = '/';
                 return;
             }
             const formData = JSON.parse(savedDataStr);
             formData.tnxId = transactionId;
 
-            updateProgress(25, 'ডেটাবেজে সেভ হচ্ছে...');
+            updateProgress(20, 'ফায়ারস্টোর ডেটাবেজে সেভ হচ্ছে...');
             const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
             const currentTime = new Date().toLocaleString('bn-BD');
 
@@ -181,15 +171,49 @@
                 });
                 await setDoc(doc(db, "transactions", transactionId), { trackId: trackId, usedAt: currentTime });
 
-                updateProgress(60, 'টেলিগ্রামে পাঠানো হচ্ছে...');
+                updateProgress(50, 'টেলিগ্রামে ছবি, ভিডিও ও তথ্য পাঠানো হচ্ছে...');
                 
                 const caption = `🛡️ **CSB NEW ADMISSION (AUTO PAID)** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: \`${formData.email}\`\n📱 WhatsApp: \`${formData.whatsapp}\`\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 সনদ টাইপ: ${formData.docType}\n🔢 সনদ নম্বর: \`${formData.nidNumber}\`\n📅 জন্মতারিখ: \`${formData.dob}\`\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n💳 পেমেন্ট TNX: \`${transactionId}\` (VERIFIED & PAID)\n📞 অভিভাবক মোবাইল: \`${formData.guardianPhone}\`\n📱 আবেদনকারী মোবাইল: \`${formData.personalPhone}\`\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন সময়: \`${currentTime}\``;
 
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: CHANNEL_ID_SUBMIT, text: caption, parse_mode: 'Markdown' })
-                }).catch(() => {});
+                const mediaGroup = new FormData();
+                mediaGroup.append('chat_id', CHANNEL_ID_SUBMIT);
+
+                const mediaData = [];
+                if (formData.p1) {
+                    const f1 = base64ToBlob(formData.p1, 'image/jpeg');
+                    mediaGroup.append('file1', f1, formData.p1Name || 'photo1.jpg');
+                    mediaData.push({ type: 'photo', media: 'attach://file1', caption: caption, parse_mode: 'Markdown' });
+                }
+                if (formData.p2) {
+                    const f2 = base64ToBlob(formData.p2, 'image/jpeg');
+                    mediaGroup.append('file2', f2, formData.p2Name || 'photo2.jpg');
+                    mediaData.push({ type: 'photo', media: 'attach://file2' });
+                }
+                if (formData.nidData) {
+                    const f3 = base64ToBlob(formData.nidData, 'image/jpeg');
+                    mediaGroup.append('file3', f3, formData.nidName || 'nid.jpg');
+                    mediaData.push({ type: 'photo', media: 'attach://file3' });
+                }
+                if (formData.videoData) {
+                    const f4 = base64ToBlob(formData.videoData, 'video/webm');
+                    mediaGroup.append('videoFile', f4, `oath_${trackId}.webm`);
+                    mediaData.push({ type: 'video', media: 'attach://videoFile' });
+                }
+
+                if (mediaData.length > 0) {
+                    mediaGroup.append('media', JSON.stringify(mediaData));
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
+                        method: 'POST', body: mediaGroup
+                    }).catch(() => {});
+                } else {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: CHANNEL_ID_SUBMIT, text: caption, parse_mode: 'Markdown' })
+                    }).catch(() => {});
+                }
+
+                updateProgress(80, 'অ্যাকশন কন্ট্রোল ও স্লিপ তৈরি হচ্ছে...');
 
                 const webAppBaseUrl = window.location.origin + '/';
                 const actionMsgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -223,6 +247,9 @@
                     });
                 }
 
+                // PNG Slip Export & Download
+                await generateAutoPNG(trackId, formData, currentTime);
+
                 updateProgress(100, 'সম্পন্ন হয়েছে!');
                 localStorage.removeItem('CSB_ACTIVE_REGISTRATION');
                 document.getElementById('trackingIdDisplay').textContent = trackId;
@@ -234,6 +261,48 @@
                 alert('ত্রুটি দেখা দিয়েছে: ' + err.message);
             }
         });
+
+        // PNG Slip Generator Function
+        async function generateAutoPNG(trackId, formData, currentTime) {
+            const card = document.createElement('div');
+            card.style.position = 'fixed';
+            card.style.left = '-9999px';
+            card.style.top = '0';
+            card.style.width = '600px';
+            card.style.background = '#090e1a';
+            card.style.color = '#f8fafc';
+            card.style.padding = '35px';
+            card.style.borderRadius = '20px';
+            card.style.border = '2px solid #00f5d4';
+            card.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+
+            card.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 16px; margin-bottom: 22px;">
+                    <h2 style="color: #00f5d4; font-size: 22px; font-weight: 800; margin: 0;">CYBER SENTINEL BANGLADESH</h2>
+                    <p style="font-size: 11.5px; color: #94a3b8; letter-spacing: 2px; font-weight: 700; margin-top: 5px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13.5px; line-height: 1.6;">
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">ট্র্যাকিং আইডি:</td><td style="font-weight: 800; color: #00f5d4; font-family: monospace;">${trackId}</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">আবেদনকারীর নাম:</td><td style="font-weight: 700; color: #fff;">${formData.fullName}</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">মোবাইল নম্বর:</td><td style="color: #fff;">${formData.personalPhone}</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">ক্যাটাগরি ও রোল:</td><td style="color: #0ea5e9;">${formData.category} (${formData.role})</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">পেমেন্ট TNX:</td><td style="font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td></tr>
+                    <tr><td style="padding: 9px 0; color: #94a3b8;">পেমেন্ট স্ট্যাটাস:</td><td style="font-weight: 800; color: #00f5d4;">VERIFIED & PAID</td></tr>
+                </table>
+            `;
+            document.body.appendChild(card);
+            try {
+                const canvas = await html2canvas(card, { scale: 2, backgroundColor: '#090e1a', useCORS: true });
+                const link = document.createElement('a');
+                link.download = `CSB_Slip_${trackId}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error("PNG Gen Error:", err);
+            } finally {
+                document.body.removeChild(card);
+            }
+        }
     </script>
 </body>
 </html>
