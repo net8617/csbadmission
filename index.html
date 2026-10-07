@@ -386,16 +386,8 @@
             flex: 1;
             overflow: hidden;
         }
-        .file-upload-area .icon { 
-            font-size: 18px; 
-            color: var(--primary); 
-            flex-shrink: 0; 
-        }
-        .file-upload-area .info { 
-            min-width: 0; 
-            flex: 1; 
-            overflow: hidden;
-        }
+        .file-upload-area .icon { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+        .file-upload-area .info { min-width: 0; flex: 1; overflow: hidden; }
         .file-upload-area .info .main {
             font-size: 12.5px;
             color: var(--text-muted);
@@ -490,18 +482,55 @@
         .oath-text .highlight { color: #fff; font-weight: 600; }
         .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 8px; font-size: 14px; }
 
-        /* পেমেন্ট সাকসেস বক্স */
-        .payment-status-card {
+        /* ======================================================== */
+        /* PAYMENT COMPLETED DEDICATED VIEW (NEW MODERN DESIGN)     */
+        /* ======================================================== */
+        #paymentCompletedView {
             display: none;
-            background: rgba(16, 185, 129, 0.08);
-            border: 1.5px solid var(--accent-green);
-            border-radius: 18px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
+            animation: containerIn 0.5s ease forwards;
         }
-        .payment-status-card h4 { color: var(--accent-green); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-        .payment-status-card p { font-size: 13px; color: #cbd5e1; }
+        .pay-success-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(0, 245, 212, 0.03));
+            border: 1.5px solid var(--accent-green);
+            border-radius: 24px;
+            padding: 35px 25px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .pay-success-icon {
+            font-size: 60px;
+            color: var(--accent-green);
+            margin-bottom: 12px;
+            animation: pulseLive 1.5s infinite;
+        }
+        .pay-success-card h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .pay-success-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+        .tnx-badge-box {
+            background: rgba(2, 6, 23, 0.7);
+            border: 1px solid var(--card-border);
+            padding: 12px 18px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0 20px;
+            font-size: 13.5px;
+        }
+        .tnx-badge-box span {
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 15px;
+        }
 
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
         .btn-submit {
@@ -688,7 +717,7 @@
     <div class="grid-bg"></div>
 
     <div class="container" id="mainContainer">
-        <!-- LANDING -->
+        <!-- 1. LANDING PAGE -->
         <div id="landingPage">
             <div class="welcome-section" id="welcomeSection">
                 <div class="brand-logo-container" id="brandLogoContainer">
@@ -734,7 +763,7 @@
             </div>
         </div>
 
-        <!-- FORM WRAPPER -->
+        <!-- 2. FORM WRAPPER -->
         <div class="form-wrapper" id="formWrapper">
             <div class="back-btn-wrapper">
                 <button type="button" class="back-btn" id="backToHomeBtn">
@@ -745,13 +774,6 @@
             <div class="portal-notice-box" id="portalNoticeBox">
                 <h5><i class="fas fa-bullhorn"></i> জরুরি নোটিশ</h5>
                 <p id="portalNoticeText">পোর্টালের সকল তথ্য সঠিকভাবে পূরণ করুন।</p>
-            </div>
-
-            <!-- PAYMENT COMPLETED SUCCESS CARD -->
-            <div class="payment-status-card" id="paymentStatusCard">
-                <h4><i class="fas fa-circle-check"></i> ফর্ম ফি পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!</h4>
-                <p>ট্রানজেকশন আইডি: <strong id="displayVerifiedTnx" style="color:var(--primary); font-family:monospace;"></strong></p>
-                <p style="font-size:12px; margin-top:4px; color:#94a3b8;">আবেদনটি সিস্টেমে চূড়ান্তভাবে জমা দিতে নিচের বাটনে ক্লিক করুন।</p>
             </div>
 
             <form id="csbForm" novalidate autocomplete="off">
@@ -827,7 +849,6 @@
                     </div>
                 </div>
 
-                <!-- NID / BIRTH CERTIFICATE TYPE SELECTOR -->
                 <div class="form-group">
                     <label><i class="fas fa-id-card"></i><span class="step-num">10</span> সনদের ধরন নির্বাচন করুন<span class="required">*</span></label>
                     <div class="doc-type-toggle">
@@ -862,7 +883,6 @@
                     </div>
                 </div>
 
-                <!-- CATEGORY & GENDER -->
                 <div class="row-2">
                     <div class="form-group">
                         <label><i class="fas fa-layer-group"></i><span class="step-num">13</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
@@ -890,7 +910,6 @@
                     </select>
                 </div>
 
-                <!-- OATH BOX & VIDEO RECORDER -->
                 <div class="form-group">
                     <label><i class="fas fa-video"></i><span class="step-num">16</span> শপথনামার ভিডিও (Live)<span class="required">*</span></label>
                     <div class="video-recorder">
@@ -929,18 +948,10 @@
                     </div>
                 </div>
 
-                <div class="upload-progress" id="uploadProgress">
-                    <div class="bar" id="progressBar"></div>
-                    <div class="status-text" id="progressStatus">প্রসেসিং হচ্ছে... (০%)</div>
-                </div>
-
-                <!-- DYNAMIC BUTTONS -->
+                <!-- NEXT STEP BUTTON -->
                 <div class="btn-group">
                     <button type="button" class="btn-submit" id="nextToPayBtn">
                         <span class="btn-text">পরবর্তী ধাপ (পেমেন্ট করুন) <i class="fas fa-arrow-right" style="margin-left:6px;"></i></span>
-                    </button>
-                    <button type="button" class="btn-submit" id="finalSubmitBtn" style="display:none; background:linear-gradient(135deg, #10b981, #00f5d4);">
-                        <span class="btn-text"><i class="fas fa-paper-plane"></i> আবেদন চূড়ান্তভাবে জমা দিন <i class="fas fa-check" style="margin-left:6px;"></i></span>
                     </button>
                     <button type="reset" class="btn-reset"><i class="fas fa-rotate-left"></i> রিসেট</button>
                 </div>
@@ -950,6 +961,29 @@
                     <span>v4.0 Enterprise AutoPay · 2026</span>
                 </div>
             </form>
+        </div>
+
+        <!-- 3. PAYMENT COMPLETED DEDICATED VIEW (NEW) -->
+        <div id="paymentCompletedView">
+            <div class="pay-success-card">
+                <i class="fas fa-circle-check pay-success-icon"></i>
+                <h2>পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!</h2>
+                <p>আপনার পেমেন্ট ভেরিফাই হয়েছে। আবেদনটি ডাটাবেস ও চ্যানেলে জমা করতে নিচের বাটনে চাপ দিন।</p>
+                <div class="tnx-badge-box">
+                    <i class="fas fa-receipt" style="color:var(--primary);"></i>
+                    <span>লেনদেন আইডি: <strong id="verifiedTnxDisplay" style="color:#fff;">--</strong></span>
+                </div>
+                <div>
+                    <button type="button" class="btn-submit" id="finalSubmitBtn" style="width:100%; max-width:380px; margin:0 auto; background:linear-gradient(135deg, #10b981, #00f5d4);">
+                        <span class="btn-text"><i class="fas fa-paper-plane"></i> আবেদন সাবমিট করুন <i class="fas fa-arrow-right" style="margin-left:6px;"></i></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="upload-progress" id="uploadProgress">
+                <div class="bar" id="progressBar"></div>
+                <div class="status-text" id="progressStatus">প্রসেসিং হচ্ছে... (০%)</div>
+            </div>
         </div>
     </div>
 
@@ -998,7 +1032,7 @@
         <span id="toastMessage"></span>
     </div>
 
-    <!-- FIREBASE & CORE SCRIPT -->
+    <!-- FIREBASE & CORE APPLICATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1173,6 +1207,7 @@
         // NAVIGATION
         const landingPage = document.getElementById('landingPage');
         const formWrapper = document.getElementById('formWrapper');
+        const paymentCompletedView = document.getElementById('paymentCompletedView');
         const registerBtn = document.getElementById('registerBtn');
         const trackingBtn = document.getElementById('trackingBtn');
         const supportBtn = document.getElementById('supportBtn');
@@ -1185,18 +1220,21 @@
         registerBtn.addEventListener('click', () => {
             landingPage.style.display = 'none';
             formWrapper.classList.add('active');
+            paymentCompletedView.style.display = 'none';
             trackingPanel.style.display = 'none';
             initCamera(); 
         });
 
         backToHomeBtn.addEventListener('click', () => {
             formWrapper.classList.remove('active');
+            paymentCompletedView.style.display = 'none';
             landingPage.style.display = 'block';
         });
 
         trackingBtn.addEventListener('click', () => {
             landingPage.style.display = 'block';
             formWrapper.classList.remove('active');
+            paymentCompletedView.style.display = 'none';
             trackingPanel.style.display = trackingPanel.style.display === 'none' ? 'block' : 'none';
             if (trackingPanel.style.display === 'block') {
                 trackResult.innerHTML = `<p><i class="fas fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>`;
@@ -1348,7 +1386,7 @@
         });
 
         // ===================================================================
-        // STEP 2: PROCEED TO PAYMENT GATEWAY (Save state & Redirect)
+        // STEP 2: PROCEED TO PAYMENT GATEWAY (Strict State Preservation)
         // ===================================================================
         document.getElementById('proceedAutoPayBtn').addEventListener('click', async function() {
             const btn = this;
@@ -1358,7 +1396,6 @@
             const currentFee = getActiveCategoryFee();
             const callbackUrl = window.location.href.split('?')[0];
 
-            // ফর্মের ডেটা সেশন স্টোরেজে সংরক্ষণ
             const formObj = {
                 fullName: document.getElementById('fullName').value.trim(),
                 address: document.getElementById('address').value.trim(),
@@ -1401,7 +1438,7 @@
                 if (payUrl) {
                     window.location.href = payUrl;
                 } else {
-                    throw new Error(paymentData.message || "পেমেন্ট লিংক তৈরি করা যায়নি");
+                    throw new Error(paymentData.message || "পেমেন্ট গেটওয়ে লিঙ্ক তৈরি করা যায়নি");
                 }
             } catch (err) {
                 console.error("Payment Gateway Error:", err);
@@ -1417,7 +1454,7 @@
         });
 
         // ===================================================================
-        // STEP 3: CALLBACK HANDLER (STAYS ON FORM, SHOWS VERIFIED BADGE & SUBMIT BUTTON)
+        // STEP 3: CALLBACK HANDLER (STRICTLY OPENS PAYMENT COMPLETED PAGE)
         // ===================================================================
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1428,27 +1465,12 @@
                 const savedDataStr = sessionStorage.getItem('CSB_ACTIVE_REGISTRATION');
                 if (!savedDataStr) return;
 
+                // হোমপেজ ও ফর্ম উভয়ই হাইড করে সরাসরি PAYMENT COMPLETED পেজে প্রদর্শন
                 landingPage.style.display = 'none';
-                formWrapper.classList.add('active');
+                formWrapper.classList.remove('active');
+                paymentCompletedView.style.display = 'block';
 
-                const data = JSON.parse(savedDataStr);
-                document.getElementById('fullName').value = data.fullName || '';
-                document.getElementById('address').value = data.address || '';
-                document.getElementById('email').value = data.email || '';
-                document.getElementById('whatsapp').value = data.whatsapp || '';
-                document.getElementById('telegram').value = data.telegram || '';
-                document.getElementById('fbName').value = data.fbName || '';
-                document.getElementById('fbLink').value = data.fbLink || '';
-                document.getElementById('nidNumber').value = data.nidNumber || '';
-                document.getElementById('dob').value = data.dob || '';
-                document.getElementById('gender').value = data.gender || '';
-                document.getElementById('category').value = data.category || '';
-                document.getElementById('guardianPhone').value = data.guardianPhone || '';
-                document.getElementById('personalPhone').value = data.personalPhone || '';
-                setDocType(data.docType || 'NID');
-                updateCategoryContext();
-                document.getElementById('role').value = data.role || '';
-
+                document.getElementById('verifiedTnxDisplay').textContent = transactionId;
                 showToast('🔍 পেমেন্ট গেটওয়ে ভেরিফাই হচ্ছে...', 'success');
 
                 try {
@@ -1468,15 +1490,9 @@
                     if (isVerified) {
                         currentVerifiedTnxId = transactionId;
                         window.history.replaceState({}, document.title, window.location.pathname);
-
-                        document.getElementById('paymentStatusCard').style.display = 'block';
-                        document.getElementById('displayVerifiedTnx').textContent = transactionId;
-                        document.getElementById('nextToPayBtn').style.display = 'none';
-                        document.getElementById('finalSubmitBtn').style.display = 'inline-flex';
-
-                        showToast('✅ পেমেন্ট সফল হয়েছে! এবার আবেদন চূড়ান্তভাবে জমা দিন।', 'success');
+                        showToast('✅ পেমেন্ট নিশ্চিত হয়েছে! এবার আবেদন সাবমিট করুন।', 'success');
                     } else {
-                        throw new Error('পেমেন্ট লেনদেনটি ভেরিফাই করা যায়নি!');
+                        throw new Error('পেমেন্ট লেনদেনটি গেটওয়ে দ্বারা ভেরিফাই করা যায়নি!');
                     }
                 } catch (vErr) {
                     document.getElementById('errorMessage').innerHTML = `
@@ -1492,11 +1508,11 @@
         });
 
         // ===================================================================
-        // STEP 4: FINAL SUBMIT BUTTON CLICK (Only then data is saved)
+        // STEP 4: FINAL SUBMIT BUTTON ("আবেদন সাবমিট করুন" ক্লিকে সাবমিট ও টেলিগ্রাম কপি)
         // ===================================================================
         document.getElementById('finalSubmitBtn').addEventListener('click', async function() {
             if (!currentVerifiedTnxId) {
-                showToast('⚠️ পেমেন্ট সম্পন্ন করা হয়নি!', 'error');
+                showToast('⚠️ পেমেন্ট ভেরিফাই হয়নি!', 'error');
                 return;
             }
 
@@ -1504,23 +1520,11 @@
             submitBtn.disabled = true;
 
             const savedDataStr = sessionStorage.getItem('CSB_ACTIVE_REGISTRATION');
-            const formData = savedDataStr ? JSON.parse(savedDataStr) : {
-                fullName: document.getElementById('fullName').value.trim(),
-                address: document.getElementById('address').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                whatsapp: document.getElementById('whatsapp').value.trim(),
-                telegram: document.getElementById('telegram').value.trim(),
-                fbName: document.getElementById('fbName').value.trim(),
-                fbLink: document.getElementById('fbLink').value.trim(),
-                docType: document.getElementById('selectedDocType').value,
-                nidNumber: document.getElementById('nidNumber').value.trim(),
-                dob: document.getElementById('dob').value,
-                gender: document.getElementById('gender').value,
-                role: document.getElementById('role').value,
-                category: document.getElementById('category').value,
-                guardianPhone: document.getElementById('guardianPhone').value.trim(),
-                personalPhone: document.getElementById('personalPhone').value.trim()
-            };
+            if (!savedDataStr) {
+                showToast('⚠️ আবেদনের তথ্য খুঁজে পাওয়া যায়নি!', 'error');
+                return;
+            }
+            const formData = JSON.parse(savedDataStr);
 
             updateProgress(20, 'ফায়ারস্টোর ডেটাবেজে সেভ হচ্ছে...');
             const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
@@ -1528,6 +1532,7 @@
             formData.tnxId = currentVerifiedTnxId;
 
             try {
+                // ১. ফায়ারস্টোরে সেভ
                 await setDoc(doc(db, "applications", trackId), {
                     ...formData,
                     status: 'Pending',
@@ -1538,7 +1543,9 @@
                 await setDoc(doc(db, "transactions", currentVerifiedTnxId), { trackId: trackId, usedAt: currentTime });
 
                 updateProgress(55, 'টেলিগ্রাম চ্যানেলে পাঠানো হচ্ছে...');
-                const caption = `🛡️ **CSB NEW ADMISSION (AUTO PAID)** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: ${formData.email}\n📱 WhatsApp: ${formData.whatsapp}\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 সনদ: ${formData.docType} (${formData.nidNumber})\n📅 জন্ম: ${formData.dob}\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n💳 ভেরিফাইড TNX: \`${currentVerifiedTnxId}\`\n📞 অভিভাবক: ${formData.guardianPhone}\n📱 নিজের: ${formData.personalPhone}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন টাইম: ${currentTime}`;
+                
+                // টেলিগ্রামে এক-ক্লিকে কপি হওয়ার জন্য ব্যাকটিক্স (Monospace) ব্যবহার করা হয়েছে
+                const caption = `🛡️ **CSB NEW ADMISSION (AUTO PAID)** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: \`${formData.email}\`\n📱 WhatsApp: \`${formData.whatsapp}\`\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 সনদ টাইপ: ${formData.docType}\n🔢 সনদ নম্বর: \`${formData.nidNumber}\`\n📅 জন্মতারিখ: \`${formData.dob}\`\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n💳 পেমেন্ট TNX: \`${currentVerifiedTnxId}\`\n📞 অভিভাবক মোবাইল: \`${formData.guardianPhone}\`\n📱 আবেদনকারী মোবাইল: \`${formData.personalPhone}\`\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন সময়: \`${currentTime}\``;
 
                 const mediaGroup = new FormData();
                 mediaGroup.append('chat_id', CHANNEL_ID_SUBMIT);
@@ -1549,7 +1556,7 @@
                     if (recordedBlob) mediaGroup.append('videoFile', recordedBlob, `oath_${trackId}.mp4`);
 
                     const mediaData = [
-                        { type: 'photo', media: 'attach://file1', caption: caption },
+                        { type: 'photo', media: 'attach://file1', caption: caption, parse_mode: 'Markdown' },
                         { type: 'photo', media: 'attach://file2' },
                         { type: 'photo', media: 'attach://file3' }
                     ];
@@ -1567,7 +1574,7 @@
                     }).catch(() => {});
                 }
 
-                updateProgress(85, 'অ্যাকশন কন্ট্রোল ও PNG তৈরি হচ্ছে...');
+                updateProgress(85, 'অ্যাকশন কন্ট্রোল ও PNG স্লিপ তৈরি হচ্ছে...');
 
                 const webAppBaseUrl = window.location.href.split('?')[0];
                 const actionMsgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -1575,7 +1582,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         chat_id: CHANNEL_ID_SUBMIT, 
-                        text: `🚨 **CSB ACTION PANEL (VERIFIED PAYMENT)** 🚨\nID: \`${trackId}\`\nনাম: ${formData.fullName}\nরোল: ${formData.role}\nTNX: ${currentVerifiedTnxId}`, 
+                        text: `🚨 **CSB ACTION PANEL (VERIFIED PAYMENT)** 🚨\nID: \`${trackId}\`\nনাম: ${formData.fullName}\nরোল: ${formData.role}\nTNX: \`${currentVerifiedTnxId}\``, 
                         parse_mode: 'Markdown'
                     })
                 });
@@ -1601,7 +1608,7 @@
                     });
                 }
 
-                // PNG স্লিপ অটো ডাউনলোড
+                // PNG স্লিপ অটো-ডাউনলোড
                 await generateAutoPNG(trackId, formData, currentTime);
 
                 updateProgress(100, 'সম্পন্ন হয়েছে!');
@@ -1611,9 +1618,8 @@
 
                 setTimeout(() => {
                     document.getElementById('csbForm').reset();
-                    document.getElementById('paymentStatusCard').style.display = 'none';
-                    document.getElementById('nextToPayBtn').style.display = 'inline-flex';
-                    document.getElementById('finalSubmitBtn').style.display = 'none';
+                    paymentCompletedView.style.display = 'none';
+                    landingPage.style.display = 'block';
                     recordedBlob = null;
                     recordedChunks = [];
                     currentVerifiedTnxId = null;
@@ -1724,9 +1730,9 @@
             if (confirm('সব ফিল্ড মুছে ফেলতে চান?')) {
                 document.getElementById('csbForm').reset();
                 document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'ফাইল বেছে নিন');
-                document.getElementById('paymentStatusCard').style.display = 'none';
-                document.getElementById('nextToPayBtn').style.display = 'inline-flex';
-                document.getElementById('finalSubmitBtn').style.display = 'none';
+                paymentCompletedView.style.display = 'none';
+                formWrapper.classList.remove('active');
+                landingPage.style.display = 'block';
                 recordedBlob = null;
                 recordedChunks = [];
                 currentVerifiedTnxId = null;
@@ -1737,4 +1743,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
