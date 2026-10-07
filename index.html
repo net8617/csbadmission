@@ -6,7 +6,6 @@
     <title>CSB Admission Portal | Cyber Sentinel Bangladesh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-    <!-- HTML2CANVAS for High-Quality Direct PNG Slip Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -22,18 +21,8 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        input, textarea, select {
-            user-select: text !important;
-            -webkit-user-select: text !important;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        input, textarea, select { user-select: text !important; -webkit-user-select: text !important; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-base);
@@ -46,7 +35,6 @@
             overflow-x: hidden;
             color: var(--text-main);
         }
-
         .ambient-glow {
             position: fixed;
             width: 500px;
@@ -59,18 +47,14 @@
         }
         .glow-top-left { top: -150px; left: -150px; }
         .glow-bottom-right { bottom: -150px; right: -150px; background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, transparent 70%); }
-
         .grid-bg {
             position: fixed;
             inset: 0;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 50px 50px;
             z-index: 0;
             pointer-events: none;
         }
-
         .container {
             position: relative;
             z-index: 1;
@@ -83,547 +67,96 @@
             border-radius: 28px;
             padding: 45px;
             box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            animation: containerIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-
-        @keyframes containerIn {
-            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .welcome-section {
-            text-align: center;
-            padding: 10px 0 24px;
-        }
-
-        .brand-logo-container {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-        .brand-logo-container img {
-            max-width: 85px;
-            max-height: 85px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 20px var(--primary-glow));
-            border-radius: 16px;
-        }
-
-        #bannerWrapper {
-            width: 100%;
-            display: none;
-            justify-content: center;
-            margin: 10px 0 18px;
-        }
-        #csbDynamicBanner {
-            max-width: 100%;
-            max-height: 220px;
-            border-radius: 18px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-            object-fit: cover;
-        }
-
+        .welcome-section { text-align: center; padding: 10px 0 24px; }
         .welcome-section h1 {
-            font-size: 34px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
+            font-size: 34px; font-weight: 800; letter-spacing: -0.5px;
             background: linear-gradient(180deg, #fff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .welcome-section .sub {
-            color: var(--text-muted);
-            font-size: 11px;
-            letter-spacing: 3px;
-            margin-top: 8px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .realtime-meta-bar {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin: 15px 0 5px;
-            flex-wrap: wrap;
-            font-size: 12px;
-            color: #94a3b8;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .realtime-meta-bar span {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--card-border);
-            padding: 5px 14px;
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .welcome-section .sub { color: var(--text-muted); font-size: 11px; letter-spacing: 3px; margin-top: 8px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .realtime-meta-bar { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 15px 0 5px; flex-wrap: wrap; font-size: 12px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
+        .realtime-meta-bar span { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); padding: 5px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; }
         .realtime-meta-bar i { color: var(--primary); }
-
-        .badge-batch {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 6px 18px;
-            border-radius: 9999px;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: #cbd5e1;
-        }
-        .live-counter {
-            background: rgba(244, 63, 94, 0.15);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-            border-radius: 9999px;
-            padding: 3px 10px;
-            font-size: 10px;
-            font-weight: 800;
-            color: var(--accent-red);
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .home-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            margin: 25px 0 10px;
-            flex-wrap: wrap;
-        }
-        .home-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 14px 28px;
-            color: #cbd5e1;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .home-btn:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary);
-            color: #fff;
-            box-shadow: 0 8px 25px rgba(0, 245, 212, 0.15);
-        }
-        .home-btn.primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            color: #030712;
-            box-shadow: 0 6px 20px rgba(0, 245, 212, 0.2);
-        }
-
-        .portal-notice-box {
-            display: none;
-            background: rgba(0, 245, 212, 0.04);
-            border: 1px solid rgba(0, 245, 212, 0.2);
-            border-left: 4px solid var(--primary);
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
-            animation: fadeIn 0.4s ease;
-        }
-        .portal-notice-box h5 {
-            color: var(--primary);
-            font-size: 13.5px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-        .portal-notice-box p {
-            font-size: 12.5px;
-            color: #cbd5e1;
-            line-height: 1.6;
-        }
-
+        .badge-batch { display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 6px 18px; border-radius: 9999px; font-size: 12.5px; font-weight: 600; color: #cbd5e1; }
+        .live-counter { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 9999px; padding: 3px 10px; font-size: 10px; font-weight: 800; color: var(--accent-red); display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; }
+        .home-buttons { display: flex; justify-content: center; gap: 14px; margin: 25px 0 10px; flex-wrap: wrap; }
+        .home-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 14px 28px; color: #cbd5e1; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px; }
+        .home-btn:hover { transform: translateY(-2px); border-color: var(--primary); color: #fff; box-shadow: 0 8px 25px rgba(0, 245, 212, 0.15); }
+        .home-btn.primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: #030712; box-shadow: 0 6px 20px rgba(0, 245, 212, 0.2); }
+        .portal-notice-box { display: none; background: rgba(0, 245, 212, 0.04); border: 1px solid rgba(0, 245, 212, 0.2); border-left: 4px solid var(--primary); border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; }
+        .portal-notice-box h5 { color: var(--primary); font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .portal-notice-box p { font-size: 12.5px; color: #cbd5e1; line-height: 1.6; }
         .form-wrapper { display: none; }
-        .form-wrapper.active { display: block; animation: containerIn 0.5s ease forwards; }
-
+        .form-wrapper.active { display: block; }
         .back-btn-wrapper { margin-bottom: 20px; }
-        .back-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 9px 18px;
-            border-radius: 12px;
-            color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
+        .back-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 9px 18px; border-radius: 12px; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s ease; }
         .back-btn:hover { color: var(--primary); border-color: var(--primary); transform: translateX(-4px); }
-
         .form-group { margin-bottom: 22px; width: 100%; }
-        .form-group label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-        .step-num {
-            background: rgba(0, 245, 212, 0.1);
-            color: var(--primary);
-            font-size: 10px;
-            font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-        }
+        .form-group label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+        .step-num { background: rgba(0, 245, 212, 0.1); color: var(--primary); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; }
         .required { color: var(--accent-red); margin-left: auto; }
-
-        .doc-type-toggle {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .doc-type-btn {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .doc-type-btn.active {
-            border-color: var(--primary);
-            background: rgba(0, 245, 212, 0.08);
-            color: var(--primary);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--input-bg);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            color: var(--text-main);
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            transition: all 0.25s ease;
-        }
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.12);
-            background: rgba(2, 6, 23, 0.85);
-        }
+        .doc-type-toggle { display: flex; gap: 12px; margin-bottom: 10px; }
+        .doc-type-btn { flex: 1; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .doc-type-btn.active { border-color: var(--primary); background: rgba(0, 245, 212, 0.08); color: var(--primary); }
+        .form-control { width: 100%; padding: 14px 16px; background: var(--input-bg); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; color: var(--text-main); font-size: 14px; font-family: inherit; outline: none; transition: all 0.25s ease; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.12); background: rgba(2, 6, 23, 0.85); }
         .form-control::placeholder { color: #475569; }
-
-        select.form-control {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2300f5d4' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 18px center;
-            padding-right: 45px;
-        }
+        select.form-control { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2300f5d4' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; padding-right: 45px; }
         select.form-control option { background: #090d16; color: #fff; }
-
-        .row-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .file-upload-wrapper { position: relative; width: 100%; display: block; }
-        .file-upload-wrapper input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 5;
-            width: 100%;
-            height: 100%;
-        }
-        .file-upload-area {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1.5px dashed rgba(255, 255, 255, 0.15);
-            border-radius: 14px;
-            transition: all 0.3s ease;
-            width: 100%;
-            min-width: 0;
-            box-sizing: border-box;
-        }
-        .file-upload-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-            flex: 1;
-            overflow: hidden;
-        }
+        .file-upload-wrapper input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 5; width: 100%; height: 100%; }
+        .file-upload-area { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; background: rgba(255, 255, 255, 0.02); border: 1.5px dashed rgba(255, 255, 255, 0.15); border-radius: 14px; transition: all 0.3s ease; width: 100%; }
+        .file-upload-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; overflow: hidden; }
         .file-upload-area .icon { font-size: 18px; color: var(--primary); flex-shrink: 0; }
         .file-upload-area .info { min-width: 0; flex: 1; overflow: hidden; }
-        .file-upload-area .info .main {
-            font-size: 12.5px;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-            width: 100%;
-        }
+        .file-upload-area .info .main { font-size: 12.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; width: 100%; }
         .file-upload-area .info .main span { color: var(--primary); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
         .file-upload-area .info .sub { font-size: 10.5px; color: #475569; margin-top: 2px; }
-        .file-upload-area .size-badge {
-            flex-shrink: 0;
-            font-size: 11px;
-            color: var(--primary);
-            background: rgba(0, 245, 212, 0.08);
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-weight: 700;
-        }
-
-        .video-recorder {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            padding: 18px;
-            margin: 10px 0;
-        }
-        .recorder-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-        .recorder-header .status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
+        .file-upload-area .size-badge { flex-shrink: 0; font-size: 11px; color: var(--primary); background: rgba(0, 245, 212, 0.08); padding: 5px 10px; border-radius: 8px; font-weight: 700; }
+        .video-recorder { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 18px; margin: 10px 0; }
+        .recorder-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
+        .recorder-header .status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #475569; }
         .dot.recording { background: var(--accent-red); animation: pulseLive 1s infinite; }
         .dot.ready { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
         @keyframes pulseLive { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        .video-recorder video {
-            width: 100%;
-            height: 220px;
-            background: #020617;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        .video-recorder video { width: 100%; height: 220px; background: #020617; border-radius: 12px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.05); }
         .recorder-controls { display: flex; gap: 10px; margin-top: 12px; }
-        .btn-recorder {
-            flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12.5px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-        }
+        .btn-recorder { flex: 1; padding: 10px; border-radius: 10px; font-size: 12.5px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 6px; }
         .btn-recorder.start { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #030712; }
         .btn-recorder.stop { background: var(--accent-red); color: #fff; }
         .btn-recorder.download { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); }
         .btn-recorder:disabled { opacity: 0.3; cursor: not-allowed; }
-
-        .oath-box {
-            background: rgba(0, 245, 212, 0.02);
-            border-left: 3px solid var(--primary);
-            border-radius: 12px;
-            padding: 18px 20px;
-            margin: 15px 0 10px;
-        }
-        .oath-title {
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 14px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .oath-box { background: rgba(0, 245, 212, 0.02); border-left: 3px solid var(--primary); border-radius: 12px; padding: 18px 20px; margin: 15px 0 10px; }
+        .oath-title { color: var(--primary); font-weight: 800; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .oath-text { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
         .oath-text .highlight { color: #fff; font-weight: 600; }
         .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 8px; font-size: 14px; }
-
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
-        .btn-submit {
-            flex: 2;
-            padding: 16px 24px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            border-radius: 14px;
-            color: #030712;
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0, 245, 212, 0.2);
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
+        .btn-submit { flex: 2; padding: 16px 24px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 14px; color: #030712; font-size: 15px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0, 245, 212, 0.2); display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
         .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 245, 212, 0.35); }
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .btn-reset {
-            flex: 1;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .form-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 25px;
-            padding-top: 18px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 11px;
-            color: #475569;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .toast {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
-            padding: 14px 20px;
-            color: #fff;
-            font-size: 13.5px;
-            z-index: 1000;
-            transform: translateX(120%);
-            transition: transform 0.35s ease;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-        }
+        .btn-reset { flex: 1; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; }
+        .form-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 11px; color: #475569; font-family: 'JetBrains Mono', monospace; }
+        .toast { position: fixed; top: 24px; right: 24px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 20px; color: #fff; font-size: 13.5px; z-index: 1000; transform: translateX(120%); transition: transform 0.35s ease; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); }
         .toast.show { transform: translateX(0); }
         .toast.success { border-color: var(--primary); }
         .toast.error { border-color: var(--accent-red); }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(16px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(16px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal-content {
-            background: #090e1a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 22px;
-            padding: 36px 28px;
-            max-width: 440px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
-        }
+        .modal-content { background: #090e1a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 36px 28px; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9); }
         .modal-content .icon { font-size: 52px; color: var(--primary); margin-bottom: 12px; }
         .modal-content .icon.error { color: var(--accent-red); }
         .modal-content h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
         .modal-content p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
-        .btn-modal {
-            padding: 12px 32px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            border-radius: 12px;
-            color: #030712;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        .btn-modal { padding: 12px 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 12px; color: #030712; font-weight: 700; cursor: pointer; }
         .btn-modal.error { background: var(--accent-red); color: #fff; }
-
-        .payment-modal-box {
-            background: #0b1329;
-            border: 1.5px solid var(--primary);
-            border-radius: 24px;
-            padding: 32px 24px;
-            max-width: 460px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 25px 60px rgba(0, 245, 212, 0.15);
-        }
+        .payment-modal-box { background: #0b1329; border: 1.5px solid var(--primary); border-radius: 24px; padding: 32px 24px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0, 245, 212, 0.15); }
         .payment-modal-box h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
         .payment-modal-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-        .fee-badge {
-            display: inline-block;
-            background: rgba(0, 245, 212, 0.1);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 8px 24px;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 22px;
-        }
-
-        .copy-btn {
-            background: rgba(0, 245, 212, 0.1);
-            border: 1px solid rgba(0, 245, 212, 0.25);
-            color: var(--primary);
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .copy-btn:hover { background: var(--primary); color: #030712; }
-
+        .fee-badge { display: inline-block; background: rgba(0, 245, 212, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 8px 24px; border-radius: 30px; font-size: 18px; font-weight: 800; font-family: 'JetBrains Mono', monospace; margin-bottom: 22px; }
         @media (max-width: 768px) {
             .container { padding: 24px 16px; border-radius: 20px; }
             .row-2 { grid-template-columns: 1fr; gap: 0; }
@@ -647,32 +180,26 @@
                 <div class="brand-logo-container" id="brandLogoContainer">
                     <img id="adminLogoImage" src="" alt="CSB Logo" />
                 </div>
-
                 <div id="bannerWrapper">
                     <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" />
                 </div>
-
                 <h1>Cyber Sentinel Bangladesh</h1>
                 <div class="sub" id="displayBatchSub">OFFICIAL ADMISSION PORTAL · BATCH 8-9</div>
-                
                 <div class="realtime-meta-bar">
                     <span><i class="fas fa-calendar-day"></i> <strong id="liveDateDisplay">--</strong></span>
                     <span><i class="fas fa-clock"></i> <strong id="liveClockDisplay">--:--:--</strong></span>
                 </div>
-
                 <div class="badge-batch" id="displayBatchBadge">
                     <i class="fas fa-users" style="color:var(--primary);"></i> <span id="batchTitleText">ব্যাচ ৮-৯ · ২০২৬</span>
                     <span class="live-counter"><i class="fas fa-circle"></i> LIVE</span>
                 </div>
             </div>
-
             <div class="home-buttons">
                 <button class="home-btn primary" id="registerBtn"><i class="fas fa-pen-to-square"></i> রেজিস্ট্রেশন</button>
                 <button class="home-btn" id="trackingBtn"><i class="fas fa-search"></i> ট্র্যাকিং</button>
                 <button class="home-btn" id="supportBtn"><i class="fas fa-headset"></i> সাপোর্ট</button>
             </div>
-
-            <div class="tracking-panel" id="trackingPanel" style="display:none; margin-top:25px; padding:24px; background:rgba(0,0,0,0.35); border-radius:20px; border:1px solid rgba(0,245,212,0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div class="tracking-panel" id="trackingPanel" style="display:none; margin-top:25px; padding:24px; background:rgba(0,0,0,0.35); border-radius:20px; border:1px solid rgba(0,245,212,0.15);">
                 <h3 style="font-size:18px; font-weight:700;"><i class="fas fa-magnifying-glass" style="color:var(--primary); margin-right:8px;"></i> আবেদন ট্র্যাক করুন</h3>
                 <div style="display:flex; gap:10px; margin: 16px 0; flex-wrap:wrap;">
                     <input type="text" id="trackInput" class="form-control" style="flex:2; min-width:200px;" placeholder="আইডি লিখুন (যেমন: CSB-2026-0012)" />
@@ -680,9 +207,6 @@
                 </div>
                 <div id="trackResult" style="color:var(--text-muted); font-size:14px;">
                     <p><i class="fas fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>
-                </div>
-                <div id="liveTime" style="margin-top:14px; font-size:11px; color:#475569; text-align:center; font-family:'JetBrains Mono', monospace;">
-                    <i class="fas fa-clock"></i> লাইভ আপডেট: <span id="liveTimeDisplay">--:--:--</span>
                 </div>
             </div>
         </div>
@@ -847,13 +371,11 @@
                             <button type="button" class="btn-recorder stop" id="stopRecord" disabled><i class="fas fa-stop"></i> Stop</button>
                             <button type="button" class="btn-recorder download" id="downloadRecord" disabled><i class="fas fa-download"></i> Download</button>
                         </div>
-                        <input type="hidden" id="recordedVideo" value="">
-                        <input type="hidden" id="recordedVideoBlob" value="">
                     </div>
                     <div class="oath-box">
                         <div class="oath-title"><i class="fas fa-shield"></i> শপথনামা</div>
                         <div class="oath-text" id="displayOathText">
-                            “আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।<br>
+                            “আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো。<br>
                             <span class="highlight">আমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো।</span> সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো।<br>
                             আমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”
                         </div>
@@ -978,7 +500,6 @@
             const now = new Date();
             const dateStr = now.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('bn-BD', { hour12: true });
-            
             document.getElementById('liveDateDisplay').textContent = dateStr;
             document.getElementById('liveClockDisplay').textContent = timeStr;
             document.getElementById('liveTimeDisplay').textContent = timeStr;
@@ -990,49 +511,8 @@
             if (snap.exists()) {
                 const cfg = snap.data();
                 activePortalConfig = { ...activePortalConfig, ...cfg };
-
-                const logoContainer = document.getElementById('brandLogoContainer');
-                const adminLogoImg = document.getElementById('adminLogoImage');
-                if (cfg.logoUrl && cfg.logoUrl.trim() !== '') {
-                    adminLogoImg.src = cfg.logoUrl;
-                    logoContainer.style.display = 'inline-flex';
-                } else {
-                    logoContainer.style.display = 'none';
-                    adminLogoImg.src = '';
-                }
-
-                const noticeBox = document.getElementById('portalNoticeBox');
-                const noticeText = document.getElementById('portalNoticeText');
-                if (cfg.notice && cfg.notice.trim() !== '') {
-                    noticeText.textContent = cfg.notice;
-                    noticeBox.style.display = 'block';
-                } else {
-                    noticeBox.style.display = 'none';
-                }
-
-                const bannerWrap = document.getElementById('bannerWrapper');
-                const bannerImg = document.getElementById('csbDynamicBanner');
-                if (cfg.bannerUrl && cfg.bannerUrl.trim() !== '') {
-                    bannerImg.src = cfg.bannerUrl;
-                    bannerWrap.style.display = 'flex';
-                } else {
-                    bannerWrap.style.display = 'none';
-                }
-
                 if (cfg.batchTitle) document.getElementById('batchTitleText').textContent = cfg.batchTitle;
                 if (cfg.batchSub) document.getElementById('displayBatchSub').textContent = cfg.batchSub;
-
-                if (cfg.categories && Array.isArray(cfg.categories) && cfg.categories.length > 0) {
-                    const catSelect = document.getElementById('category');
-                    const currentCat = catSelect.value;
-                    catSelect.innerHTML = '';
-                    cfg.categories.forEach(c => {
-                        const opt = document.createElement('option');
-                        opt.value = c; opt.textContent = c;
-                        if (c === currentCat) opt.selected = true;
-                        catSelect.appendChild(opt);
-                    });
-                }
                 updateCategoryContext();
             }
         });
@@ -1049,23 +529,9 @@
 
         function updateCategoryContext() {
             const selectedCat = document.getElementById('category').value;
-
-            if (activePortalConfig.categoryOaths && activePortalConfig.categoryOaths[selectedCat]) {
-                document.getElementById('displayOathText').innerHTML = activePortalConfig.categoryOaths[selectedCat].replace(/\n/g, '<br>');
-            } else if (activePortalConfig.oathText) {
-                document.getElementById('displayOathText').innerHTML = activePortalConfig.oathText.replace(/\n/g, '<br>');
-            }
-
             const roleSelect = document.getElementById('role');
             roleSelect.innerHTML = '<option value="">সিলেক্ট করুন</option>';
-
-            let availableRoles = [];
-            if (activePortalConfig.categoryRoles && activePortalConfig.categoryRoles[selectedCat]) {
-                availableRoles = activePortalConfig.categoryRoles[selectedCat];
-            } else if (activePortalConfig.roles && Array.isArray(activePortalConfig.roles)) {
-                availableRoles = activePortalConfig.roles;
-            }
-
+            let availableRoles = activePortalConfig.categoryRoles?.[selectedCat] || activePortalConfig.roles || [];
             if (availableRoles.length > 0) {
                 availableRoles.forEach(r => {
                     const opt = document.createElement('option');
@@ -1085,9 +551,6 @@
         const supportBtn = document.getElementById('supportBtn');
         const backToHomeBtn = document.getElementById('backToHomeBtn');
         const trackingPanel = document.getElementById('trackingPanel');
-        const trackInput = document.getElementById('trackInput');
-        const trackSubmitBtn = document.getElementById('trackSubmitBtn');
-        const trackResult = document.getElementById('trackResult');
 
         registerBtn.addEventListener('click', () => {
             landingPage.style.display = 'none';
@@ -1105,9 +568,6 @@
             landingPage.style.display = 'block';
             formWrapper.classList.remove('active');
             trackingPanel.style.display = trackingPanel.style.display === 'none' ? 'block' : 'none';
-            if (trackingPanel.style.display === 'block') {
-                trackResult.innerHTML = `<p><i class="fas fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>`;
-            }
         });
 
         supportBtn.addEventListener('click', () => { window.open('https://wa.me/+601130345524', '_blank'); });
@@ -1118,7 +578,7 @@
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.className = 'toast ' + type;
-            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}" style="margin-right:8px; color:${type === 'success' ? 'var(--primary)' : 'var(--accent-red)'}"></i> ${message}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}" style="margin-right:8px;"></i> ${message}`;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
@@ -1152,24 +612,19 @@
             if (!cameraStarted || !stream) { showToast('⚠️ ক্যামেরা ব্যবহারের অনুমতি দিন', 'error'); return; }
             recordedChunks = [];
             recordedBlob = null;
-            try { mediaRecorder = new MediaRecorder(stream); } catch (err) { showToast('⚠️ ভিডিও রেকর্ডিং ব্রাউজারে সাপোর্ট করছে না', 'error'); return; }
+            try { mediaRecorder = new MediaRecorder(stream); } catch (err) { showToast('⚠️ ভিডিও রেকর্ডিং সাপোর্ট করছে না', 'error'); return; }
 
             mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.onstop = () => {
-                if (!recordedChunks.length) { showToast('⚠️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
+                if (!recordedChunks.length) { showToast('⚠️ ভিডিও রেকর্ড হয়নি', 'error'); return; }
                 recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(recordedBlob);
                 downloadBtn.disabled = false;
-                downloadBtn.onclick = () => {
-                    const a = document.createElement('a'); a.href = url; a.download = `csb_oath_${Date.now()}.webm`; a.click();
-                };
                 recordingStatus.textContent = 'Saved';
                 recordingDot.className = 'dot ready';
                 startBtn.disabled = false;
                 stopBtn.disabled = true;
                 showToast('✅ ভিডিও রেকর্ড সম্পন্ন হয়েছে', 'success');
             };
-
             mediaRecorder.start();
             startBtn.disabled = true;
             stopBtn.disabled = false;
@@ -1188,14 +643,17 @@
                 const span = area.querySelector('.info .main span');
                 if (this.files.length) {
                     let fileName = this.files[0].name;
-                    if (fileName.length > 25) {
-                        fileName = fileName.substring(0, 20) + '...' + fileName.split('.').pop();
-                    }
-                    span.textContent = fileName;
-                } else {
-                    span.textContent = 'ফাইল বেছে নিন';
+                    span.textContent = fileName.length > 25 ? fileName.substring(0, 20) + '...' + fileName.split('.').pop() : fileName;
                 }
             });
+        });
+
+        // Helper: Convert File to Base64 to safely store in localStorage
+        const fileToBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
         });
 
         document.getElementById('nextToPayBtn').addEventListener('click', function() {
@@ -1206,7 +664,6 @@
             const telegram = document.getElementById('telegram').value.trim();
             const fbName = document.getElementById('fbName').value.trim();
             const fbLink = document.getElementById('fbLink').value.trim();
-            const docType = document.getElementById('selectedDocType').value;
             const nidNumber = document.getElementById('nidNumber').value.trim();
             const dob = document.getElementById('dob').value;
             const gender = document.getElementById('gender').value;
@@ -1219,60 +676,57 @@
                 showToast('⚠️ সব তথ্য সঠিকভাবে পূরণ করুন', 'error');
                 return;
             }
-
-            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { showToast('⚠️ সঠিক ইমেইল দিন', 'error'); return; }
-            const phoneRegex = /^01[3-9]\d{8}$/;
-            if (!phoneRegex.test(whatsapp) || !phoneRegex.test(guardianPhone) || !phoneRegex.test(personalPhone)) {
-                showToast('⚠️ সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)', 'error'); return; 
-            }
-            if (!fbLink.match(/^https?:\/\/(www\.)?facebook\.com\/.+/)) { showToast('⚠️ সঠিক ফেসবুক লিংক দিন', 'error'); return; }
             if (!recordedBlob) { showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড বাধ্যতামূলক', 'error'); return; }
-
-            const fileIds = ['photo1', 'photo2', 'nid'];
-            for (let id of fileIds) {
-                const inp = document.getElementById(id);
-                if (!inp.files || !inp.files.length) {
-                    showToast('⚠️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error'); return;
-                }
-            }
 
             const currentFee = getActiveCategoryFee();
             document.getElementById('payModalFeeDisplay').textContent = `${currentFee} টাকা`;
             document.getElementById('paymentModal').classList.add('show');
         });
 
-        // ===================================================================
-        // PROCEED TO PAYMENT GATEWAY (SUCCESS_URL Points to callback.html securely)
-        // ===================================================================
+        // Proceed to Payment with Base64 File Storage
         document.getElementById('proceedAutoPayBtn').addEventListener('click', async function() {
             const btn = this;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> গেটওয়েতে সংযোগ হচ্ছে...`;
-
-            const currentFee = getActiveCategoryFee();
-            const currentOrigin = window.location.origin;
-            const callbackUrl = `${currentOrigin}/callback.html`;
-
-            const formObj = {
-                fullName: document.getElementById('fullName').value.trim(),
-                address: document.getElementById('address').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                whatsapp: document.getElementById('whatsapp').value.trim(),
-                telegram: document.getElementById('telegram').value.trim(),
-                fbName: document.getElementById('fbName').value.trim(),
-                fbLink: document.getElementById('fbLink').value.trim(),
-                docType: document.getElementById('selectedDocType').value,
-                nidNumber: document.getElementById('nidNumber').value.trim(),
-                dob: document.getElementById('dob').value,
-                gender: document.getElementById('gender').value,
-                role: document.getElementById('role').value,
-                category: document.getElementById('category').value,
-                guardianPhone: document.getElementById('guardianPhone').value.trim(),
-                personalPhone: document.getElementById('personalPhone').value.trim()
-            };
-            localStorage.setItem('CSB_ACTIVE_REGISTRATION', JSON.stringify(formObj));
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ডেটা প্রসেসিং ও গেটওয়েতে সংযোগ...`;
 
             try {
+                const p1File = document.getElementById('photo1').files[0];
+                const p2File = document.getElementById('photo2').files[0];
+                const nidFile = document.getElementById('nid').files[0];
+
+                const p1Base64 = p1File ? await fileToBase64(p1File) : null;
+                const p2Base64 = p2File ? await fileToBase64(p2File) : null;
+                const nidBase64 = nidFile ? await fileToBase64(nidFile) : null;
+                const videoBase64 = recordedBlob ? await fileToBase64(recordedBlob) : null;
+
+                const formObj = {
+                    fullName: document.getElementById('fullName').value.trim(),
+                    address: document.getElementById('address').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    whatsapp: document.getElementById('whatsapp').value.trim(),
+                    telegram: document.getElementById('telegram').value.trim(),
+                    fbName: document.getElementById('fbName').value.trim(),
+                    fbLink: document.getElementById('fbLink').value.trim(),
+                    docType: document.getElementById('selectedDocType').value,
+                    nidNumber: document.getElementById('nidNumber').value.trim(),
+                    dob: document.getElementById('dob').value,
+                    gender: document.getElementById('gender').value,
+                    role: document.getElementById('role').value,
+                    category: document.getElementById('category').value,
+                    guardianPhone: document.getElementById('guardianPhone').value.trim(),
+                    personalPhone: document.getElementById('personalPhone').value.trim(),
+                    p1: p1Base64, p1Name: p1File?.name || 'photo1.jpg',
+                    p2: p2Base64, p2Name: p2File?.name || 'photo2.jpg',
+                    nidData: nidBase64, nidName: nidFile?.name || 'nid.jpg',
+                    videoData: videoBase64
+                };
+
+                localStorage.setItem('CSB_ACTIVE_REGISTRATION', JSON.stringify(formObj));
+
+                const currentFee = getActiveCategoryFee();
+                const currentOrigin = window.location.origin;
+                const callbackUrl = `${currentOrigin}/callback.html`;
+
                 const response = await fetch('/api/pay', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1301,26 +755,9 @@
                 console.error("Payment Gateway Error:", err);
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fas fa-bolt"></i> পেমেন্ট শুরু করুন`;
-                document.getElementById('errorMessage').innerHTML = `
-                    <p style="color:#fff; font-weight:700;">পেমেন্ট গেটওয়েতে সংযোগ ব্যর্থ হয়েছে!</p>
-                    <p style="margin-top:4px; font-size:12px; color:var(--accent-red);">${err.message}</p>
-                `;
+                document.getElementById('errorMessage').innerHTML = `<p style="color:#fff; font-weight:700;">ত্রুটি:</p><p style="font-size:12px; color:var(--accent-red);">${err.message}</p>`;
                 document.getElementById('errorModal').classList.add('show');
                 document.getElementById('paymentModal').classList.remove('show');
-            }
-        });
-
-        document.querySelector('.btn-reset').addEventListener('click', (e) => {
-            e.preventDefault();
-            if (confirm('সব ফিল্ড মুছে ফেলতে চান?')) {
-                document.getElementById('csbForm').reset();
-                document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'ফাইল বেছে নিন');
-                formWrapper.classList.remove('active');
-                landingPage.style.display = 'block';
-                recordedBlob = null;
-                recordedChunks = [];
-                if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; isCameraReady = false; previewVideo.srcObject = null; }
-                showToast('ফর্ম রিসেট করা হয়েছে', 'success');
             }
         });
     </script>
