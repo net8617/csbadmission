@@ -852,7 +852,6 @@
                     </div>
                 </div>
 
-                <!-- NID / BIRTH CERTIFICATE TYPE SELECTOR -->
                 <div class="form-group">
                     <label><i class="fas fa-id-card"></i><span class="step-num">10</span> সনদের ধরন নির্বাচন করুন<span class="required">*</span></label>
                     <div class="doc-type-toggle">
@@ -887,7 +886,6 @@
                     </div>
                 </div>
 
-                <!-- CATEGORY & GENDER -->
                 <div class="row-2">
                     <div class="form-group">
                         <label><i class="fas fa-layer-group"></i><span class="step-num">13</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
@@ -915,7 +913,6 @@
                     </select>
                 </div>
 
-                <!-- OATH BOX & VIDEO RECORDER -->
                 <div class="form-group">
                     <label><i class="fas fa-video"></i><span class="step-num">16</span> শপথনামার ভিডিও (Live)<span class="required">*</span></label>
                     <div class="video-recorder">
@@ -1404,7 +1401,6 @@
             const currentFee = getActiveCategoryFee();
             const callbackUrl = window.location.href.split('?')[0];
 
-            // ফর্মের ডেটা সেশন স্টোরেজে সংরক্ষণ
             const formObj = {
                 fullName: document.getElementById('fullName').value.trim(),
                 address: document.getElementById('address').value.trim(),
@@ -1467,8 +1463,6 @@
         // ===================================================================
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            
-            // গেটওয়ের যেকোনো সম্ভাব্য ট্রানজেকশন কিউয়ার্ড ধরা
             const transactionId = urlParams.get('transaction_id') || 
                                   urlParams.get('tnx_id') || 
                                   urlParams.get('trxID') || 
@@ -1484,7 +1478,6 @@
                 const savedDataStr = sessionStorage.getItem('CSB_ACTIVE_REGISTRATION');
                 if (!savedDataStr) return;
 
-                // হোমপেজ ও ফর্ম উভয়ই হাইড করে সরাসরি PAYMENT COMPLETED পেজে প্রদর্শন
                 landingPage.style.display = 'none';
                 formWrapper.classList.remove('active');
                 paymentCompletedView.style.display = 'block';
@@ -1514,7 +1507,6 @@
                         throw new Error('পেমেন্ট লেনদেনটি গেটওয়ে দ্বারা ভেরিফাই করা যায়নি!');
                     }
                 } catch (vErr) {
-                    // ফেইল হলেও যদি গেটওয়ে ট্রানজেকশন দিয়ে ফেরত পাঠায়
                     currentVerifiedTnxId = transactionId;
                     window.history.replaceState({}, document.title, window.location.pathname);
                     showToast('✅ পেমেন্ট ট্রানজেকশন গৃহীত হয়েছে।', 'success');
@@ -1526,7 +1518,7 @@
         });
 
         // ===================================================================
-        // STEP 4: FINAL SUBMIT BUTTON (CLICKING IT SUBMITS TO DB & TELEGRAM WITH CLICK-TO-COPY)
+        // STEP 4: FINAL SUBMIT BUTTON ("আবেদন সাবমিট করুন" ক্লিকে সাবমিট ও টেলিগ্রাম কপি)
         // ===================================================================
         document.getElementById('finalSubmitBtn').addEventListener('click', async function() {
             if (!currentVerifiedTnxId) {
@@ -1550,7 +1542,6 @@
             formData.tnxId = currentVerifiedTnxId;
 
             try {
-                // ১. ফায়ারস্টোরে সেভ
                 await setDoc(doc(db, "applications", trackId), {
                     ...formData,
                     status: 'Pending',
@@ -1562,7 +1553,6 @@
 
                 updateProgress(55, 'টেলিগ্রাম চ্যানেলে পাঠানো হচ্ছে...');
                 
-                // টেলিগ্রামে এক-ক্লিকে কপি হওয়ার জন্য ব্যাকটিক্স (Monospace) ব্যবহার করা হয়েছে
                 const caption = `🛡️ **CSB NEW ADMISSION (AUTO PAID)** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: \`${formData.email}\`\n📱 WhatsApp: \`${formData.whatsapp}\`\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 সনদ টাইপ: ${formData.docType}\n🔢 সনদ নম্বর: \`${formData.nidNumber}\`\n📅 জন্মতারিখ: \`${formData.dob}\`\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n💳 পেমেন্ট TNX: \`${currentVerifiedTnxId}\`\n📞 অভিভাবক মোবাইল: \`${formData.guardianPhone}\`\n📱 আবেদনকারী মোবাইল: \`${formData.personalPhone}\`\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন সময়: \`${currentTime}\``;
 
                 const mediaGroup = new FormData();
@@ -1626,7 +1616,6 @@
                     });
                 }
 
-                // PNG স্লিপ অটো-ডাউনলোড
                 await generateAutoPNG(trackId, formData, currentTime);
 
                 updateProgress(100, 'সম্পন্ন হয়েছে!');
