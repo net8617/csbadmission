@@ -385,8 +385,16 @@
             flex: 1;
             overflow: hidden;
         }
-        .file-upload-area .icon { font-size: 18px; color: var(--primary); flex-shrink: 0; }
-        .file-upload-area .info { min-width: 0; flex: 1; overflow: hidden; }
+        .file-upload-area .icon { 
+            font-size: 18px; 
+            color: var(--primary); 
+            flex-shrink: 0; 
+        }
+        .file-upload-area .info { 
+            min-width: 0; 
+            flex: 1; 
+            overflow: hidden;
+        }
         .file-upload-area .info .main {
             font-size: 12.5px;
             color: var(--text-muted);
@@ -633,6 +641,21 @@
             font-family: 'JetBrains Mono', monospace;
             margin-bottom: 22px;
         }
+
+        .copy-btn {
+            background: rgba(0, 245, 212, 0.1);
+            border: 1px solid rgba(0, 245, 212, 0.25);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .copy-btn:hover { background: var(--primary); color: #030712; }
 
         @media (max-width: 768px) {
             .container { padding: 24px 16px; border-radius: 20px; }
@@ -965,11 +988,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        // CSB AUTO PAYMENT GATEWAY CREDENTIALS
-        const AUTOPAY_API_KEY = 'csbpaynsIVOZMnQbyQZowjbyk2sRwcgD5zBukErfl5VFc4jJHX';
-        const AUTOPAY_CREATE_URL = 'https://csbverify.csbservice.top/api/payment/create';
-        const AUTOPAY_VERIFY_URL = 'https://csbverify.csbservice.top/api/payment/verify';
 
         const BOT_TOKEN = '8677605758:AAHJs_SE2YmS0g0RVfuesZuXVKAJ3O5CjiM';
         const CHANNEL_ID_SUBMIT = '-1004341639499';
@@ -1308,7 +1326,7 @@
         });
 
         // ===================================================================
-        // STEP 2: AUTO PAYMENT GATEWAY (Fixed Metadata & Proxy Call)
+        // STEP 2: AUTO PAYMENT GATEWAY INVOCATION (FIXED VIA VERCEL API ROUTE)
         // ===================================================================
         document.getElementById('proceedAutoPayBtn').addEventListener('click', async function() {
             if (!tempFormData) return;
@@ -1321,82 +1339,51 @@
 
             sessionStorage.setItem('CSB_ACTIVE_REGISTRATION', JSON.stringify(tempFormData));
 
-            // সঠিক JSON Metadata অবজেক্ট
-            const payloadData = {
-                amount: String(currentFee),
-                success_url: `${callbackUrl}?payment_status=success`,
-                cancel_url: `${callbackUrl}?payment_status=cancel`,
-                webhook_url: `${callbackUrl}?payment_status=webhook`,
-                metadata: {
-                    phone: tempFormData.personalPhone,
-                    name: tempFormData.fullName,
-                    category: tempFormData.category
-                }
-            };
-
-            let redirected = false;
-
-            // মেথড ১: /api/pay.js (যদি Vercel API থাকে)
             try {
-                const localApiRes = await fetch('/api/pay', {
+                // আপনার তৈরিকৃত /api/pay এন্ডপয়েন্টে কল
+                const response = await fetch('/api/pay', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'create', payload: payloadData })
+                    body: JSON.stringify({
+                        action: 'create',
+                        payload: {
+                            amount: currentFee,
+                            success_url: `${callbackUrl}?payment_status=success`,
+                            cancel_url: `${callbackUrl}?payment_status=cancel`,
+                            webhook_url: `${callbackUrl}?payment_status=webhook`,
+                            phone: tempFormData.personalPhone
+                        }
+                    })
                 });
 
-                if (localApiRes.ok) {
-                    const payData = await localApiRes.json();
-                    const url = payData.payment_url || payData.url || (payData.data && (payData.data.payment_url || payData.data.url));
-                    if (url) {
-                        redirected = true;
-                        window.location.href = url;
-                        return;
-                    }
-                }
-            } catch (err) {
-                console.log("Local API not present, using proxy");
-            }
+                const paymentData = await response.json();
+                const payUrl = paymentData.payment_url || paymentData.url || (paymentData.data && (paymentData.data.payment_url || paymentData.data.url));
 
-            // মেথড ২: নির্ভরযোগ্য CORS বাইপাস প্রক্সি (সব মেটাডেটা JSON অবজেক্ট হিসেবে পাঠায়)
-            if (!redirected) {
-                try {
-                    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(AUTOPAY_CREATE_URL);
-                    const res = await fetch(proxyUrl, {
-                        method: 'POST',
-                        headers: {
-                            'API-KEY': AUTOPAY_API_KEY,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(payloadData)
-                    });
-
-                    const paymentData = await res.json();
-                    const payUrl = paymentData.payment_url || paymentData.url || (paymentData.data && (paymentData.data.payment_url || paymentData.data.url));
-
-                    if (payUrl) {
-                        redirected = true;
-                        window.location.href = payUrl;
-                    } else if (paymentData.message) {
-                        throw new Error(paymentData.message);
-                    } else {
-                        throw new Error("পেমেন্ট গেটওয়ে লিঙ্ক পাওয়া যায়নি!");
-                    }
-                } catch (err) {
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fas fa-bolt"></i> পেমেন্ট শুরু করুন`;
-                    document.getElementById('errorMessage').innerHTML = `
-                        <p style="color:#fff; font-weight:700;">পেমেন্ট গেটওয়েতে সংযোগ ব্যর্থ হয়েছে!</p>
-                        <p style="margin-top:4px; font-size:12px; color:var(--accent-red);">${err.message}</p>
-                        <p style="margin-top:6px; font-size:11px; color:var(--text-muted);">পেমেন্ট সম্পন্ন না হওয়া পর্যন্ত কোনো আবেদন সিস্টেমে গ্রহণ করা হবে না।</p>
-                    `;
-                    document.getElementById('errorModal').classList.add('show');
+                if (payUrl) {
+                    window.location.href = payUrl;
+                } else if (paymentData.transaction_id || (paymentData.data && paymentData.data.transaction_id)) {
+                    const tnx = paymentData.transaction_id || paymentData.data.transaction_id;
                     document.getElementById('paymentModal').classList.remove('show');
+                    await completeFinalSubmission(tempFormData, tnx);
+                } else {
+                    throw new Error(paymentData.message || "পেমেন্ট লিংক পাওয়া যায়নি");
                 }
+
+            } catch (err) {
+                console.error("Payment Gateway Call Error:", err);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-bolt"></i> পেমেন্ট শুরু করুন`;
+                document.getElementById('errorMessage').innerHTML = `
+                    <p style="color:#fff; font-weight:700;">পেমেন্ট গেটওয়েতে সংযোগ ব্যর্থ হয়েছে!</p>
+                    <p style="margin-top:4px; font-size:12px; color:var(--accent-red);">${err.message}</p>
+                `;
+                document.getElementById('errorModal').classList.add('show');
+                document.getElementById('paymentModal').classList.remove('show');
             }
         });
 
         // ===================================================================
-        // CALLBACK HANDLER & PAYMENT VERIFICATION (AFTER RETURNING FROM GATEWAY)
+        // CALLBACK HANDLER & VERIFICATION (AFTER RETURNING FROM GATEWAY)
         // ===================================================================
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1410,35 +1397,17 @@
                 showToast('🔍 পেমেন্ট গেটওয়ে ভেরিফাই হচ্ছে...', 'success');
 
                 try {
-                    let isVerified = false;
+                    const vRes = await fetch('/api/pay', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'verify',
+                            payload: { transaction_id: transactionId }
+                        })
+                    });
 
-                    // ভেরিফাই কল
-                    try {
-                        const vRes = await fetch('/api/pay', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'verify', payload: { transaction_id: transactionId } })
-                        });
-                        const vData = await vRes.json();
-                        isVerified = (vData.status === 'success' || vData.status === true || (vData.data && vData.data.status === 'COMPLETED'));
-                    } catch(e) {
-                        // প্রক্সি ভেরিফাই ফলব্যাক
-                        try {
-                            const proxyV = 'https://corsproxy.io/?' + encodeURIComponent(AUTOPAY_VERIFY_URL);
-                            const vRes = await fetch(proxyV, {
-                                method: 'POST',
-                                headers: {
-                                    'API-KEY': AUTOPAY_API_KEY,
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ transaction_id: transactionId })
-                            });
-                            const vData = await vRes.json();
-                            isVerified = (vData.status === 'success' || vData.status === true || (vData.data && vData.data.status === 'COMPLETED'));
-                        } catch(err) {
-                            isVerified = true;
-                        }
-                    }
+                    const vData = await vRes.json();
+                    const isVerified = (vData.status === 'success' || vData.status === true || (vData.data && vData.data.status === 'COMPLETED'));
 
                     if (isVerified) {
                         const parsedData = JSON.parse(savedData);
@@ -1462,7 +1431,7 @@
         });
 
         // ===================================================================
-        // FINAL SUBMISSION (Only executed after genuine payment verification)
+        // FINAL SUBMISSION
         // ===================================================================
         async function completeFinalSubmission(formData, tnxId) {
             updateProgress(20, 'ফায়ারস্টোর ডেটাবেজে সেভ হচ্ছে...');
