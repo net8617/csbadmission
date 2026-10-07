@@ -3,47 +3,42 @@ export default async function handler(req, res) {
         return res.status(405).json({ status: 'error', message: 'Method Not Allowed' });
     }
 
-    const { action, payload } = req.body;
-    const API_KEY = 'csbpaynsIVOZMnQbyQZowjbyk2sRwcgD5zBukErfl5VFc4jJHX';
+    const { action, payload, apiKey } = req.body;
+    const key = apiKey || 'csbpaynsIVOZMnQbyQZowjbyk2sRwcgD5zBukErfl5VFc4jJHX';
 
     try {
         if (action === 'create') {
-            // PHP cURL কাঠামোর হুবহু পেলোড
-            const requestBody = {
-                amount: String(payload.amount),
-                success_url: payload.success_url,
-                cancel_url: payload.cancel_url,
-                webhook_url: payload.webhook_url,
-                metadata: {
-                    phone: String(payload.phone || '')
-                }
-            };
-
             const response = await fetch('https://csbverify.csbservice.top/api/payment/create', {
                 method: 'POST',
                 headers: {
-                    'API-KEY': API_KEY,
+                    'API-KEY': key,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify({
+                    amount: String(payload.amount),
+                    success_url: payload.success_url,
+                    cancel_url: payload.cancel_url,
+                    webhook_url: payload.webhook_url,
+                    metadata: {
+                        phone: String(payload.phone || '')
+                    }
+                })
             });
-
             const data = await response.json();
             return res.status(200).json(data);
-        } 
-        
+        }
+
         if (action === 'verify') {
             const response = await fetch('https://csbverify.csbservice.top/api/payment/verify', {
                 method: 'POST',
                 headers: {
-                    'API-KEY': API_KEY,
+                    'API-KEY': key,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     transaction_id: String(payload.transaction_id)
                 })
             });
-
             const data = await response.json();
             return res.status(200).json(data);
         }
