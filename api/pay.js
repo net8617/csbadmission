@@ -8,14 +8,26 @@ export default async function handler(req, res) {
 
     try {
         if (action === 'create') {
+            // PHP cURL কাঠামোর হুবহু পেলোড
+            const requestBody = {
+                amount: String(payload.amount),
+                success_url: payload.success_url,
+                cancel_url: payload.cancel_url,
+                webhook_url: payload.webhook_url,
+                metadata: {
+                    phone: String(payload.phone || '')
+                }
+            };
+
             const response = await fetch('https://csbverify.csbservice.top/api/payment/create', {
                 method: 'POST',
                 headers: {
                     'API-KEY': API_KEY,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(requestBody)
             });
+
             const data = await response.json();
             return res.status(200).json(data);
         } 
@@ -27,8 +39,11 @@ export default async function handler(req, res) {
                     'API-KEY': API_KEY,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    transaction_id: String(payload.transaction_id)
+                })
             });
+
             const data = await response.json();
             return res.status(200).json(data);
         }
