@@ -21,8 +21,10 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         input, textarea, select { user-select: text !important; -webkit-user-select: text !important; }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-base);
@@ -35,76 +37,89 @@
             overflow-x: hidden;
             color: var(--text-main);
         }
+
         .ambient-glow {
-            position: fixed;
-            width: 500px;
-            height: 500px;
+            position: fixed; width: 500px; height: 500px;
             background: radial-gradient(circle, rgba(0, 245, 212, 0.08) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            filter: blur(80px);
+            border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px);
         }
         .glow-top-left { top: -150px; left: -150px; }
         .glow-bottom-right { bottom: -150px; right: -150px; background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, transparent 70%); }
+
         .grid-bg {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: 0;
-            pointer-events: none;
+            background-size: 50px 50px; z-index: 0; pointer-events: none;
         }
+
         .container {
-            position: relative;
-            z-index: 1;
-            max-width: 860px;
-            width: 100%;
-            background: var(--card-bg);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--card-border);
-            border-radius: 28px;
-            padding: 45px;
+            position: relative; z-index: 1; max-width: 860px; width: 100%;
+            background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--card-border); border-radius: 28px; padding: 45px;
             box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            animation: containerIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        @keyframes containerIn {
+            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
         .welcome-section { text-align: center; padding: 10px 0 24px; }
+        .brand-logo-container { display: none; justify-content: center; align-items: center; margin-bottom: 14px; }
+        .brand-logo-container img { max-width: 85px; max-height: 85px; object-fit: contain; filter: drop-shadow(0 0 20px var(--primary-glow)); border-radius: 16px; }
+
+        #bannerWrapper { width: 100%; display: none; justify-content: center; margin: 10px 0 18px; }
+        #csbDynamicBanner { max-width: 100%; max-height: 220px; border-radius: 18px; border: 1px solid var(--card-border); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); object-fit: cover; }
+
         .welcome-section h1 {
             font-size: 34px; font-weight: 800; letter-spacing: -0.5px;
             background: linear-gradient(180deg, #fff 0%, #cbd5e1 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .welcome-section .sub { color: var(--text-muted); font-size: 11px; letter-spacing: 3px; margin-top: 8px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
         .realtime-meta-bar { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 15px 0 5px; flex-wrap: wrap; font-size: 12px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
         .realtime-meta-bar span { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); padding: 5px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; }
         .realtime-meta-bar i { color: var(--primary); }
+
         .badge-batch { display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 6px 18px; border-radius: 9999px; font-size: 12.5px; font-weight: 600; color: #cbd5e1; }
         .live-counter { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 9999px; padding: 3px 10px; font-size: 10px; font-weight: 800; color: var(--accent-red); display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; }
+
         .home-buttons { display: flex; justify-content: center; gap: 14px; margin: 25px 0 10px; flex-wrap: wrap; }
         .home-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 14px 28px; color: #cbd5e1; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px; }
         .home-btn:hover { transform: translateY(-2px); border-color: var(--primary); color: #fff; box-shadow: 0 8px 25px rgba(0, 245, 212, 0.15); }
         .home-btn.primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: #030712; box-shadow: 0 6px 20px rgba(0, 245, 212, 0.2); }
+
         .portal-notice-box { display: none; background: rgba(0, 245, 212, 0.04); border: 1px solid rgba(0, 245, 212, 0.2); border-left: 4px solid var(--primary); border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; }
         .portal-notice-box h5 { color: var(--primary); font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
         .portal-notice-box p { font-size: 12.5px; color: #cbd5e1; line-height: 1.6; }
-        .form-wrapper { display: none; }
-        .form-wrapper.active { display: block; }
+
+        .form-wrapper, #paymentCompletedView { display: none; }
+        .form-wrapper.active, #paymentCompletedView.active { display: block; animation: containerIn 0.5s ease forwards; }
+
         .back-btn-wrapper { margin-bottom: 20px; }
         .back-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 9px 18px; border-radius: 12px; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s ease; }
         .back-btn:hover { color: var(--primary); border-color: var(--primary); transform: translateX(-4px); }
+
         .form-group { margin-bottom: 22px; width: 100%; }
         .form-group label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
         .step-num { background: rgba(0, 245, 212, 0.1); color: var(--primary); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; }
         .required { color: var(--accent-red); margin-left: auto; }
+
         .doc-type-toggle { display: flex; gap: 12px; margin-bottom: 10px; }
         .doc-type-btn { flex: 1; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .doc-type-btn.active { border-color: var(--primary); background: rgba(0, 245, 212, 0.08); color: var(--primary); }
+
         .form-control { width: 100%; padding: 14px 16px; background: var(--input-bg); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; color: var(--text-main); font-size: 14px; font-family: inherit; outline: none; transition: all 0.25s ease; }
         .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.12); background: rgba(2, 6, 23, 0.85); }
         .form-control::placeholder { color: #475569; }
+
         select.form-control { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2300f5d4' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; padding-right: 45px; }
         select.form-control option { background: #090d16; color: #fff; }
+
         .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
         .file-upload-wrapper { position: relative; width: 100%; display: block; }
         .file-upload-wrapper input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 5; width: 100%; height: 100%; }
         .file-upload-area { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; background: rgba(255, 255, 255, 0.02); border: 1.5px dashed rgba(255, 255, 255, 0.15); border-radius: 14px; transition: all 0.3s ease; width: 100%; }
@@ -115,6 +130,7 @@
         .file-upload-area .info .main span { color: var(--primary); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
         .file-upload-area .info .sub { font-size: 10.5px; color: #475569; margin-top: 2px; }
         .file-upload-area .size-badge { flex-shrink: 0; font-size: 11px; color: var(--primary); background: rgba(0, 245, 212, 0.08); padding: 5px 10px; border-radius: 8px; font-weight: 700; }
+
         .video-recorder { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 18px; margin: 10px 0; }
         .recorder-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
         .recorder-header .status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
@@ -122,6 +138,7 @@
         .dot.recording { background: var(--accent-red); animation: pulseLive 1s infinite; }
         .dot.ready { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
         @keyframes pulseLive { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
         .video-recorder video { width: 100%; height: 220px; background: #020617; border-radius: 12px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.05); }
         .recorder-controls { display: flex; gap: 10px; margin-top: 12px; }
         .btn-recorder { flex: 1; padding: 10px; border-radius: 10px; font-size: 12.5px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 6px; }
@@ -129,21 +146,43 @@
         .btn-recorder.stop { background: var(--accent-red); color: #fff; }
         .btn-recorder.download { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); }
         .btn-recorder:disabled { opacity: 0.3; cursor: not-allowed; }
+
         .oath-box { background: rgba(0, 245, 212, 0.02); border-left: 3px solid var(--primary); border-radius: 12px; padding: 18px 20px; margin: 15px 0 10px; }
         .oath-title { color: var(--primary); font-weight: 800; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .oath-text { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
         .oath-text .highlight { color: #fff; font-weight: 600; }
         .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 8px; font-size: 14px; }
+
+        .pay-success-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(0, 245, 212, 0.04));
+            border: 2px solid var(--accent-green); border-radius: 24px; padding: 40px 24px; text-align: center; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15);
+        }
+        .pay-success-icon { font-size: 64px; color: var(--accent-green); margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.5)); }
+        .pay-success-card h2 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+        .pay-success-card p { font-size: 14.5px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.6; }
+        .tnx-badge-box { background: rgba(2, 6, 23, 0.85); border: 1px solid var(--card-border); padding: 14px 22px; border-radius: 16px; display: inline-flex; align-items: center; gap: 12px; margin: 12px 0 25px; font-size: 14px; }
+        .tnx-badge-box span { color: var(--primary); font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; letter-spacing: 1px; }
+
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
-        .btn-submit { flex: 2; padding: 16px 24px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 14px; color: #030712; font-size: 15px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0, 245, 212, 0.2); display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-submit {
+            flex: 2; padding: 16px 24px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 14px; color: #030712; font-size: 15px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0, 245, 212, 0.2); display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+        }
         .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 245, 212, 0.35); }
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .btn-reset { flex: 1; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; }
         .form-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 11px; color: #475569; font-family: 'JetBrains Mono', monospace; }
+
+        .upload-progress { display: none; margin: 15px 0; background: rgba(255, 255, 255, 0.04); border-radius: 9999px; height: 6px; overflow: hidden; }
+        .upload-progress.show { display: block; }
+        .upload-progress .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.3s ease; }
+        .status-text { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 6px; }
+
         .toast { position: fixed; top: 24px; right: 24px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 20px; color: #fff; font-size: 13.5px; z-index: 1000; transform: translateX(120%); transition: transform 0.35s ease; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); }
         .toast.show { transform: translateX(0); }
         .toast.success { border-color: var(--primary); }
         .toast.error { border-color: var(--accent-red); }
+
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(16px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
         .modal-content { background: #090e1a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 36px 28px; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9); }
@@ -153,10 +192,14 @@
         .modal-content p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
         .btn-modal { padding: 12px 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 12px; color: #030712; font-weight: 700; cursor: pointer; }
         .btn-modal.error { background: var(--accent-red); color: #fff; }
+
         .payment-modal-box { background: #0b1329; border: 1.5px solid var(--primary); border-radius: 24px; padding: 32px 24px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0, 245, 212, 0.15); }
         .payment-modal-box h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
         .payment-modal-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
         .fee-badge { display: inline-block; background: rgba(0, 245, 212, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 8px 24px; border-radius: 30px; font-size: 18px; font-weight: 800; font-family: 'JetBrains Mono', monospace; margin-bottom: 22px; }
+        .copy-btn { background: rgba(0, 245, 212, 0.1); border: 1px solid rgba(0, 245, 212, 0.25); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+        .copy-btn:hover { background: var(--primary); color: #030712; }
+
         @media (max-width: 768px) {
             .container { padding: 24px 16px; border-radius: 20px; }
             .row-2 { grid-template-columns: 1fr; gap: 0; }
@@ -375,7 +418,7 @@
                     <div class="oath-box">
                         <div class="oath-title"><i class="fas fa-shield"></i> শপথনামা</div>
                         <div class="oath-text" id="displayOathText">
-                            “আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো。<br>
+                            “আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।<br>
                             <span class="highlight">আমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো।</span> সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো।<br>
                             আমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”
                         </div>
@@ -407,6 +450,31 @@
                 </div>
             </form>
         </div>
+
+        <!-- 3. PAYMENT COMPLETED / FINAL SUBMISSION VIEW -->
+        <div id="paymentCompletedView">
+            <div class="pay-success-card">
+                <i class="fas fa-circle-check pay-success-icon"></i>
+                <h2>পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!</h2>
+                <p>আপনার ফর্ম ফি সফলভাবে ভেরিফাই করা হয়েছে। আবেদনটি ফায়ারস্টোর ও টেলিগ্রামে চূড়ান্তভাবে জমা দিতে নিচের বাটনে ক্লিক করুন।</p>
+                
+                <div class="tnx-badge-box">
+                    <i class="fas fa-receipt" style="color:var(--primary);"></i>
+                    <span>ট্রানজেকশন আইডি: <strong id="verifiedTnxDisplay" style="color:#fff;">--</strong></span>
+                </div>
+
+                <div>
+                    <button type="button" class="btn-submit" id="finalSubmitBtn" style="width:100%; max-width:380px; margin:0 auto; background:linear-gradient(135deg, #10b981, #00f5d4);">
+                        <span class="btn-text"><i class="fas fa-paper-plane"></i> আবেদন সাবমিট করুন <i class="fas fa-arrow-right" style="margin-left:6px;"></i></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="upload-progress" id="uploadProgress">
+                <div class="bar" id="progressBar"></div>
+                <div class="status-text" id="progressStatus">প্রসেসিং হচ্ছে... (০%)</div>
+            </div>
+        </div>
     </div>
 
     <!-- AUTO PAYMENT GATEWAY MODAL -->
@@ -423,6 +491,24 @@
         </div>
     </div>
 
+    <!-- SUCCESS MODAL -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <i class="fas fa-circle-check icon"></i>
+            <h2>আবেদন সফল ও অনুমোদিত!</h2>
+            <p>
+                আপনার আবেদনটি সফলভাবে সিস্টেমে জমা পড়েছে।<br>
+                <strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">
+                    ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span>
+                </strong>
+                <button type="button" class="copy-btn" onclick="copyText('trackingIdDisplay')" style="margin-left: 6px;"><i class="fas fa-copy"></i> কপি</button>
+                <br><br>
+                আপনার অফিশিয়াল স্লিপটি <strong>PNG ছবি</strong> হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।
+            </p>
+            <button class="btn-modal" onclick="window.location.href='/'">ঠিক আছে</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="errorModal">
         <div class="modal-content">
             <i class="fas fa-circle-exclamation icon error"></i>
@@ -436,9 +522,10 @@
         <span id="toastMessage"></span>
     </div>
 
+    <!-- FIREBASE & CORE APPLICATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDQUF7WzlgooRi3cpQ3Kz6Ed7XEs3txZis",
@@ -452,6 +539,9 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        const BOT_TOKEN = '8677605758:AAHJs_SE2YmS0g0RVfuesZuXVKAJ3O5CjiM';
+        const CHANNEL_ID_SUBMIT = '-1004341639499';
 
         let activePortalConfig = {
             apiKey: 'csbpaynsIVOZMnQbyQZowjbyk2sRwcgD5zBukErfl5VFc4jJHX',
@@ -546,6 +636,7 @@
 
         const landingPage = document.getElementById('landingPage');
         const formWrapper = document.getElementById('formWrapper');
+        const paymentCompletedView = document.getElementById('paymentCompletedView');
         const registerBtn = document.getElementById('registerBtn');
         const trackingBtn = document.getElementById('trackingBtn');
         const supportBtn = document.getElementById('supportBtn');
@@ -555,18 +646,21 @@
         registerBtn.addEventListener('click', () => {
             landingPage.style.display = 'none';
             formWrapper.classList.add('active');
+            paymentCompletedView.style.display = 'none';
             trackingPanel.style.display = 'none';
             initCamera(); 
         });
 
         backToHomeBtn.addEventListener('click', () => {
             formWrapper.classList.remove('active');
+            paymentCompletedView.style.display = 'none';
             landingPage.style.display = 'block';
         });
 
         trackingBtn.addEventListener('click', () => {
             landingPage.style.display = 'block';
             formWrapper.classList.remove('active');
+            paymentCompletedView.style.display = 'none';
             trackingPanel.style.display = trackingPanel.style.display === 'none' ? 'block' : 'none';
         });
 
@@ -648,12 +742,55 @@
             });
         });
 
-        // Helper: Convert File to Base64 to safely store in localStorage
         const fileToBase64 = (file) => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => resolve(reader.result);
             reader.onerror = error => reject(error);
+        });
+
+        const base64ToBlob = (base64Data, contentType = '') => {
+            const byteCharacters = atob(base64Data.split(',')[1]);
+            const byteArrays = [];
+            for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+                const slice = byteCharacters.slice(offset, offset + 512);
+                const byteNumbers = new Array(slice.length);
+                for (let i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+                byteArrays.push(new Uint8Array(byteNumbers));
+            }
+            return new Blob(byteArrays, { type: contentType });
+        };
+
+        // Check on Page Load if returning from Payment Gateway
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let transactionId = urlParams.get('transaction_id') || 
+                                  urlParams.get('tnx_id') || 
+                                  urlParams.get('trxID') || 
+                                  urlParams.get('invoice_id') || 
+                                  urlParams.get('payment_id') ||
+                                  urlParams.get('ref');
+
+            const hasSuccess = urlParams.get('payment_status') === 'success' || 
+                               urlParams.get('status') === 'success' || 
+                               urlParams.get('status') === 'COMPLETED' || 
+                               Boolean(transactionId);
+
+            if (hasSuccess) {
+                const savedDataStr = localStorage.getItem('CSB_ACTIVE_REGISTRATION');
+                if (!savedDataStr) return;
+
+                landingPage.style.display = 'none';
+                formWrapper.classList.remove('active');
+                paymentCompletedView.style.display = 'block';
+
+                window.currentVerifiedTnxId = transactionId || ('CSB-TNX-' + Math.floor(100000 + Math.random() * 900000));
+                document.getElementById('verifiedTnxDisplay').textContent = window.currentVerifiedTnxId;
+                showToast('✅ পেমেন্ট সফল হয়েছে! আবেদন সাবমিট করুন।', 'success');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         });
 
         document.getElementById('nextToPayBtn').addEventListener('click', function() {
@@ -683,11 +820,10 @@
             document.getElementById('paymentModal').classList.add('show');
         });
 
-        // Proceed to Payment with Base64 File Storage
         document.getElementById('proceedAutoPayBtn').addEventListener('click', async function() {
             const btn = this;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ডেটা প্রসেসিং ও গেটওয়েতে সংযোগ...`;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ডেটা প্রসেসিং ও গেটওয়েতে সংযোগ হচ্ছে...`;
 
             try {
                 const p1File = document.getElementById('photo1').files[0];
@@ -725,7 +861,6 @@
 
                 const currentFee = getActiveCategoryFee();
                 const currentOrigin = window.location.origin;
-                const callbackUrl = `${currentOrigin}/callback.html`;
 
                 const response = await fetch('/api/pay', {
                     method: 'POST',
@@ -735,9 +870,9 @@
                         apiKey: activePortalConfig.apiKey,
                         payload: {
                             amount: currentFee,
-                            success_url: callbackUrl,
-                            cancel_url: `${currentOrigin}/`,
-                            webhook_url: callbackUrl,
+                            success_url: `${currentOrigin}/?payment_status=success`,
+                            cancel_url: `${currentOrigin}/?payment_status=cancel`,
+                            webhook_url: `${currentOrigin}/?payment_status=webhook`,
                             phone: formObj.personalPhone
                         }
                     })
@@ -760,6 +895,166 @@
                 document.getElementById('paymentModal').classList.remove('show');
             }
         });
+
+        // FINAL SUBMISSION & TELEGRAM BOT SENDER
+        document.getElementById('finalSubmitBtn').addEventListener('click', async function() {
+            const tnxId = window.currentVerifiedTnxId || 'CSB-TNX-' + Math.floor(100000 + Math.random() * 900000);
+            const submitBtn = this;
+            submitBtn.disabled = true;
+
+            const savedDataStr = localStorage.getItem('CSB_ACTIVE_REGISTRATION');
+            if (!savedDataStr) {
+                showToast('⚠️ আবেদনের তথ্য খুঁজে পাওয়া যায়নি!', 'error');
+                submitBtn.disabled = false;
+                return;
+            }
+            const formData = JSON.parse(savedDataStr);
+            formData.tnxId = tnxId;
+
+            const prog = document.getElementById('uploadProgress');
+            prog.classList.add('show');
+            document.getElementById('progressBar').style.width = '20%';
+            document.getElementById('progressStatus').textContent = 'ডেটাবেজে সেভ হচ্ছে... (২০%)';
+
+            const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+            const currentTime = new Date().toLocaleString('bn-BD');
+
+            try {
+                await setDoc(doc(db, "applications", trackId), {
+                    ...formData,
+                    status: 'Pending',
+                    paymentStatus: 'Paid',
+                    createdAt: currentTime,
+                    updateTime: currentTime
+                });
+                await setDoc(doc(db, "transactions", tnxId), { trackId: trackId, usedAt: currentTime });
+
+                document.getElementById('progressBar').style.width = '55%';
+                document.getElementById('progressStatus').textContent = 'টেলিগ্রামে ছবি ও ভিডিও পাঠানো হচ্ছে... (৫৫%)';
+
+                const caption = `🛡️ **CSB NEW ADMISSION (AUTO PAID)** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: \`${formData.email}\`\n📱 WhatsApp: \`${formData.whatsapp}\`\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 সনদ টাইপ: ${formData.docType}\n🔢 সনদ নম্বর: \`${formData.nidNumber}\`\n📅 জন্মতারিখ: \`${formData.dob}\`\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n💳 পেমেন্ট TNX: \`${tnxId}\` (VERIFIED & PAID)\n📞 অভিভাবক মোবাইল: \`${formData.guardianPhone}\`\n📱 আবেদনকারী মোবাইল: \`${formData.personalPhone}\`\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন সময়: \`${currentTime}\``;
+
+                const mediaGroup = new FormData();
+                mediaGroup.append('chat_id', CHANNEL_ID_SUBMIT);
+                const mediaData = [];
+
+                if (formData.p1) {
+                    mediaGroup.append('file1', base64ToBlob(formData.p1, 'image/jpeg'), formData.p1Name || 'photo1.jpg');
+                    mediaData.push({ type: 'photo', media: 'attach://file1', caption: caption, parse_mode: 'Markdown' });
+                }
+                if (formData.p2) {
+                    mediaGroup.append('file2', base64ToBlob(formData.p2, 'image/jpeg'), formData.p2Name || 'photo2.jpg');
+                    mediaData.push({ type: 'photo', media: 'attach://file2' });
+                }
+                if (formData.nidData) {
+                    mediaGroup.append('file3', base64ToBlob(formData.nidData, 'image/jpeg'), formData.nidName || 'nid.jpg');
+                    mediaData.push({ type: 'photo', media: 'attach://file3' });
+                }
+                if (formData.videoData) {
+                    mediaGroup.append('videoFile', base64ToBlob(formData.videoData, 'video/webm'), `oath_${trackId}.webm`);
+                    mediaData.push({ type: 'video', media: 'attach://videoFile' });
+                }
+
+                if (mediaData.length > 0) {
+                    mediaGroup.append('media', JSON.stringify(mediaData));
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
+                        method: 'POST', body: mediaGroup
+                    }).catch(() => {});
+                } else {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: CHANNEL_ID_SUBMIT, text: caption, parse_mode: 'Markdown' })
+                    }).catch(() => {});
+                }
+
+                document.getElementById('progressBar').style.width = '85%';
+                document.getElementById('progressStatus').textContent = 'অ্যাকশন প্যানেল ও স্লিপ তৈরি হচ্ছে... (৮৫%)';
+
+                const webAppBaseUrl = window.location.href.split('?')[0];
+                const actionMsgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        chat_id: CHANNEL_ID_SUBMIT, 
+                        text: `🚨 **CSB ACTION PANEL (VERIFIED PAYMENT)** 🚨\nID: \`${trackId}\`\nনাম: ${formData.fullName}\nরোল: ${formData.role}\nTNX: \`${tnxId}\``, 
+                        parse_mode: 'Markdown'
+                    })
+                });
+                const actionData = await actionMsgRes.json();
+                const actionMsgId = actionData.result ? actionData.result.message_id : '';
+
+                if (actionMsgId) {
+                    const inlineKeyboard = {
+                        inline_keyboard: [[
+                            { text: '✅ Approve', url: `${webAppBaseUrl}?action=approve&id=${trackId}&msg_id=${actionMsgId}` }, 
+                            { text: '❌ Reject', url: `${webAppBaseUrl}?action=reject&id=${trackId}&msg_id=${actionMsgId}` }
+                        ]]
+                    };
+
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: CHANNEL_ID_SUBMIT,
+                            message_id: actionMsgId,
+                            reply_markup: inlineKeyboard
+                        })
+                    });
+                }
+
+                // PNG Slip Auto Download
+                await generateAutoPNG(trackId, formData, currentTime);
+
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('progressStatus').textContent = 'সম্পন্ন হয়েছে! (১০০%)';
+                localStorage.removeItem('CSB_ACTIVE_REGISTRATION');
+                document.getElementById('trackingIdDisplay').textContent = trackId;
+                document.getElementById('successModal').classList.add('show');
+
+            } catch (err) {
+                console.error(err);
+                submitBtn.disabled = false;
+                prog.classList.remove('show');
+                document.getElementById('errorMessage').textContent = 'ত্রুটি: ' + err.message;
+                document.getElementById('errorModal').classList.add('show');
+            }
+        });
+
+        async function generateAutoPNG(trackId, formData, currentTime) {
+            const card = document.createElement('div');
+            card.style.position = 'fixed'; card.style.left = '-9999px'; card.style.top = '0';
+            card.style.width = '600px'; card.style.background = '#090e1a'; card.style.color = '#f8fafc';
+            card.style.padding = '35px'; card.style.borderRadius = '20px'; card.style.border = '2px solid #00f5d4';
+            card.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+
+            card.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 16px; margin-bottom: 22px;">
+                    <h2 style="color: #00f5d4; font-size: 22px; font-weight: 800; margin: 0;">CYBER SENTINEL BANGLADESH</h2>
+                    <p style="font-size: 11.5px; color: #94a3b8; letter-spacing: 2px; font-weight: 700; margin-top: 5px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13.5px; line-height: 1.6;">
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">ট্র্যাকিং আইডি:</td><td style="font-weight: 800; color: #00f5d4; font-family: monospace;">${trackId}</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">আবেদনকারীর নাম:</td><td style="font-weight: 700; color: #fff;">${formData.fullName}</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">মোবাইল নম্বর:</td><td style="color: #fff;">${formData.personalPhone}</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">ক্যাটাগরি ও রোল:</td><td style="color: #0ea5e9;">${formData.category} (${formData.role})</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 9px 0; color: #94a3b8;">পেমেন্ট TNX:</td><td style="font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td></tr>
+                    <tr><td style="padding: 9px 0; color: #94a3b8;">পেমেন্ট স্ট্যাটাস:</td><td style="font-weight: 800; color: #00f5d4;">VERIFIED & PAID</td></tr>
+                </table>
+            `;
+            document.body.appendChild(card);
+            try {
+                const canvas = await html2canvas(card, { scale: 2, backgroundColor: '#090e1a', useCORS: true });
+                const link = document.createElement('a');
+                link.download = `CSB_Slip_${trackId}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error("PNG Gen Error:", err);
+            } finally {
+                document.body.removeChild(card);
+            }
+        }
     </script>
 </body>
 </html>
