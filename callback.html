@@ -6,7 +6,6 @@
     <title>Payment Completed | CSB Admission Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-    <!-- HTML2CANVAS for High-Quality Direct PNG Slip Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -41,11 +40,7 @@
             text-align: center;
             box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
-        .pay-success-icon {
-            font-size: 60px;
-            color: var(--accent-green);
-            margin-bottom: 15px;
-        }
+        .pay-success-icon { font-size: 60px; color: var(--accent-green); margin-bottom: 15px; }
         h2 { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 8px; }
         p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
         .tnx-box {
@@ -74,62 +69,23 @@
         }
         .btn-submit:hover:not(:disabled) { transform: translateY(-2px); }
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-        .upload-progress {
-            display: none;
-            margin-top: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 9999px;
-            height: 6px;
-            overflow: hidden;
-        }
+        .upload-progress { display: none; margin-top: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 9999px; height: 6px; overflow: hidden; }
         .upload-progress.show { display: block; }
-        .upload-progress .bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.3s ease;
-        }
+        .upload-progress .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.3s ease; }
         .status-text { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal-content {
-            background: #090e1a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
+        .modal-content { background: #090e1a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; max-width: 400px; width: 100%; text-align: center; }
         .modal-content .icon { font-size: 48px; color: var(--primary); margin-bottom: 12px; }
-        .btn-modal {
-            margin-top: 15px;
-            padding: 10px 24px;
-            background: var(--primary);
-            border: none;
-            border-radius: 10px;
-            color: #030712;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        .btn-modal { margin-top: 15px; padding: 10px 24px; background: var(--primary); border: none; border-radius: 10px; color: #030712; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <i class="fas fa-circle-check pay-success-icon"></i>
-        <h2>পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!</h2>
-        <p>আপনার ফর্ম ফি সফলভাবে ভেরিফাই করা হয়েছে। আবেদনটি ফায়ারস্টোর ও টেলিগ্রামে চূড়ান্তভাবে জমা দিতে নিচের বাটনে ক্লিক করুন।</p>
+        <h2>পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!</h2>
+        <p>আপনার ফর্ম ফি সফলভাবে ভেরিফাই করা হয়েছে। আবেদনটি ফায়ারস্টোর ও টেলিগ্রামে চূড়ান্তভাবে জমা দিতে নিচের বাটনে ক্লিক করুন।</p>
         
         <div class="tnx-box">
             TNX ID: <span id="displayTnx">--</span>
@@ -145,7 +101,6 @@
         </div>
     </div>
 
-    <!-- SUCCESS MODAL -->
     <div class="modal-overlay" id="successModal">
         <div class="modal-content">
             <i class="fas fa-circle-check icon"></i>
@@ -158,7 +113,6 @@
         </div>
     </div>
 
-    <!-- FIREBASE & SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -180,7 +134,7 @@
         const CHANNEL_ID_SUBMIT = '-1004341639499';
 
         const urlParams = new URLSearchParams(window.location.search);
-        const transactionId = urlParams.get('transaction_id') || urlParams.get('tnx_id') || urlParams.get('trxID') || urlParams.get('invoice_id');
+        const transactionId = urlParams.get('transaction_id') || urlParams.get('tnx_id') || urlParams.get('trxID') || urlParams.get('invoice_id') || urlParams.get('payment_id');
 
         if (transactionId) {
             document.getElementById('displayTnx').textContent = transactionId;
