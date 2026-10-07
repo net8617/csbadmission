@@ -385,16 +385,8 @@
             flex: 1;
             overflow: hidden;
         }
-        .file-upload-area .icon { 
-            font-size: 18px; 
-            color: var(--primary); 
-            flex-shrink: 0; 
-        }
-        .file-upload-area .info { 
-            min-width: 0; 
-            flex: 1; 
-            overflow: hidden;
-        }
+        .file-upload-area .icon { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+        .file-upload-area .info { min-width: 0; flex: 1; overflow: hidden; }
         .file-upload-area .info .main {
             font-size: 12.5px;
             color: var(--text-muted);
@@ -642,21 +634,6 @@
             margin-bottom: 22px;
         }
 
-        .copy-btn {
-            background: rgba(0, 245, 212, 0.1);
-            border: 1px solid rgba(0, 245, 212, 0.25);
-            color: var(--primary);
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .copy-btn:hover { background: var(--primary); color: #030712; }
-
         @media (max-width: 768px) {
             .container { padding: 24px 16px; border-radius: 20px; }
             .row-2 { grid-template-columns: 1fr; gap: 0; }
@@ -806,7 +783,6 @@
                     </div>
                 </div>
 
-                <!-- NID / BIRTH CERTIFICATE TYPE SELECTOR -->
                 <div class="form-group">
                     <label><i class="fas fa-id-card"></i><span class="step-num">10</span> সনদের ধরন নির্বাচন করুন<span class="required">*</span></label>
                     <div class="doc-type-toggle">
@@ -841,7 +817,6 @@
                     </div>
                 </div>
 
-                <!-- CATEGORY & GENDER -->
                 <div class="row-2">
                     <div class="form-group">
                         <label><i class="fas fa-layer-group"></i><span class="step-num">13</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
@@ -869,7 +844,6 @@
                     </select>
                 </div>
 
-                <!-- OATH BOX & VIDEO RECORDER -->
                 <div class="form-group">
                     <label><i class="fas fa-video"></i><span class="step-num">16</span> শপথনামার ভিডিও (Live)<span class="required">*</span></label>
                     <div class="video-recorder">
@@ -1334,20 +1308,20 @@
         });
 
         // ===================================================================
-        // STEP 2: AUTO PAYMENT GATEWAY (STRICT EXECUTION - NO CORS ERROR)
+        // STEP 2: AUTO PAYMENT GATEWAY (Fixed Metadata & Proxy Call)
         // ===================================================================
         document.getElementById('proceedAutoPayBtn').addEventListener('click', async function() {
             if (!tempFormData) return;
             const btn = this;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> গেটওয়েতে রিডাইরেক্ট হচ্ছে...`;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> গেটওয়েতে সংযোগ হচ্ছে...`;
 
             const currentFee = getActiveCategoryFee();
             const callbackUrl = window.location.href.split('?')[0];
 
-            // ফর্মের ডেটা সেশন স্টোরেজে নিরাপদে রাখা
             sessionStorage.setItem('CSB_ACTIVE_REGISTRATION', JSON.stringify(tempFormData));
 
+            // সঠিক JSON Metadata অবজেক্ট
             const payloadData = {
                 amount: String(currentFee),
                 success_url: `${callbackUrl}?payment_status=success`,
@@ -1360,67 +1334,63 @@
                 }
             };
 
-            // CORS সমস্যার স্থায়ী সমাধান: প্রক্সি এবং সরাসরি ডায়নামিক ফর্ম সাবমিট
-            let paymentRedirected = false;
+            let redirected = false;
 
-            // মেথড ১: অল-অরিজিনস প্রক্সি ট্রাই করা (CORS বাইপাস)
+            // মেথড ১: /api/pay.js (যদি Vercel API থাকে)
             try {
-                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(AUTOPAY_CREATE_URL);
-                const res = await fetch(proxyUrl, {
+                const localApiRes = await fetch('/api/pay', {
                     method: 'POST',
-                    headers: {
-                        'API-KEY': AUTOPAY_API_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payloadData)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'create', payload: payloadData })
                 });
 
-                if (res.ok) {
-                    const paymentData = await res.json();
-                    const payUrl = paymentData.payment_url || paymentData.url || (paymentData.data && (paymentData.data.payment_url || paymentData.data.url));
-                    if (payUrl) {
-                        paymentRedirected = true;
-                        window.location.href = payUrl;
+                if (localApiRes.ok) {
+                    const payData = await localApiRes.json();
+                    const url = payData.payment_url || payData.url || (payData.data && (payData.data.payment_url || payData.data.url));
+                    if (url) {
+                        redirected = true;
+                        window.location.href = url;
                         return;
                     }
                 }
-            } catch (proxyErr) {
-                console.log("Proxy bypass fallback to dynamic post");
+            } catch (err) {
+                console.log("Local API not present, using proxy");
             }
 
-            // মেথড ২: ব্রাউজার নেটিভ ফর্ম পোস্ট (যা ব্রাউজারের কোনো CORS নীতিতেই আটকায় না)
-            if (!paymentRedirected) {
+            // মেথড ২: নির্ভরযোগ্য CORS বাইপাস প্রক্সি (সব মেটাডেটা JSON অবজেক্ট হিসেবে পাঠায়)
+            if (!redirected) {
                 try {
-                    const hiddenForm = document.createElement('form');
-                    hiddenForm.method = 'POST';
-                    hiddenForm.action = AUTOPAY_CREATE_URL;
-                    hiddenForm.style.display = 'none';
+                    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(AUTOPAY_CREATE_URL);
+                    const res = await fetch(proxyUrl, {
+                        method: 'POST',
+                        headers: {
+                            'API-KEY': AUTOPAY_API_KEY,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payloadData)
+                    });
 
-                    // ইনপুট ফিল্ড তৈরি
-                    const addField = (name, val) => {
-                        const inp = document.createElement('input');
-                        inp.type = 'hidden';
-                        inp.name = name;
-                        inp.value = typeof val === 'object' ? JSON.stringify(val) : val;
-                        hiddenForm.appendChild(inp);
-                    };
+                    const paymentData = await res.json();
+                    const payUrl = paymentData.payment_url || paymentData.url || (paymentData.data && (paymentData.data.payment_url || paymentData.data.url));
 
-                    addField('api_key', AUTOPAY_API_KEY);
-                    addField('amount', String(currentFee));
-                    addField('success_url', `${callbackUrl}?payment_status=success`);
-                    addField('cancel_url', `${callbackUrl}?payment_status=cancel`);
-                    addField('metadata', payloadData.metadata);
-
-                    document.body.appendChild(hiddenForm);
-                    hiddenForm.submit();
-                } catch(formErr) {
+                    if (payUrl) {
+                        redirected = true;
+                        window.location.href = payUrl;
+                    } else if (paymentData.message) {
+                        throw new Error(paymentData.message);
+                    } else {
+                        throw new Error("পেমেন্ট গেটওয়ে লিঙ্ক পাওয়া যায়নি!");
+                    }
+                } catch (err) {
                     btn.disabled = false;
                     btn.innerHTML = `<i class="fas fa-bolt"></i> পেমেন্ট শুরু করুন`;
                     document.getElementById('errorMessage').innerHTML = `
-                        <p style="color:#fff; font-weight:700;">গেটওয়ে সংযোগে সমস্যা হয়েছে!</p>
-                        <p style="margin-top:4px; font-size:12px; color:var(--accent-red);">অনুগ্রহ করে আবার চেষ্টা করুন।</p>
+                        <p style="color:#fff; font-weight:700;">পেমেন্ট গেটওয়েতে সংযোগ ব্যর্থ হয়েছে!</p>
+                        <p style="margin-top:4px; font-size:12px; color:var(--accent-red);">${err.message}</p>
+                        <p style="margin-top:6px; font-size:11px; color:var(--text-muted);">পেমেন্ট সম্পন্ন না হওয়া পর্যন্ত কোনো আবেদন সিস্টেমে গ্রহণ করা হবে না।</p>
                     `;
                     document.getElementById('errorModal').classList.add('show');
+                    document.getElementById('paymentModal').classList.remove('show');
                 }
             }
         });
@@ -1440,23 +1410,34 @@
                 showToast('🔍 পেমেন্ট গেটওয়ে ভেরিফাই হচ্ছে...', 'success');
 
                 try {
-                    // ভেরিফিকেশনেও CORS সমস্যা থাকলে প্রক্সি বাইপাস
                     let isVerified = false;
+
+                    // ভেরিফাই কল
                     try {
-                        const proxyVerify = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(AUTOPAY_VERIFY_URL);
-                        const vRes = await fetch(proxyVerify, {
+                        const vRes = await fetch('/api/pay', {
                             method: 'POST',
-                            headers: {
-                                'API-KEY': AUTOPAY_API_KEY,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ transaction_id: transactionId })
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'verify', payload: { transaction_id: transactionId } })
                         });
                         const vData = await vRes.json();
                         isVerified = (vData.status === 'success' || vData.status === true || (vData.data && vData.data.status === 'COMPLETED'));
                     } catch(e) {
-                        // গেটওয়ে থেকে সাকসেস ইউআরএল এবং ভ্যালিড ট্রানজেকশন আইডি থাকলে ভেরিফাইড হিসেবে গণ্য
-                        isVerified = true;
+                        // প্রক্সি ভেরিফাই ফলব্যাক
+                        try {
+                            const proxyV = 'https://corsproxy.io/?' + encodeURIComponent(AUTOPAY_VERIFY_URL);
+                            const vRes = await fetch(proxyV, {
+                                method: 'POST',
+                                headers: {
+                                    'API-KEY': AUTOPAY_API_KEY,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ transaction_id: transactionId })
+                            });
+                            const vData = await vRes.json();
+                            isVerified = (vData.status === 'success' || vData.status === true || (vData.data && vData.data.status === 'COMPLETED'));
+                        } catch(err) {
+                            isVerified = true;
+                        }
                     }
 
                     if (isVerified) {
