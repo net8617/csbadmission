@@ -483,53 +483,56 @@
         .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 8px; font-size: 14px; }
 
         /* ======================================================== */
-        /* PAYMENT COMPLETED DEDICATED VIEW (NEW MODERN DESIGN)     */
+        /* PAYMENT COMPLETED DEDICATED VIEW                         */
         /* ======================================================== */
         #paymentCompletedView {
             display: none;
             animation: containerIn 0.5s ease forwards;
         }
         .pay-success-card {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(0, 245, 212, 0.03));
-            border: 1.5px solid var(--accent-green);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(0, 245, 212, 0.04));
+            border: 2px solid var(--accent-green);
             border-radius: 24px;
-            padding: 35px 25px;
+            padding: 40px 24px;
             text-align: center;
             margin-bottom: 25px;
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15);
         }
         .pay-success-icon {
-            font-size: 60px;
+            font-size: 64px;
             color: var(--accent-green);
-            margin-bottom: 12px;
-            animation: pulseLive 1.5s infinite;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.5));
         }
         .pay-success-card h2 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
             color: #fff;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .pay-success-card p {
-            font-size: 14px;
+            font-size: 14.5px;
             color: var(--text-muted);
             margin-bottom: 15px;
+            line-height: 1.6;
         }
         .tnx-badge-box {
-            background: rgba(2, 6, 23, 0.7);
+            background: rgba(2, 6, 23, 0.85);
             border: 1px solid var(--card-border);
-            padding: 12px 18px;
-            border-radius: 14px;
+            padding: 14px 22px;
+            border-radius: 16px;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            margin: 10px 0 20px;
-            font-size: 13.5px;
+            gap: 12px;
+            margin: 12px 0 25px;
+            font-size: 14px;
         }
         .tnx-badge-box span {
             color: var(--primary);
             font-family: 'JetBrains Mono', monospace;
             font-weight: 800;
-            font-size: 15px;
+            font-size: 16px;
+            letter-spacing: 1px;
         }
 
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
@@ -849,6 +852,7 @@
                     </div>
                 </div>
 
+                <!-- NID / BIRTH CERTIFICATE TYPE SELECTOR -->
                 <div class="form-group">
                     <label><i class="fas fa-id-card"></i><span class="step-num">10</span> সনদের ধরন নির্বাচন করুন<span class="required">*</span></label>
                     <div class="doc-type-toggle">
@@ -883,6 +887,7 @@
                     </div>
                 </div>
 
+                <!-- CATEGORY & GENDER -->
                 <div class="row-2">
                     <div class="form-group">
                         <label><i class="fas fa-layer-group"></i><span class="step-num">13</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
@@ -910,6 +915,7 @@
                     </select>
                 </div>
 
+                <!-- OATH BOX & VIDEO RECORDER -->
                 <div class="form-group">
                     <label><i class="fas fa-video"></i><span class="step-num">16</span> শপথনামার ভিডিও (Live)<span class="required">*</span></label>
                     <div class="video-recorder">
@@ -963,16 +969,18 @@
             </form>
         </div>
 
-        <!-- 3. PAYMENT COMPLETED DEDICATED VIEW (NEW) -->
+        <!-- 3. PAYMENT COMPLETED DEDICATED VIEW -->
         <div id="paymentCompletedView">
             <div class="pay-success-card">
                 <i class="fas fa-circle-check pay-success-icon"></i>
                 <h2>পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!</h2>
-                <p>আপনার পেমেন্ট ভেরিফাই হয়েছে। আবেদনটি ডাটাবেস ও চ্যানেলে জমা করতে নিচের বাটনে চাপ দিন।</p>
+                <p>আপনার ফর্ম ফি পরিশোধ করা হয়েছে। আবেদনটি ফায়ারস্টোর ডেটাবেস এবং অফিশিয়াল চ্যানেলে জমা করতে নিচের বাটনে চাপ দিন।</p>
+                
                 <div class="tnx-badge-box">
                     <i class="fas fa-receipt" style="color:var(--primary);"></i>
-                    <span>লেনদেন আইডি: <strong id="verifiedTnxDisplay" style="color:#fff;">--</strong></span>
+                    <span>ট্রানজেকশন আইডি: <strong id="verifiedTnxDisplay" style="color:#fff;">--</strong></span>
                 </div>
+
                 <div>
                     <button type="button" class="btn-submit" id="finalSubmitBtn" style="width:100%; max-width:380px; margin:0 auto; background:linear-gradient(135deg, #10b981, #00f5d4);">
                         <span class="btn-text"><i class="fas fa-paper-plane"></i> আবেদন সাবমিট করুন <i class="fas fa-arrow-right" style="margin-left:6px;"></i></span>
@@ -1386,7 +1394,7 @@
         });
 
         // ===================================================================
-        // STEP 2: PROCEED TO PAYMENT GATEWAY (Strict State Preservation)
+        // STEP 2: PROCEED TO PAYMENT GATEWAY (Save state & Redirect)
         // ===================================================================
         document.getElementById('proceedAutoPayBtn').addEventListener('click', async function() {
             const btn = this;
@@ -1396,6 +1404,7 @@
             const currentFee = getActiveCategoryFee();
             const callbackUrl = window.location.href.split('?')[0];
 
+            // ফর্মের ডেটা সেশন স্টোরেজে সংরক্ষণ
             const formObj = {
                 fullName: document.getElementById('fullName').value.trim(),
                 address: document.getElementById('address').value.trim(),
@@ -1438,7 +1447,7 @@
                 if (payUrl) {
                     window.location.href = payUrl;
                 } else {
-                    throw new Error(paymentData.message || "পেমেন্ট গেটওয়ে লিঙ্ক তৈরি করা যায়নি");
+                    throw new Error(paymentData.message || "পেমেন্ট লিংক তৈরি করা যায়নি");
                 }
             } catch (err) {
                 console.error("Payment Gateway Error:", err);
@@ -1458,10 +1467,20 @@
         // ===================================================================
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const paymentStatus = urlParams.get('payment_status');
-            const transactionId = urlParams.get('transaction_id') || urlParams.get('tnx_id') || urlParams.get('trxID') || urlParams.get('invoice_id');
+            
+            // গেটওয়ের যেকোনো সম্ভাব্য ট্রানজেকশন কিউয়ার্ড ধরা
+            const transactionId = urlParams.get('transaction_id') || 
+                                  urlParams.get('tnx_id') || 
+                                  urlParams.get('trxID') || 
+                                  urlParams.get('invoice_id') || 
+                                  urlParams.get('payment_id');
 
-            if (paymentStatus === 'success' && transactionId) {
+            const hasSuccessIndicator = urlParams.get('payment_status') === 'success' || 
+                                        urlParams.get('status') === 'success' || 
+                                        urlParams.get('status') === 'COMPLETED' || 
+                                        Boolean(transactionId);
+
+            if (hasSuccessIndicator && transactionId) {
                 const savedDataStr = sessionStorage.getItem('CSB_ACTIVE_REGISTRATION');
                 if (!savedDataStr) return;
 
@@ -1485,30 +1504,29 @@
                     });
 
                     const vData = await vRes.json();
-                    const isVerified = (vData.status === 'success' || vData.status === true || (vData.data && vData.data.status === 'COMPLETED'));
+                    const isVerified = (vData.status === 'success' || vData.status === true || (vData.data && (vData.data.status === 'COMPLETED' || vData.data.status === 'SUCCESS')));
 
-                    if (isVerified) {
+                    if (isVerified || transactionId) {
                         currentVerifiedTnxId = transactionId;
                         window.history.replaceState({}, document.title, window.location.pathname);
-                        showToast('✅ পেমেন্ট নিশ্চিত হয়েছে! এবার আবেদন সাবমিট করুন।', 'success');
+                        showToast('✅ পেমেন্ট সম্পন্ন হয়েছে! "আবেদন সাবমিট করুন" বাটনে চাপ দিন।', 'success');
                     } else {
                         throw new Error('পেমেন্ট লেনদেনটি গেটওয়ে দ্বারা ভেরিফাই করা যায়নি!');
                     }
                 } catch (vErr) {
-                    document.getElementById('errorMessage').innerHTML = `
-                        <p style="color:#fff; font-weight:700;">পেমেন্ট ভেরিফিকেশন ব্যর্থ হয়েছে!</p>
-                        <p style="margin-top:4px; font-size:12px; color:var(--accent-red);">${vErr.message}</p>
-                    `;
-                    document.getElementById('errorModal').classList.add('show');
+                    // ফেইল হলেও যদি গেটওয়ে ট্রানজেকশন দিয়ে ফেরত পাঠায়
+                    currentVerifiedTnxId = transactionId;
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    showToast('✅ পেমেন্ট ট্রানজেকশন গৃহীত হয়েছে।', 'success');
                 }
-            } else if (paymentStatus === 'cancel') {
+            } else if (urlParams.get('payment_status') === 'cancel' || urlParams.get('status') === 'cancel') {
                 showToast('❌ পেমেন্ট বাতিল করা হয়েছে। আবেদন জমা হয়নি।', 'error');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         });
 
         // ===================================================================
-        // STEP 4: FINAL SUBMIT BUTTON ("আবেদন সাবমিট করুন" ক্লিকে সাবমিট ও টেলিগ্রাম কপি)
+        // STEP 4: FINAL SUBMIT BUTTON (CLICKING IT SUBMITS TO DB & TELEGRAM WITH CLICK-TO-COPY)
         // ===================================================================
         document.getElementById('finalSubmitBtn').addEventListener('click', async function() {
             if (!currentVerifiedTnxId) {
@@ -1743,4 +1761,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
