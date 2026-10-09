@@ -362,7 +362,7 @@
     <div class="ambient-glow glow-top"></div>
     <div class="ambient-glow glow-bottom"></div>
 
-    <!-- LOGIN GATEWAY -->
+    <!-- LOGIN GATEWAY (PLACEHOLDER REMOVED) -->
     <div class="login-wrap" id="loginWrap">
         <div class="login-card">
             <i class="fas fa-shield-halved" style="font-size: 48px; color: var(--primary); margin-bottom: 14px;"></i>
@@ -371,7 +371,7 @@
             <form id="adminLoginForm">
                 <div class="form-group" style="text-align: left;">
                     <label>Admin ID / Email</label>
-                    <input type="text" id="adminUser" class="form-control" placeholder="tumicsb@csb.ord" required />
+                    <input type="text" id="adminUser" class="form-control" required />
                 </div>
                 <div class="form-group" style="text-align: left;">
                     <label>Password</label>
@@ -497,7 +497,7 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>সরাসরি লোগো আপলোড করুন (ছবি ফাইল - Max 800KB)</label>
+                            <label>সরাসরি লোগো আপলোড করুন (ছবি ফাইল - Max 50MB)</label>
                             <input type="file" id="cfgLogoFileInput" class="form-control" accept="image/*" />
                         </div>
                         <div class="form-group">
@@ -512,24 +512,24 @@
                     </div>
                 </div>
 
-                <!-- GUIDE VIDEO CONTROLLER (কীভাবে আবেদন করবেন) -->
+                <!-- GUIDE VIDEO CONTROLLER (UNIVERSAL FB, YT & DIRECT MP4 SUPPORT) -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-video"></i> "কীভাবে আবেদন করবেন" গাইড ভিডিও কন্ট্রোল</h3>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>ভিডিও সরাসরি লিংক দিন (প্রস্তাবিত: MP4 / WebM URL)</label>
-                            <input type="url" id="cfgGuideVideoUrl" class="form-control" placeholder="https://domain.com/csb_guide.mp4" />
-                            <small style="color:var(--text-muted); font-size:11px; margin-top:4px; display:block;">ফায়ারস্টোর ডকুমেন্ট সীমা রক্ষার জন্য ডিরেক্ট URL ব্যবহার করা সর্বোত্তম।</small>
+                            <label>ভিডিও সরাসরি লিংক বা ফেসবুক/ইউটিউব লিংক দিন (FB Video, Reels, YT, MP4)</label>
+                            <input type="url" id="cfgGuideVideoUrl" class="form-control" placeholder="https://www.facebook.com/... বা MP4 লিংক" oninput="renderVideoPreview(this.value)" />
+                            <small style="color:var(--text-muted); font-size:11px; margin-top:4px; display:block;">Facebook Video, Reels, YouTube এবং Direct MP4 লিংক সরাসরি সাপোর্ট করবে।</small>
                         </div>
                         <div class="form-group">
-                            <label>অথবা ছোট ভিডিও ফাইল আপলোড (সর্বোচ্চ 800KB)</label>
+                            <label>অথবা ভিডিও ফাইল আপলোড (সর্বোচ্চ 50MB)</label>
                             <input type="file" id="cfgGuideVideoFileInput" class="form-control" accept="video/mp4,video/webm" />
                         </div>
                     </div>
                     <div id="guideVideoPreviewBox" style="margin-top: 10px; display: none;">
-                        <video id="guideVideoPreview" controls playsinline style="max-width: 100%; max-height: 220px; border-radius: 12px; border: 1px solid var(--card-border); background: #000;"></video>
+                        <div id="guideVideoPlayerContainer" style="width:100%; max-width: 500px; border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); background: #000;"></div>
                         <br>
                         <button type="button" class="btn-action-icon reject" onclick="removeGuideVideo()" style="margin-top: 6px;"><i class="fas fa-trash"></i> ভিডিও সরান</button>
                     </div>
@@ -553,7 +553,7 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>সরাসরি ব্যানার আপলোড করুন (ছবি ফাইল - Max 800KB)</label>
+                            <label>সরাসরি ব্যানার আপলোড করুন (ছবি ফাইল - Max 50MB)</label>
                             <input type="file" id="cfgBannerFileInput" class="form-control" accept="image/*" />
                         </div>
                         <div class="form-group">
@@ -831,7 +831,7 @@
 
         let loadedApplications = [];
 
-        // AUTHENTICATION (UPDATED AS REQUESTED)
+        // AUTHENTICATION
         const loginWrap = document.getElementById('loginWrap');
         const adminLayout = document.getElementById('adminLayout');
         const loginForm = document.getElementById('adminLoginForm');
@@ -866,12 +866,12 @@
             bindApplicationsStream();
         }
 
-        // LOGO LOCAL FILE UPLOAD (Base64 Safe Limit)
+        // LOGO LOCAL FILE UPLOAD (Max 50MB)
         document.getElementById('cfgLogoFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 800 * 1024) {
-                    showToast('⚠️ লোগোর ফাইল সাইজ ৮০০ KB এর বেশি হওয়া যাবে না! (Firestore Limit)', 'error');
+                if (file.size > 50 * 1024 * 1024) {
+                    showToast('⚠️ লোগোর ফাইল সাইজ ৫০MB এর বেশি হওয়া যাবে না!', 'error');
                     this.value = '';
                     return;
                 }
@@ -895,12 +895,44 @@
             syncAllToFirestore();
         };
 
-        // GUIDE VIDEO UPLOAD (Base64 Safe Limit)
+        // UNIVERSAL VIDEO PREVIEW HANDLER (FB, REELS, YT, MP4)
+        window.renderVideoPreview = function(url) {
+            const box = document.getElementById('guideVideoPreviewBox');
+            const container = document.getElementById('guideVideoPlayerContainer');
+            if (!url || url.trim() === '') {
+                box.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+
+            url = url.trim();
+            box.style.display = 'block';
+
+            // Check if Facebook Link
+            if (url.includes('facebook.com') || url.includes('fb.watch')) {
+                const encoded = encodeURIComponent(url);
+                container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encoded}&show_text=false&width=500" width="100%" height="280" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
+            }
+            // Check if YouTube
+            else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let videoId = '';
+                if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+                else if (url.includes('watch?v=')) videoId = url.split('watch?v=')[1].split('&')[0];
+                else if (url.includes('/embed/')) videoId = url.split('/embed/')[1].split('?')[0];
+                container.innerHTML = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+            }
+            // Direct MP4 / WebM / Base64 Video
+            else {
+                container.innerHTML = `<video controls playsinline style="width:100%; max-height:280px; display:block;"><source src="${url}">আপনার ব্রাউজারে ভিডিও সাপোর্ট করছে না।</video>`;
+            }
+        };
+
+        // GUIDE VIDEO UPLOAD (Max 50MB)
         document.getElementById('cfgGuideVideoFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 800 * 1024) {
-                    showToast('⚠️ ভিডিও ফাইলের সাইজ ৮০০ KB এর বেশি! ফায়ারস্টোর লিমিটের জন্য ডিরেক্ট URL দিন।', 'error');
+                if (file.size > 50 * 1024 * 1024) {
+                    showToast('⚠️ ভিডিও ফাইলের সাইজ ৫০MB এর বেশি হওয়া যাবে না!', 'error');
                     this.value = '';
                     return;
                 }
@@ -908,8 +940,7 @@
                 reader.onload = function(event) {
                     portalConfig.guideVideoUrl = event.target.result;
                     document.getElementById('cfgGuideVideoUrl').value = '';
-                    document.getElementById('guideVideoPreviewBox').style.display = 'block';
-                    document.getElementById('guideVideoPreview').src = portalConfig.guideVideoUrl;
+                    renderVideoPreview(portalConfig.guideVideoUrl);
                     showToast('গাইড ভিডিও ফাইল সিলেক্ট হয়েছে! "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
                 };
                 reader.readAsDataURL(file);
@@ -920,19 +951,17 @@
             portalConfig.guideVideoUrl = '';
             document.getElementById('cfgGuideVideoUrl').value = '';
             document.getElementById('cfgGuideVideoFileInput').value = '';
-            const preview = document.getElementById('guideVideoPreview');
-            preview.pause();
-            preview.src = '';
+            document.getElementById('guideVideoPlayerContainer').innerHTML = '';
             document.getElementById('guideVideoPreviewBox').style.display = 'none';
             syncAllToFirestore();
         };
 
-        // BANNER LOCAL FILE UPLOAD (Base64 Safe Limit)
+        // BANNER LOCAL FILE UPLOAD (Max 50MB)
         document.getElementById('cfgBannerFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 800 * 1024) {
-                    showToast('⚠️ ব্যানারের সাইজ ৮০০ KB এর বেশি হওয়া যাবে না!', 'error');
+                if (file.size > 50 * 1024 * 1024) {
+                    showToast('⚠️ ব্যানারের সাইজ ৫০MB এর বেশি হওয়া যাবে না!', 'error');
                     this.value = '';
                     return;
                 }
@@ -956,7 +985,7 @@
             syncAllToFirestore();
         };
 
-        // FIRESTORE CONFIG LOAD & SAVE (Reliable Payloads)
+        // FIRESTORE CONFIG LOAD & SAVE
         async function loadRemoteConfig() {
             try {
                 const cfgRef = doc(db, "settings", "portalConfig");
@@ -1003,11 +1032,10 @@
 
             // গাইড ভিডিও প্রিভিউ
             if (portalConfig.guideVideoUrl) {
-                document.getElementById('guideVideoPreviewBox').style.display = 'block';
-                document.getElementById('guideVideoPreview').src = portalConfig.guideVideoUrl;
+                renderVideoPreview(portalConfig.guideVideoUrl);
             } else {
                 document.getElementById('guideVideoPreviewBox').style.display = 'none';
-                document.getElementById('guideVideoPreview').src = '';
+                document.getElementById('guideVideoPlayerContainer').innerHTML = '';
             }
 
             // ব্যানার প্রিভিউ
@@ -1050,13 +1078,6 @@
             delete portalConfig.roles;
 
             try {
-                // Payload Size Inspection (Firestore 1MB Safety)
-                const payloadString = JSON.stringify(portalConfig);
-                const sizeInBytes = new Blob([payloadString]).size;
-                if (sizeInBytes > 1048000) {
-                    throw new Error("ফাইল ডাটাবেজের ১MB সাইজ সীমা অতিক্রম করেছে। ভিডিও বা ছবির জন্য ডিরেক্ট URL ব্যবহার করুন।");
-                }
-
                 await setDoc(doc(db, "settings", "portalConfig"), portalConfig);
                 showToast('✅ সব কনফিগারেশন ক্লাউডে সফলভাবে সেভ হয়েছে!', 'success');
                 document.getElementById('statBatch').textContent = portalConfig.batchTitle;
@@ -1592,7 +1613,7 @@
             triggerPDFDownload(reportContainer, `CSB_Daily_Report_${dateVal}.pdf`);
         };
 
-        // NEW FEATURE: HIGH RESOLUTION SLIP CREATOR ELEMENT
+        // HIGH RESOLUTION SLIP CREATOR ELEMENT
         function buildSlipDOM(appData) {
             const card = document.createElement('div');
             card.style.width = '600px';
@@ -1640,8 +1661,7 @@
                         <td style="padding: 9px 0; font-weight: 600; color: #fff;">${appData.docType || 'NID'} (${appData.nidNumber || 'N/A'})</td>
                     </tr>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">পেমেন্ট রেফারেন্স (TNX):</td>
-                        <td style="padding: 9px 0; font-weight: 700; color: #0ea5e9; font-family: monospace;">${appData.tnxId || 'N/A'}</td>
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 700; color: #0ea5e9; font-family: monospace;">${appData.tnxId || 'N/A'}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
                         <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনের সময়:</td>
@@ -1667,7 +1687,7 @@
         window.downloadSingleSlipPNG = async function(id) {
             const targetApp = loadedApplications.find(a => a.id === id);
             if (!targetApp) {
-                showToast('আবেদন খুঁজে পাওয়া যায়নি!', 'error');
+                showToast('আবেদন খুঁজে পাওয়া যায়নি!', 'error');
                 return;
             }
 
@@ -1691,16 +1711,16 @@
                 link.download = `CSB_Slip_${id}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                showToast(`✅ স্লিপ PNG ডাউনলোড হয়েছে: ${id}`, 'success');
+                showToast(`✅ স্লিপ PNG ডাউনলোড হয়েছে: ${id}`, 'success');
             } catch (err) {
                 console.error("Slip Export Error:", err);
-                showToast('ছবি তৈরিতে সমস্যা হয়েছে!', 'error');
+                showToast('ছবি তৈরিতে সমস্যা হয়েছে!', 'error');
             } finally {
                 if (wrapper.parentNode) document.body.removeChild(wrapper);
             }
         };
 
-        // NEW FEATURE: BATCH EXPORT SLIP IMAGES IN ZIP (ALL OR SEPARATE STATUS)
+        // BATCH EXPORT SLIP IMAGES IN ZIP
         window.exportSlipImagesZip = async function(statusType) {
             let data = loadedApplications;
             if (statusType !== 'All') {
@@ -1752,14 +1772,14 @@
                 link.download = `CSB_Slips_${statusType}_${Date.now()}.zip`;
                 link.click();
 
-                showToast(`✅ ${data.length}টি স্লিপ ছবি ZIP ফাইলে ডাউনলোড হয়েছে!`, 'success');
-                statusEl.textContent = `সম্পন্ন হয়েছে! মোট ${data.length}টি স্লিপ ডাউনলোড হয়েছে।`;
+                showToast(`✅ ${data.length}টি স্লিপ ছবি ZIP ফাইলে ডাউনলোড হয়েছে!`, 'success');
+                statusEl.textContent = `সম্পন্ন হয়েছে! মোট ${data.length}টি স্লিপ ডাউনলোড হয়েছে।`;
                 setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
 
             } catch (err) {
                 console.error("ZIP Export Error:", err);
-                showToast('ZIP ফাইল তৈরিতে সমস্যা হয়েছে!', 'error');
-                statusEl.textContent = `ত্রুটি দেখা দিয়েছে!`;
+                showToast('ZIP ফাইল তৈরিতে সমস্যা হয়েছে!', 'error');
+                statusEl.textContent = `ত্রুটি দেখা দিয়েছে!`;
             } finally {
                 if (wrapper.parentNode) document.body.removeChild(wrapper);
             }
@@ -1793,5 +1813,5 @@
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
     </script>
-</body>
+</body>    
 </html>
