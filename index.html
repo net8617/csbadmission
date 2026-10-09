@@ -1172,9 +1172,15 @@
 
 <!-- INSTRUCTIONS MODAL (কীভাবে আবেদন করবেন) -->
 <div class="modal-overlay" id="guideModal">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 540px;">
         <i class="fas fa-book-open-reader icon"></i>
         <h2>কীভাবে আবেদন করবেন?</h2>
+
+        <!-- DYNAMIC ADMIN GUIDE VIDEO CONTAINER -->
+        <div id="guideVideoContainer" style="display:none; margin: 15px 0 20px; width:100%; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,245,212,0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.6); background: #000;">
+            <video id="adminGuideVideo" controls playsinline style="width: 100%; height: auto; max-height: 280px; display: block;"></video>
+        </div>
+
         <div class="rules-step-list">
             <div class="rule-item">
                 <i class="fas fa-wallet"></i>
@@ -1284,6 +1290,7 @@
         femaleLink: 'https://t.me/+tSQK_jWEeWU0YjI1',
         whatsappSupport: 'https://wa.me/+601130345524',
         telegramSupport: 'https://t.me/CyberSentinelBD',
+        guideVideoUrl: '',
         categoryFees: {},
         categoryLinks: {},
         categoryOaths: {},
@@ -1339,7 +1346,7 @@
     updateLiveDateTime();
     setInterval(updateLiveDateTime, 1000);
 
-    // LIVE FIRESTORE LISTENER (WITH ADMIN SUPPORT CONTROL)
+    // LIVE FIRESTORE LISTENER (WITH ADMIN SUPPORT CONTROL & GUIDE VIDEO)
     onSnapshot(doc(db, "settings", "portalConfig"), (snap) => {
         if (snap.exists()) {
             const cfg = snap.data();
@@ -1383,6 +1390,20 @@
             }
             if (cfg.telegramSupport) {
                 document.getElementById('dynTelegramLink').href = cfg.telegramSupport;
+            }
+
+            // Admin Dynamic Guide Video (কীভাবে আবেদন করবেন)
+            const guideVidContainer = document.getElementById('guideVideoContainer');
+            const guideVidEl = document.getElementById('adminGuideVideo');
+            if (cfg.guideVideoUrl && cfg.guideVideoUrl.trim() !== '') {
+                if (guideVidEl.src !== cfg.guideVideoUrl) {
+                    guideVidEl.src = cfg.guideVideoUrl;
+                }
+                guideVidContainer.style.display = 'block';
+            } else {
+                guideVidEl.pause();
+                guideVidEl.src = '';
+                guideVidContainer.style.display = 'none';
             }
 
             if (cfg.categories && Array.isArray(cfg.categories) && cfg.categories.length > 0) {
@@ -1453,7 +1474,11 @@
     const trackResult = document.getElementById('trackResult');
 
     // MODAL HANDLERS
-    window.closeGuideModal = () => document.getElementById('guideModal').classList.remove('show');
+    window.closeGuideModal = () => {
+        const guideVidEl = document.getElementById('adminGuideVideo');
+        if (guideVidEl) guideVidEl.pause();
+        document.getElementById('guideModal').classList.remove('show');
+    };
     window.closeSupportModal = () => document.getElementById('supportModal').classList.remove('show');
     guideBtn.addEventListener('click', () => document.getElementById('guideModal').classList.add('show'));
     supportModalBtn.addEventListener('click', () => document.getElementById('supportModal').classList.add('show'));
@@ -1736,7 +1761,6 @@
                     <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.personalPhone}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ইমেইল:</td>
                     <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${formData.email}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
