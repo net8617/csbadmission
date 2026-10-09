@@ -289,6 +289,15 @@
             background: var(--primary);
             color: #030712;
         }
+        .btn-report.btn-appv-pdf {
+            border-color: rgba(16, 185, 129, 0.4);
+            color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.08);
+        }
+        .btn-report.btn-appv-pdf:hover {
+            background: var(--accent-green);
+            color: #030712;
+        }
 
         .tag-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .tag-item {
@@ -362,7 +371,7 @@
     <div class="ambient-glow glow-top"></div>
     <div class="ambient-glow glow-bottom"></div>
 
-    <!-- LOGIN GATEWAY (PLACEHOLDER REMOVED) -->
+    <!-- LOGIN GATEWAY (NO PLACEHOLDER) -->
     <div class="login-wrap" id="loginWrap">
         <div class="login-card">
             <i class="fas fa-shield-halved" style="font-size: 48px; color: var(--primary); margin-bottom: 14px;"></i>
@@ -520,8 +529,8 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label>ভিডিও সরাসরি লিংক বা ফেসবুক/ইউটিউব লিংক দিন (FB Video, Reels, YT, MP4)</label>
-                            <input type="url" id="cfgGuideVideoUrl" class="form-control" placeholder="https://www.facebook.com/... বা MP4 লিংক" oninput="renderVideoPreview(this.value)" />
-                            <small style="color:var(--text-muted); font-size:11px; margin-top:4px; display:block;">Facebook Video, Reels, YouTube এবং Direct MP4 লিংক সরাসরি সাপোর্ট করবে।</small>
+                            <input type="url" id="cfgGuideVideoUrl" class="form-control" placeholder="https://www.facebook.com/... বা ইউটিউব/MP4 লিংক" oninput="renderVideoPreview(this.value)" />
+                            <small style="color:var(--text-muted); font-size:11px; margin-top:4px; display:block;">Facebook Video, Reels, YouTube এবং Direct MP4 লিংক ইউজার প্যানেলে অটো রান হবে।</small>
                         </div>
                         <div class="form-group">
                             <label>অথবা ভিডিও ফাইল আপলোড (সর্বোচ্চ 50MB)</label>
@@ -713,6 +722,7 @@
                     <div class="card-header">
                         <h3><i class="fas fa-users"></i> সমস্ত আবেদন, স্লিপ ছবি ও রিপোর্ট কন্ট্রোল</h3>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn-report btn-appv-pdf" onclick="exportApprovedIdNamePDF()"><i class="fas fa-user-check"></i> অনুমোদিত (আইডি ও নাম) PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('All')"><i class="fas fa-file-pdf"></i> সকল PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('Approved')"><i class="fas fa-file-circle-check"></i> অনুমোদিত PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('Pending')"><i class="fas fa-file-circle-exclamation"></i> পেন্ডিং PDF</button>
@@ -895,7 +905,7 @@
             syncAllToFirestore();
         };
 
-        // UNIVERSAL VIDEO PREVIEW HANDLER (FB, REELS, YT, MP4)
+        // UNIVERSAL VIDEO PREVIEW HANDLER (FB REELS, YT, MP4)
         window.renderVideoPreview = function(url) {
             const box = document.getElementById('guideVideoPreviewBox');
             const container = document.getElementById('guideVideoPlayerContainer');
@@ -908,22 +918,23 @@
             url = url.trim();
             box.style.display = 'block';
 
-            // Check if Facebook Link
+            // Facebook Video / Reels link
             if (url.includes('facebook.com') || url.includes('fb.watch')) {
                 const encoded = encodeURIComponent(url);
-                container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encoded}&show_text=false&width=500" width="100%" height="280" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
+                container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encoded}&show_text=false&width=500&autoplay=1" width="100%" height="280" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
             }
-            // Check if YouTube
+            // YouTube link (Watch, Shorts, Embed)
             else if (url.includes('youtube.com') || url.includes('youtu.be')) {
                 let videoId = '';
                 if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
                 else if (url.includes('watch?v=')) videoId = url.split('watch?v=')[1].split('&')[0];
                 else if (url.includes('/embed/')) videoId = url.split('/embed/')[1].split('?')[0];
-                container.innerHTML = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+                else if (url.includes('/shorts/')) videoId = url.split('/shorts/')[1].split('?')[0];
+                container.innerHTML = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             }
-            // Direct MP4 / WebM / Base64 Video
+            // Direct MP4 / WebM / Video File
             else {
-                container.innerHTML = `<video controls playsinline style="width:100%; max-height:280px; display:block;"><source src="${url}">আপনার ব্রাউজারে ভিডিও সাপোর্ট করছে না।</video>`;
+                container.innerHTML = `<video controls autoplay playsinline style="width:100%; max-height:280px; display:block;"><source src="${url}">আপনার ব্রাউজারে ভিডিও সাপোর্ট করছে না।</video>`;
             }
         };
 
@@ -1428,6 +1439,73 @@
                 showToast('PDF তৈরিতে সমস্যা হয়েছে!', 'error');
             });
         }
+
+        // NEW: APPROVED ID & NAME ONLY PDF DOWNLOAD
+        window.exportApprovedIdNamePDF = function() {
+            const approvedApps = loadedApplications.filter(a => a.status === 'Approved');
+
+            if (approvedApps.length === 0) {
+                showToast('⚠️ কোনো অনুমোদিত (Approved) আবেদন পাওয়া যায়নি!', 'error');
+                return;
+            }
+
+            const reportContainer = document.createElement('div');
+            reportContainer.style.padding = '35px';
+            reportContainer.style.color = '#0f172a';
+            reportContainer.style.background = '#ffffff';
+            reportContainer.style.fontFamily = "'Plus Jakarta Sans', 'Hind Siliguri', sans-serif";
+
+            let rowsHtml = '';
+            approvedApps.forEach((item, index) => {
+                rowsHtml += `
+                    <tr style="border-bottom: 1px solid #cbd5e1; font-size: 12px;">
+                        <td style="padding: 10px; color:#000; text-align:center; font-weight:600;">${index + 1}</td>
+                        <td style="padding: 10px; font-weight:800; font-family:monospace; color:#0284c7; font-size:13px;">${item.id}</td>
+                        <td style="padding: 10px; font-weight:700; color:#000; font-size:13px;">${item.fullName || item.name || 'N/A'}</td>
+                        <td style="padding: 10px; color:#334155; font-weight:600;">${item.category || 'N/A'}</td>
+                        <td style="padding: 10px; color:#334155;">${item.role || 'N/A'}</td>
+                        <td style="padding: 10px; font-weight:800; color:#16a34a; text-align:center;">APPROVED</td>
+                    </tr>
+                `;
+            });
+
+            const logoHtml = portalConfig.logoUrl ? 
+                `<img src="${portalConfig.logoUrl}" style="max-height: 55px; max-width: 55px; object-fit: contain; border-radius: 8px; margin-right: 15px;" />` : '';
+
+            reportContainer.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 14px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center;">
+                        ${logoHtml}
+                        <div>
+                            <h2 style="margin: 0; color: #0f172a; font-size: 20px; font-weight: 800;">CYBER SENTINEL BANGLADESH</h2>
+                            <p style="margin: 3px 0 0; font-size: 12px; color: #16a34a; font-weight: 800; letter-spacing: 1px;">APPROVED APPLICANTS LIST (OFFICIAL ID & NAME REGISTRY)</p>
+                        </div>
+                    </div>
+                    <div style="text-align: right; font-size: 11px; color: #64748b;">
+                        <p style="margin: 0;">রিপোর্ট প্রিন্ট: ${new Date().toLocaleString('bn-BD')}</p>
+                        <p style="margin: 3px 0 0; font-weight: 800; color: #16a34a; font-size: 12px;">মোট অনুমোদিত সদস্য: ${approvedApps.length} জন</p>
+                    </div>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: #e2e8f0; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 10px; color:#0f172a; text-align:center;">#</th>
+                            <th style="padding: 10px; color:#0f172a;">ট্র্যাকিং আইডি</th>
+                            <th style="padding: 10px; color:#0f172a;">আবেদনকারীর পূর্ণ নাম</th>
+                            <th style="padding: 10px; color:#0f172a;">ক্যাটাগরি</th>
+                            <th style="padding: 10px; color:#0f172a;">রোল</th>
+                            <th style="padding: 10px; color:#0f172a; text-align:center;">অবস্থা</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            `;
+
+            triggerPDFDownload(reportContainer, `CSB_Approved_Members_List_${Date.now()}.pdf`);
+        };
 
         // PDF REPORT EXPORT FUNCTION
         window.exportPDFReport = function(type) {
