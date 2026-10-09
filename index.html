@@ -17,13 +17,12 @@
     <style>
         :root {
             --primary: #00f5d4;
-            --primary-glow: rgba(0, 245, 212, 0.25);
+            --primary-glow: rgba(0, 245, 212, 0.35);
             --secondary: #0ea5e9;
             --secondary-glow: rgba(14, 165, 233, 0.25);
             --accent-red: #f43f5e;
-            --accent-amber: #f59e0b;
             --bg-base: #030712;
-            --card-bg: rgba(11, 19, 43, 0.75);
+            --card-bg: rgba(10, 16, 32, 0.85);
             --card-border: rgba(255, 255, 255, 0.08);
             --input-bg: rgba(6, 12, 26, 0.7);
             --input-border: rgba(255, 255, 255, 0.12);
@@ -39,11 +38,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        input, textarea, select {
-            user-select: text !important;
-            -webkit-user-select: text !important;
-        }
-
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-base);
@@ -51,34 +45,24 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 40px 16px;
+            padding: 24px 14px;
             position: relative;
             overflow-x: hidden;
             color: var(--text-main);
-            line-height: 1.5;
         }
 
-        /* Ambient Cyber Glows */
         .ambient-glow {
             position: fixed;
-            width: 600px;
-            height: 600px;
+            width: 500px;
+            height: 500px;
             border-radius: 50%;
             pointer-events: none;
             z-index: 0;
             filter: blur(120px);
-            opacity: 0.6;
+            opacity: 0.5;
         }
-        .glow-top-left { 
-            top: -200px; 
-            left: -200px; 
-            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); 
-        }
-        .glow-bottom-right { 
-            bottom: -200px; 
-            right: -200px; 
-            background: radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%); 
-        }
+        .glow-top { top: -150px; left: -150px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); }
+        .glow-bottom { bottom: -150px; right: -150px; background: radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%); }
 
         .grid-bg {
             position: fixed;
@@ -86,292 +70,361 @@
             background-image: 
                 linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 48px 48px;
+            background-size: 40px 40px;
             z-index: 0;
             pointer-events: none;
         }
 
-        /* Container */
         .container {
             position: relative;
             z-index: 1;
-            max-width: 860px;
+            max-width: 520px;
             width: 100%;
             background: var(--card-bg);
             backdrop-filter: blur(28px);
             -webkit-backdrop-filter: blur(28px);
             border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 45px;
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-            animation: containerIn 0.5s var(--transition) forwards;
+            border-radius: 28px;
+            padding: 30px 22px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        @keyframes containerIn {
-            0% { opacity: 0; transform: translateY(18px) scale(0.99); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Welcome Section */
         .welcome-section {
             text-align: center;
-            padding: 10px 0 20px;
-        }
-
-        .brand-logo-container {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-        .brand-logo-container img {
-            max-width: 90px;
-            max-height: 90px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 16px var(--primary-glow));
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 6px;
-            background: rgba(255, 255, 255, 0.02);
         }
 
         #bannerWrapper {
             width: 100%;
             display: none;
             justify-content: center;
-            margin: 10px 0 22px;
+            margin-bottom: 20px;
         }
         #csbDynamicBanner {
-            max-width: 100%;
+            width: 100%;
             max-height: 220px;
             border-radius: 18px;
             border: 1px solid var(--card-border);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
             object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
-        .welcome-section h1 {
-            font-size: 34px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(180deg, #ffffff 30%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .welcome-section .sub {
-            color: var(--primary);
-            font-size: 11.5px;
-            letter-spacing: 2.5px;
-            margin-top: 8px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-        }
-
-        /* Realtime Meta Bar */
-        .realtime-meta-bar {
-            display: flex;
+        .brand-logo-container {
+            display: none;
             justify-content: center;
             align-items: center;
-            gap: 12px;
-            margin: 20px 0 12px;
-            flex-wrap: wrap;
-            font-size: 12.5px;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 15px;
         }
-        .realtime-meta-bar span {
-            background: rgba(255, 255, 255, 0.03);
+        .brand-logo-container img {
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 18px;
+            padding: 4px;
             border: 1px solid var(--card-border);
-            padding: 6px 16px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* ONE LINE TITLE */
+        .portal-main-title {
+            font-size: clamp(20px, 5.2vw, 29px);
+            font-weight: 800;
+            white-space: nowrap;
+            letter-spacing: -0.3px;
+            background: linear-gradient(180deg, #ffffff 40%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .portal-sub-badge {
+            display: inline-block;
+            color: var(--primary);
+            font-size: clamp(10.5px, 2.5vw, 12px);
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+            text-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* REAL-TIME PILLS */
+        .meta-cards-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .meta-pill {
+            background: rgba(14, 25, 48, 0.7);
+            border: 1px solid rgba(0, 245, 212, 0.15);
             border-radius: 9999px;
+            padding: 10px 24px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: fit-content;
+            min-width: 200px;
         }
-        .realtime-meta-bar i { color: var(--primary); }
+        .meta-pill i {
+            font-size: 16px;
+            color: var(--primary);
+        }
+        .meta-pill.clock-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14.5px;
+            letter-spacing: 0.5px;
+        }
 
-        .badge-batch {
+        .batch-status-pill {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-top: 10px;
-            background: rgba(0, 245, 212, 0.05);
-            border: 1px solid rgba(0, 245, 212, 0.2);
-            padding: 6px 20px;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(0, 245, 212, 0.18);
             border-radius: 9999px;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: #e2e8f0;
+            padding: 7px 20px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-top: 5px;
+            margin-bottom: 24px;
         }
-        .live-counter {
+        .batch-status-pill i { color: var(--primary); font-size: 14px; }
+        .live-tag {
             background: rgba(244, 63, 94, 0.15);
-            border: 1px solid rgba(244, 63, 94, 0.35);
+            border: 1px solid rgba(244, 63, 94, 0.4);
             border-radius: 9999px;
-            padding: 2px 9px;
+            padding: 2px 10px;
             font-size: 10px;
             font-weight: 800;
             color: var(--accent-red);
-            display: inline-flex;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
             align-items: center;
             gap: 5px;
-            font-family: 'JetBrains Mono', monospace;
+        }
+        .live-tag span {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
+
+        /* BUTTONS STACK */
+        .home-actions-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
         }
 
-        /* Action Buttons */
-        .home-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            margin: 28px 0 10px;
-            flex-wrap: wrap;
-        }
-        .home-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 14px 28px;
-            color: #cbd5e1;
+        .action-card-btn {
+            width: 100%;
+            border-radius: 16px;
+            padding: 16px 20px;
+            font-size: 15px;
             font-weight: 700;
-            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 14px;
             cursor: pointer;
             transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            border: 1px solid var(--card-border);
             text-decoration: none;
+            background: rgba(15, 23, 42, 0.55);
+            color: #cbd5e1;
         }
-        .home-btn:hover {
+        .action-card-btn i {
+            font-size: 17px;
+            width: 24px;
+            text-align: center;
+        }
+        .action-card-btn:hover {
             transform: translateY(-2px);
-            border-color: rgba(0, 245, 212, 0.4);
+            border-color: rgba(0, 245, 212, 0.3);
             color: #fff;
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 8px 24px rgba(0, 245, 212, 0.12);
-        }
-        .home-btn.primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            color: #020617;
-            box-shadow: 0 4px 18px rgba(0, 245, 212, 0.25);
-        }
-        .home-btn.primary:hover {
-            box-shadow: 0 6px 24px rgba(0, 245, 212, 0.4);
+            background: rgba(15, 23, 42, 0.85);
         }
 
-        /* Notice Box */
+        /* PRIMARY REGISTRATION BUTTON */
+        .action-card-btn.btn-reg {
+            background: linear-gradient(135deg, #00f5d4, #0ea5e9);
+            color: #020617;
+            border: none;
+            box-shadow: 0 8px 24px rgba(0, 245, 212, 0.28);
+        }
+        .action-card-btn.btn-reg:hover {
+            box-shadow: 0 10px 30px rgba(0, 245, 212, 0.45);
+        }
+        .action-card-btn.btn-reg i { color: #020617; }
+
+        /* SUPPORT BUTTON & MODAL/DROPDOWN */
+        .support-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .support-dropdown {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 0;
+            width: 100%;
+            background: rgba(9, 15, 30, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            z-index: 50;
+            animation: fadeIn 0.2s ease;
+        }
+        .support-dropdown.show { display: flex; flex-direction: column; gap: 8px; }
+        .support-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .support-item.wp {
+            background: rgba(37, 211, 102, 0.1);
+            border: 1px solid rgba(37, 211, 102, 0.25);
+            color: #25d366;
+        }
+        .support-item.wp:hover { background: #25d366; color: #020617; }
+        .support-item.tg {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.25);
+            color: #38bdf8;
+        }
+        .support-item.tg:hover { background: #0ea5e9; color: #020617; }
+
+        /* HOW TO APPLY MODAL */
+        .guide-box-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .guide-box-modal.show { display: flex; }
+        .guide-content {
+            background: #090f20;
+            border: 1px solid rgba(0, 245, 212, 0.25);
+            border-radius: 22px;
+            padding: 26px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .guide-content h3 {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .guide-steps {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .guide-steps li {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .guide-steps li span {
+            background: rgba(0, 245, 212, 0.12);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 2px 7px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .guide-close-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #020617;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 13.5px;
+        }
+
+        /* FORM, TRACKING, STYLES (EXISTING PRESERVED) */
+        .form-wrapper { display: none; }
+        .form-wrapper.active { display: block; animation: fadeIn 0.4s ease forwards; }
+
+        .back-btn-wrapper { margin-bottom: 20px; }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            padding: 10px 18px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .back-btn:hover { color: var(--primary); border-color: var(--primary); }
+
         .portal-notice-box {
             display: none;
             background: rgba(0, 245, 212, 0.04);
             border: 1px solid rgba(0, 245, 212, 0.2);
             border-left: 4px solid var(--primary);
             border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
-            animation: containerIn 0.3s ease;
+            padding: 14px 18px;
+            margin-bottom: 20px;
         }
-        .portal-notice-box h5 {
-            color: var(--primary);
-            font-size: 13.5px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-        .portal-notice-box p {
-            font-size: 12.5px;
-            color: #cbd5e1;
-            line-height: 1.6;
-        }
+        .portal-notice-box h5 { color: var(--primary); font-size: 13.5px; font-weight: 700; margin-bottom: 4px; }
+        .portal-notice-box p { font-size: 12px; color: #cbd5e1; line-height: 1.5; }
 
-        /* Payment Card */
-        .payment-card {
-            background: linear-gradient(135deg, rgba(0, 245, 212, 0.05), rgba(14, 165, 233, 0.03));
-            border: 1px solid rgba(0, 245, 212, 0.2);
-            border-radius: 18px;
-            padding: 20px 24px;
-            margin: 24px 0 22px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .payment-card .left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-        .payment-card .icon-box {
-            background: rgba(0, 245, 212, 0.1);
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: var(--primary);
-        }
-        .payment-card .info h4 { font-size: 15px; font-weight: 700; color: #fff; }
-        .payment-card .info p { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .payment-card .info strong { color: var(--primary); font-family: 'JetBrains Mono', monospace; font-size: 14px; }
-        
-        .copy-btn {
-            background: rgba(0, 245, 212, 0.1);
-            border: 1px solid rgba(0, 245, 212, 0.25);
-            color: var(--primary);
-            padding: 3px 9px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: 600;
-        }
-        .copy-btn:hover { background: var(--primary); color: #020617; }
-
-        .payment-card .right {
-            background: rgba(255, 255, 255, 0.025);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 9px 15px;
-            font-size: 12px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .payment-card .right .number { color: var(--primary); font-weight: 700; }
-
-        /* Form Wrapper */
-        .form-wrapper { display: none; }
-        .form-wrapper.active { display: block; animation: containerIn 0.4s ease forwards; }
-
-        .back-btn-wrapper { margin-bottom: 22px; }
-        .back-btn {
-            background: rgba(255, 255, 255, 0.025);
-            border: 1px solid var(--card-border);
-            padding: 9px 18px;
-            border-radius: 10px;
-            color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: var(--transition);
-        }
-        .back-btn:hover { color: var(--primary); border-color: var(--primary); transform: translateX(-3px); }
-
-        .form-group { margin-bottom: 20px; width: 100%; }
+        .form-group { margin-bottom: 18px; }
         .form-group label {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
             color: var(--text-muted);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .step-num {
             background: rgba(0, 245, 212, 0.1);
@@ -379,24 +432,20 @@
             font-size: 10px;
             font-weight: 800;
             padding: 2px 6px;
-            border-radius: 6px;
+            border-radius: 5px;
             font-family: 'JetBrains Mono', monospace;
         }
         .required { color: var(--accent-red); margin-left: auto; }
 
-        .doc-type-toggle {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
+        .doc-type-toggle { display: flex; gap: 10px; margin-bottom: 10px; }
         .doc-type-btn {
             flex: 1;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--card-border);
             border-radius: 12px;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-muted);
             cursor: pointer;
@@ -404,23 +453,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
         .doc-type-btn.active {
             border-color: var(--primary);
             background: rgba(0, 245, 212, 0.08);
             color: var(--primary);
-            box-shadow: 0 0 14px rgba(0, 245, 212, 0.1);
         }
 
         .form-control {
             width: 100%;
-            padding: 13px 16px;
+            padding: 12px 14px;
             background: var(--input-bg);
             border: 1px solid var(--input-border);
             border-radius: 12px;
             color: var(--text-main);
-            font-size: 14px;
+            font-size: 13.5px;
             font-family: inherit;
             outline: none;
             transition: var(--transition);
@@ -428,28 +476,13 @@
         .form-control:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.12);
-            background: rgba(4, 10, 22, 0.95);
         }
         .form-control::placeholder { color: #475569; }
-
-        select.form-control {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2300f5d4' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 42px;
-        }
         select.form-control option { background: #060a14; color: #fff; }
 
-        .row-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        /* File Upload */
-        .file-upload-wrapper { position: relative; width: 100%; display: block; }
+        .file-upload-wrapper { position: relative; width: 100%; }
         .file-upload-wrapper input[type="file"] {
             position: absolute;
             inset: 0;
@@ -463,131 +496,142 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            padding: 12px 16px;
+            gap: 8px;
+            padding: 11px 14px;
             background: rgba(255, 255, 255, 0.02);
-            border: 1.5px dashed rgba(255, 255, 255, 0.14);
+            border: 1.5px dashed rgba(255, 255, 255, 0.12);
             border-radius: 12px;
             transition: var(--transition);
-            width: 100%;
-            box-sizing: border-box;
         }
-        .file-upload-wrapper:hover .file-upload-area {
-            border-color: var(--primary);
-            background: rgba(0, 245, 212, 0.02);
-        }
-        .file-upload-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 0;
-            flex: 1;
-            overflow: hidden;
-        }
-        .file-upload-area .icon { font-size: 18px; color: var(--primary); flex-shrink: 0; }
-        .file-upload-area .info { min-width: 0; flex: 1; overflow: hidden; }
+        .file-upload-left { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+        .file-upload-area .icon { font-size: 16px; color: var(--primary); flex-shrink: 0; }
+        .file-upload-area .info { overflow: hidden; }
         .file-upload-area .info .main {
-            font-size: 12.5px;
+            font-size: 12px;
             color: var(--text-muted);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: block;
-            width: 100%;
         }
         .file-upload-area .info .main span { color: var(--primary); font-weight: 600; }
-        .file-upload-area .info .sub { font-size: 10.5px; color: #64748b; margin-top: 2px; }
+        .file-upload-area .info .sub { font-size: 10px; color: #64748b; }
         .file-upload-area .size-badge {
-            flex-shrink: 0;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--primary);
             background: rgba(0, 245, 212, 0.08);
-            padding: 5px 10px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
             font-weight: 700;
         }
 
-        /* Video Recorder */
         .video-recorder {
-            background: rgba(2, 6, 23, 0.6);
+            background: rgba(2, 6, 23, 0.7);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 14px;
+            padding: 14px;
             margin: 10px 0;
         }
         .recorder-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-        .recorder-header .status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
             font-size: 12px;
-            color: var(--text-muted);
+            margin-bottom: 10px;
         }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #475569; }
-        .dot.recording { background: var(--accent-red); animation: pulseLive 1s infinite; }
-        .dot.ready { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
-        @keyframes pulseLive { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #475569; display: inline-block; }
+        .dot.recording { background: var(--accent-red); animation: pulse 1s infinite alternate; }
+        .dot.ready { background: var(--primary); box-shadow: 0 0 6px var(--primary); }
         .video-recorder video {
             width: 100%;
-            height: 220px;
-            background: #020617;
-            border-radius: 12px;
+            height: 190px;
+            background: #000;
+            border-radius: 10px;
             object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .recorder-controls { display: flex; gap: 10px; margin-top: 12px; }
+        .recorder-controls { display: flex; gap: 8px; margin-top: 10px; }
         .btn-recorder {
             flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12.5px;
+            padding: 9px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 700;
             border: none;
             cursor: pointer;
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            gap: 6px;
-            transition: var(--transition);
+            gap: 5px;
         }
         .btn-recorder.start { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #020617; }
         .btn-recorder.stop { background: var(--accent-red); color: #fff; }
-        .btn-recorder.download { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--card-border); }
+        .btn-recorder.download { background: rgba(255, 255, 255, 0.06); color: #fff; }
         .btn-recorder:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        /* Oath Box */
         .oath-box {
             background: rgba(0, 245, 212, 0.02);
             border-left: 3px solid var(--primary);
-            border-radius: 12px;
-            padding: 16px 18px;
-            margin: 15px 0 10px;
+            border-radius: 10px;
+            padding: 14px;
+            margin: 12px 0 8px;
         }
-        .oath-title {
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 13.5px;
-            margin-bottom: 6px;
+        .oath-title { color: var(--primary); font-weight: 800; font-size: 13px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+        .oath-text { color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+        .oath-text .highlight { color: #fff; font-weight: 600; }
+        .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 5px; font-size: 12.5px; }
+
+        .payment-card {
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.05), rgba(14, 165, 233, 0.03));
+            border: 1px solid rgba(0, 245, 212, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 20px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
         }
-        .oath-text { color: var(--text-muted); font-size: 12.5px; line-height: 1.65; }
-        .oath-text .highlight { color: #fff; font-weight: 600; }
-        .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 6px; font-size: 13px; }
+        .payment-card .left { display: flex; align-items: center; gap: 12px; }
+        .payment-card .icon-box {
+            background: rgba(0, 245, 212, 0.1);
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--primary);
+        }
+        .payment-card .info h4 { font-size: 14.5px; font-weight: 700; }
+        .payment-card .info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .payment-card .info strong { color: var(--primary); font-family: 'JetBrains Mono', monospace; }
+        .copy-btn {
+            background: rgba(0, 245, 212, 0.1);
+            border: 1px solid rgba(0, 245, 212, 0.25);
+            color: var(--primary);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 10.5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
 
-        /* Buttons Group */
-        .btn-group { display: flex; gap: 12px; margin-top: 25px; }
+        .upload-progress {
+            display: none;
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 9999px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .upload-progress.show { display: block; }
+        .upload-progress .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.3s; }
+        .status-text { font-size: 11.5px; color: var(--text-muted); text-align: center; margin-top: 5px; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 22px; }
         .btn-submit {
             flex: 2;
-            padding: 15px 24px;
+            padding: 14px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
             border-radius: 12px;
@@ -595,76 +639,50 @@
             font-size: 14.5px;
             font-weight: 800;
             cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 4px 18px rgba(0, 245, 212, 0.25);
+            box-shadow: 0 4px 16px rgba(0, 245, 212, 0.25);
             display: inline-flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
         }
-        .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 245, 212, 0.35); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-
         .btn-reset {
             flex: 1;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--card-border);
             border-radius: 12px;
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
         }
-        .btn-reset:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
 
         .form-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 25px;
-            padding-top: 16px;
+            margin-top: 20px;
+            padding-top: 14px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 11px;
             color: #64748b;
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Progress Bar */
-        .upload-progress {
-            display: none;
-            margin: 15px 0;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 9999px;
-            height: 6px;
-            overflow: hidden;
-        }
-        .upload-progress.show { display: block; }
-        .upload-progress .bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.3s ease;
-        }
-        .status-text { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 6px; }
-
-        /* Toast & Modals */
+        /* MODALS & TOAST */
         .toast {
             position: fixed;
-            top: 24px;
-            right: 24px;
+            top: 20px;
+            right: 20px;
             background: rgba(11, 19, 43, 0.95);
-            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 12px 18px;
             color: #fff;
-            font-size: 13.5px;
-            z-index: 1000;
+            font-size: 13px;
+            z-index: 3000;
             transform: translateX(120%);
             transition: transform 0.35s ease;
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
         }
         .toast.show { transform: translateX(0); }
         .toast.success { border-color: var(--primary); }
@@ -685,28 +703,25 @@
         .modal-content {
             background: #060c1a;
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 32px 26px;
-            max-width: 420px;
+            border-radius: 18px;
+            padding: 28px 22px;
+            max-width: 400px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
         }
-        .modal-content .icon { font-size: 48px; color: var(--primary); margin-bottom: 12px; }
+        .modal-content .icon { font-size: 42px; color: var(--primary); margin-bottom: 10px; }
         .modal-content .icon.error { color: var(--accent-red); }
-        .modal-content h2 { font-size: 19px; font-weight: 800; margin-bottom: 8px; }
-        .modal-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+        .modal-content h2 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+        .modal-content p { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
         .btn-modal {
-            padding: 11px 30px;
+            padding: 10px 26px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
             border-radius: 10px;
             color: #020617;
             font-weight: 700;
-            font-size: 13.5px;
             cursor: pointer;
         }
-        .btn-modal.error { background: var(--accent-red); color: #fff; }
 
         .spinner {
             display: none;
@@ -721,200 +736,236 @@
         .btn-submit.loading .spinner { display: inline-block; }
         .btn-submit.loading .btn-text { display: none; }
 
-        @media (max-width: 768px) {
-            .container { padding: 24px 16px; border-radius: 18px; }
+        @media (max-width: 480px) {
             .row-2 { grid-template-columns: 1fr; gap: 0; }
-            .welcome-section h1 { font-size: 26px; }
-            .home-buttons { flex-direction: column; }
-            .btn-group { flex-direction: column; }
-            .payment-card { flex-direction: column; align-items: stretch; }
-            .file-upload-area { padding: 10px 12px; }
+            .container { padding: 22px 16px; }
+            .meta-pill { min-width: 180px; font-size: 13px; padding: 8px 18px; }
         }
     </style>
 </head>
 <body>
 
-<div class="ambient-glow glow-top-left"></div>
-<div class="ambient-glow glow-bottom-right"></div>
+<div class="ambient-glow glow-top"></div>
+<div class="ambient-glow glow-bottom"></div>
 <div class="grid-bg"></div>
 
 <div class="container" id="mainContainer">
-    <!-- LANDING -->
+    <!-- LANDING PAGE -->
     <div id="landingPage">
         <div class="welcome-section" id="welcomeSection">
             
-            <!-- DYNAMIC LOGO -->
+            <!-- DYNAMIC BANNER & LOGO -->
+            <div id="bannerWrapper">
+                <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" />
+            </div>
             <div class="brand-logo-container" id="brandLogoContainer">
                 <img id="adminLogoImage" src="" alt="CSB Logo" />
             </div>
 
-            <!-- DYNAMIC BANNER -->
-            <div id="bannerWrapper">
-                <img id="csbDynamicBanner" src="" alt="CSB Portal Banner" />
-            </div>
-
-            <h1>Cyber Sentinel Bangladesh</h1>
-            <div class="sub" id="displayBatchSub">OFFICIAL ADMISSION PORTAL · BATCH 8-9</div>
+            <!-- ONE-LINE TITLE -->
+            <h1 class="portal-main-title">Cyber Sentinel Bangladesh</h1>
             
-            <!-- REALTIME CLOCK & CALENDAR BAR -->
-            <div class="realtime-meta-bar">
-                <span><i class="fas fa-calendar-day"></i> <strong id="liveDateDisplay">--</strong></span>
-                <span><i class="fas fa-clock"></i> <strong id="liveClockDisplay">--:--:--</strong></span>
+            <!-- STYLED BATCH SUBTITLE -->
+            <div class="portal-sub-badge" id="displayBatchSub">OFFICIAL ADMISSION PORTAL · BATCH 10 - 11</div>
+            
+            <!-- REAL-TIME DATE & TIME GROUP -->
+            <div class="meta-cards-group">
+                <div class="meta-pill">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span id="liveDateDisplay">--</span>
+                </div>
+                <div class="meta-pill clock-pill">
+                    <i class="fa-solid fa-clock"></i>
+                    <span id="liveClockDisplay">--:--:--</span>
+                </div>
             </div>
 
-            <div class="badge-batch" id="displayBatchBadge">
-                <i class="fas fa-users" style="color:var(--primary);"></i> <span id="batchTitleText">ব্যাচ ৮-৯ · ২০২৬</span>
-                <span class="live-counter"><i class="fas fa-circle"></i> LIVE</span>
+            <!-- BATCH BADGE -->
+            <div>
+                <div class="batch-status-pill">
+                    <i class="fa-solid fa-user-group"></i>
+                    <span id="batchTitleText">ব্যাচ ১০ - ১১ · ২০২৬</span>
+                    <span class="live-tag"><span></span> LIVE</span>
+                </div>
             </div>
         </div>
 
-        <div class="home-buttons">
-            <button class="home-btn primary" id="registerBtn"><i class="fas fa-pen-to-square"></i> রেজিস্ট্রেশন</button>
-            <button class="home-btn" id="trackingBtn"><i class="fas fa-search"></i> ট্র্যাকিং</button>
-            <button class="home-btn" id="supportBtn"><i class="fas fa-headset"></i> সাপোর্ট</button>
+        <!-- ACTION BUTTONS STACK -->
+        <div class="home-actions-stack">
+            <!-- REGISTRATION BUTTON -->
+            <button class="action-card-btn btn-reg" id="registerBtn">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>রেজিস্ট্রেশন</span>
+            </button>
+
+            <!-- TRACKING BUTTON -->
+            <button class="action-card-btn" id="trackingBtn">
+                <i class="fa-solid fa-magnifying-glass" style="color:var(--primary);"></i>
+                <span>ট্র্যাকিং</span>
+            </button>
+
+            <!-- HOW TO APPLY BUTTON (NEW) -->
+            <button class="action-card-btn" id="howToApplyBtn">
+                <i class="fa-solid fa-circle-question" style="color:var(--secondary);"></i>
+                <span>কি ভাবে আবেদন করবেন</span>
+            </button>
+
+            <!-- SUPPORT BUTTON WITH POPUP OPTIONS -->
+            <div class="support-wrapper">
+                <button class="action-card-btn" id="supportToggleBtn">
+                    <i class="fa-solid fa-headset" style="color:#a855f7;"></i>
+                    <span>সাপোর্ট</span>
+                </button>
+                <div class="support-dropdown" id="supportDropdown">
+                    <a href="https://wa.me/+601130345524" target="_blank" class="support-item wp" id="adminWhatsappLink">
+                        <i class="fa-brands fa-whatsapp" style="font-size:18px;"></i>
+                        <span>হোয়াটসঅ্যাপ সাপোর্ট</span>
+                    </a>
+                    <a href="https://t.me/CSB_Official_Support" target="_blank" class="support-item tg" id="adminTelegramLink">
+                        <i class="fa-brands fa-telegram" style="font-size:18px;"></i>
+                        <span>টেলিগ্রাম সাপোর্ট</span>
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <div class="tracking-panel" id="trackingPanel" style="display:none; margin-top:25px; padding:24px; background:rgba(0,0,0,0.35); border-radius:20px; border:1px solid rgba(0,245,212,0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-            <h3 style="font-size:18px; font-weight:700;"><i class="fas fa-magnifying-glass" style="color:var(--primary); margin-right:8px;"></i> আবেদন ট্র্যাক করুন</h3>
-            <div style="display:flex; gap:10px; margin: 16px 0; flex-wrap:wrap;">
-                <input type="text" id="trackInput" class="form-control" style="flex:2; min-width:200px;" placeholder="আইডি লিখুন (যেমন: CSB-2026-0012)" />
-                <button class="home-btn primary" id="trackSubmitBtn" style="padding:12px 24px;"><i class="fas fa-arrow-right"></i> চেক করুন</button>
+        <!-- TRACKING PANEL -->
+        <div class="tracking-panel" id="trackingPanel" style="display:none; margin-top:20px; padding:20px; background:rgba(0,0,0,0.4); border-radius:18px; border:1px solid rgba(0,245,212,0.15);">
+            <h3 style="font-size:15px; font-weight:700; margin-bottom:12px;"><i class="fa-solid fa-magnifying-glass" style="color:var(--primary); margin-right:8px;"></i> আবেদন ট্র্যাক করুন</h3>
+            <div style="display:flex; gap:8px; margin-bottom: 12px; flex-wrap:wrap;">
+                <input type="text" id="trackInput" class="form-control" style="flex:2; min-width:180px;" placeholder="আইডি লিখুন (যেমন: CSB-2026-0012)" />
+                <button class="btn-submit" id="trackSubmitBtn" style="padding:10px 18px; flex:1;"><i class="fa-solid fa-arrow-right"></i> চেক</button>
             </div>
-            <div id="trackResult" style="color:var(--text-muted); font-size:14px;">
-                <p><i class="fas fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>
-            </div>
-            <div id="liveTime" style="margin-top:14px; font-size:11px; color:#475569; text-align:center; font-family:'JetBrains Mono', monospace;">
-                <i class="fas fa-clock"></i> লাইভ আপডেট: <span id="liveTimeDisplay">--:--:--</span>
+            <div id="trackResult" style="color:var(--text-muted); font-size:13px;">
+                <p><i class="fa-solid fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>
             </div>
         </div>
     </div>
 
-    <!-- FORM -->
+    <!-- FORM WRAPPER -->
     <div class="form-wrapper" id="formWrapper">
         <div class="back-btn-wrapper">
             <button type="button" class="back-btn" id="backToHomeBtn">
-                <i class="fas fa-arrow-left"></i> হোম পেজে ফিরুন
+                <i class="fa-solid fa-arrow-left"></i> হোম পেজে ফিরুন
             </button>
         </div>
 
-        <!-- LIVE ADMIN NOTICE BOX -->
         <div class="portal-notice-box" id="portalNoticeBox">
-            <h5><i class="fas fa-bullhorn"></i> জরুরি নোটিশ</h5>
+            <h5><i class="fa-solid fa-bullhorn"></i> জরুরি নোটিশ</h5>
             <p id="portalNoticeText">পোর্টালের সকল তথ্য সঠিকভাবে পূরণ করুন।</p>
         </div>
 
         <form id="csbForm" novalidate autocomplete="off">
             <div class="form-group">
-                <label><i class="fas fa-user"></i><span class="step-num">01</span> সম্পূর্ণ নাম (ইংরেজি)<span class="required">*</span></label>
+                <label><i class="fa-solid fa-user"></i><span class="step-num">01</span> সম্পূর্ণ নাম (ইংরেজি)<span class="required">*</span></label>
                 <input type="text" class="form-control" id="fullName" placeholder="যেমন: Md. Shahriar Ahmed" required>
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-location-dot"></i><span class="step-num">02</span> বর্তমান ঠিকানা<span class="required">*</span></label>
+                <label><i class="fa-solid fa-location-dot"></i><span class="step-num">02</span> বর্তমান ঠিকানা<span class="required">*</span></label>
                 <input type="text" class="form-control" id="address" placeholder="গ্রাম/রোড, পোস্ট অফিস, থানা, জেলা" required>
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-envelope"></i><span class="step-num">03</span> ইমেইল<span class="required">*</span></label>
+                <label><i class="fa-solid fa-envelope"></i><span class="step-num">03</span> ইমেইল<span class="required">*</span></label>
                 <input type="email" class="form-control" id="email" placeholder="your@email.com" required>
             </div>
 
             <div class="row-2">
                 <div class="form-group">
-                    <label><i class="fab fa-whatsapp"></i><span class="step-num">04</span> হোয়াটসঅ্যাপ<span class="required">*</span></label>
+                    <label><i class="fa-brands fa-whatsapp"></i><span class="step-num">04</span> হোয়াটসঅ্যাপ<span class="required">*</span></label>
                     <input type="tel" class="form-control" id="whatsapp" placeholder="01XXXXXXXXX" required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fab fa-telegram"></i><span class="step-num">05</span> টেলিগ্রাম ইউজারনেম<span class="required">*</span></label>
+                    <label><i class="fa-brands fa-telegram"></i><span class="step-num">05</span> টেলিগ্রাম ইউজারনেম<span class="required">*</span></label>
                     <input type="text" class="form-control" id="telegram" placeholder="@yourusername" required>
                 </div>
             </div>
 
             <div class="row-2">
                 <div class="form-group">
-                    <label><i class="fab fa-facebook"></i><span class="step-num">06</span> ফেসবুক নাম<span class="required">*</span></label>
+                    <label><i class="fa-brands fa-facebook"></i><span class="step-num">06</span> ফেসবুক নাম<span class="required">*</span></label>
                     <input type="text" class="form-control" id="fbName" placeholder="আপনার ফেসবুক নাম" required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-link"></i><span class="step-num">07</span> ফেসবুক লিংক<span class="required">*</span></label>
+                    <label><i class="fa-solid fa-link"></i><span class="step-num">07</span> ফেসবুক লিংক<span class="required">*</span></label>
                     <input type="url" class="form-control" id="fbLink" placeholder="https://facebook.com/username" required>
                 </div>
             </div>
 
             <div class="row-2">
                 <div class="form-group">
-                    <label><i class="fas fa-image"></i><span class="step-num">08</span> পাসপোর্ট ছবি (১ম)<span class="required">*</span></label>
+                    <label><i class="fa-solid fa-image"></i><span class="step-num">08</span> পাসপোর্ট ছবি (১ম)<span class="required">*</span></label>
                     <div class="file-upload-wrapper">
                         <input type="file" accept="image/*" id="photo1" required>
                         <div class="file-upload-area">
                             <div class="file-upload-left">
-                                <i class="fas fa-image icon"></i>
+                                <i class="fa-solid fa-image icon"></i>
                                 <div class="info">
-                                    <div class="main"><span>ফাইল বেছে নিন</span></div>
+                                    <div class="main"><span>ফাইল বাছুন</span></div>
                                     <div class="sub">JPG/PNG · Max 5MB</div>
                                 </div>
                             </div>
-                            <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
+                            <span class="size-badge"><i class="fa-solid fa-upload"></i> Upload</span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-image"></i><span class="step-num">09</span> পাসপোর্ট ছবি (২য়)<span class="required">*</span></label>
+                    <label><i class="fa-solid fa-image"></i><span class="step-num">09</span> পাসপোর্ট ছবি (২য়)<span class="required">*</span></label>
                     <div class="file-upload-wrapper">
                         <input type="file" accept="image/*" id="photo2" required>
                         <div class="file-upload-area">
                             <div class="file-upload-left">
-                                <i class="fas fa-image icon"></i>
+                                <i class="fa-solid fa-image icon"></i>
                                 <div class="info">
-                                    <div class="main"><span>ফাইল বেছে নিন</span></div>
+                                    <div class="main"><span>ফাইল বাছুন</span></div>
                                     <div class="sub">JPG/PNG · Max 5MB</div>
                                 </div>
                             </div>
-                            <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
+                            <span class="size-badge"><i class="fa-solid fa-upload"></i> Upload</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- NID / BIRTH CERTIFICATE TYPE SELECTOR -->
+            <!-- NID/BIRTH DOC -->
             <div class="form-group">
-                <label><i class="fas fa-id-card"></i><span class="step-num">10</span> সনদের ধরন নির্বাচন করুন<span class="required">*</span></label>
+                <label><i class="fa-solid fa-id-card"></i><span class="step-num">10</span> সনদের ধরন নির্বাচন করুন<span class="required">*</span></label>
                 <div class="doc-type-toggle">
-                    <div class="doc-type-btn active" id="btnTypeNid" onclick="setDocType('NID')"><i class="fas fa-id-card"></i> জাতীয় পরিচয়পত্র (NID)</div>
-                    <div class="doc-type-btn" id="btnTypeBirth" onclick="setDocType('Birth Certificate')"><i class="fas fa-file-invoice"></i> জন্মসনদ (Birth Cert)</div>
+                    <div class="doc-type-btn active" id="btnTypeNid" onclick="setDocType('NID')"><i class="fa-solid fa-id-card"></i> জাতীয় পরিচয়পত্র</div>
+                    <div class="doc-type-btn" id="btnTypeBirth" onclick="setDocType('Birth Certificate')"><i class="fa-solid fa-file-invoice"></i> জন্মসনদ</div>
                 </div>
                 <input type="hidden" id="selectedDocType" value="NID">
 
-                <div class="file-upload-wrapper" style="margin-top: 10px;">
+                <div class="file-upload-wrapper">
                     <input type="file" accept="image/*,.pdf" id="nid" required>
                     <div class="file-upload-area">
                         <div class="file-upload-left">
-                            <i class="fas fa-file-shield icon"></i>
+                            <i class="fa-solid fa-file-shield icon"></i>
                             <div class="info">
                                 <div class="main"><span id="docUploadLabel">NID কার্ডের সামনের দিক আপলোড</span></div>
                                 <div class="sub">JPG/PNG/PDF · Max 10MB</div>
                             </div>
                         </div>
-                        <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
+                        <span class="size-badge"><i class="fa-solid fa-upload"></i> Upload</span>
                     </div>
                 </div>
             </div>
 
             <div class="row-2">
                 <div class="form-group">
-                    <label><i class="fas fa-hashtag"></i><span class="step-num">11</span> <span id="docNumberLabel">NID নম্বর</span><span class="required">*</span></label>
+                    <label><i class="fa-solid fa-hashtag"></i><span class="step-num">11</span> <span id="docNumberLabel">NID নম্বর</span><span class="required">*</span></label>
                     <input type="text" class="form-control" id="nidNumber" placeholder="আইডি নম্বর লিখুন" required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-calendar-day"></i><span class="step-num">12</span> জন্মতারিখ<span class="required">*</span></label>
+                    <label><i class="fa-regular fa-calendar"></i><span class="step-num">12</span> জন্মতারিখ<span class="required">*</span></label>
                     <input type="date" class="form-control" id="dob" required>
                 </div>
             </div>
 
-            <!-- CATEGORY & GENDER -->
             <div class="row-2">
                 <div class="form-group">
-                    <label><i class="fas fa-layer-group"></i><span class="step-num">13</span> ক্যাটাগরি নির্বাচন<span class="required">*</span></label>
+                    <label><i class="fa-solid fa-layer-group"></i><span class="step-num">13</span> ক্যাটাগরি<span class="required">*</span></label>
                     <select class="form-control" id="category" required>
                         <option value="NEW STUDENTS">NEW STUDENTS</option>
                         <option value="EX-STUDENTS">EX-STUDENTS</option>
@@ -922,7 +973,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-venus-mars"></i><span class="step-num">14</span> জেন্ডার<span class="required">*</span></label>
+                    <label><i class="fa-solid fa-venus-mars"></i><span class="step-num">14</span> জেন্ডার<span class="required">*</span></label>
                     <select class="form-control" id="gender" required>
                         <option value="">সিলেক্ট করুন</option>
                         <option value="Male">পুরুষ</option>
@@ -933,89 +984,83 @@
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-briefcase"></i><span class="step-num">15</span> রোল (ক্যাটাগরি অনুযায়ী)<span class="required">*</span></label>
+                <label><i class="fa-solid fa-briefcase"></i><span class="step-num">15</span> রোল নির্বাচন<span class="required">*</span></label>
                 <select class="form-control" id="role" required>
                     <option value="">প্রথমে ক্যাটাগরি সিলেক্ট করুন</option>
                 </select>
             </div>
 
-            <!-- OATH BOX & VIDEO RECORDER -->
+            <!-- OATH VIDEO -->
             <div class="form-group">
-                <label><i class="fas fa-video"></i><span class="step-num">16</span> শপথনামার ভিডিও (Live)<span class="required">*</span></label>
+                <label><i class="fa-solid fa-video"></i><span class="step-num">16</span> শপথনামার লাইভ ভিডিও<span class="required">*</span></label>
                 <div class="video-recorder">
                     <div class="recorder-header">
-                        <span style="font-weight:600;"><i class="fas fa-camera"></i> লাইভ ভিডিও রেকর্ডার</span>
-                        <div class="status"><span class="dot" id="recordingDot"></span><span id="recordingStatus">Ready</span></div>
+                        <span><i class="fa-solid fa-camera"></i> লাইভ ভিডিও রেকর্ডার</span>
+                        <div><span class="dot" id="recordingDot"></span> <span id="recordingStatus">Ready</span></div>
                     </div>
                     <video id="previewVideo" autoplay muted playsinline></video>
                     <div class="recorder-controls">
-                        <button type="button" class="btn-recorder start" id="startRecord"><i class="fas fa-play"></i> Start</button>
-                        <button type="button" class="btn-recorder stop" id="stopRecord" disabled><i class="fas fa-stop"></i> Stop</button>
-                        <button type="button" class="btn-recorder download" id="downloadRecord" disabled><i class="fas fa-download"></i> Download</button>
+                        <button type="button" class="btn-recorder start" id="startRecord"><i class="fa-solid fa-play"></i> Start</button>
+                        <button type="button" class="btn-recorder stop" id="stopRecord" disabled><i class="fa-solid fa-stop"></i> Stop</button>
+                        <button type="button" class="btn-recorder download" id="downloadRecord" disabled><i class="fa-solid fa-download"></i> Download</button>
                     </div>
-                    <input type="hidden" id="recordedVideo" value="">
-                    <input type="hidden" id="recordedVideoBlob" value="">
                 </div>
                 <div class="oath-box">
-                    <div class="oath-title"><i class="fas fa-shield"></i> শপথনামা</div>
+                    <div class="oath-title"><i class="fa-solid fa-shield"></i> শপথনামা</div>
                     <div class="oath-text" id="displayOathText">
                         “আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো。<br>
                         <span class="highlight">আমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো।</span> সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো。<br>
                         আমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”
                     </div>
-                    <div class="oath-amen"><i class="fas fa-shield-heart" style="color:var(--primary); margin-right:6px;"></i> আমিন</div>
+                    <div class="oath-amen"><i class="fa-solid fa-shield-heart" style="color:var(--primary); margin-right:4px;"></i> আমিন</div>
                 </div>
             </div>
 
             <!-- PAYMENT CARD -->
             <div class="payment-card">
                 <div class="left">
-                    <div class="icon-box"><i class="fas fa-wallet"></i></div>
+                    <div class="icon-box"><i class="fa-solid fa-wallet"></i></div>
                     <div class="info">
                         <h4 id="displayFormFee">ফর্ম ফি: ৫০ টাকা</h4>
                         <p>
-                            <i class="fas fa-phone" style="color:var(--primary); margin-right:4px;"></i> 
+                            <i class="fa-solid fa-phone" style="color:var(--primary);"></i> 
                             <strong id="displayPaymentPhone">01971138617</strong> 
-                            <button type="button" class="copy-btn" onclick="copyText('displayPaymentPhone')"><i class="fas fa-copy"></i> কপি</button>
+                            <button type="button" class="copy-btn" onclick="copyText('displayPaymentPhone')">কপি</button>
                             (বিকাশ, নগদ, রকেট)
                         </p>
                     </div>
                 </div>
-                <div class="right">
-                    <span><i class="fas fa-shield-check" style="color:var(--primary);"></i> TNX &amp; Screenshot</span>
-                    <span class="number">ভেরিফিকেশন প্রয়োজন</span>
-                </div>
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-receipt"></i><span class="step-num">17</span> TNX আইডি (পেমেন্ট রেফারেন্স)<span class="required">*</span></label>
+                <label><i class="fa-solid fa-receipt"></i><span class="step-num">17</span> TNX আইডি (পেমেন্ট রেফারেন্স)<span class="required">*</span></label>
                 <input type="text" class="form-control" id="tnxId" placeholder="যেমন: 9X7F2G3H" required>
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-file-invoice-dollar"></i><span class="step-num">18</span> পেমেন্ট স্ক্রিনশট<span class="required">*</span></label>
+                <label><i class="fa-solid fa-file-invoice-dollar"></i><span class="step-num">18</span> পেমেন্ট স্ক্রিনশট<span class="required">*</span></label>
                 <div class="file-upload-wrapper">
                     <input type="file" accept="image/*" id="paymentScreenshot" required>
                     <div class="file-upload-area">
                         <div class="file-upload-left">
-                            <i class="fas fa-camera icon"></i>
+                            <i class="fa-solid fa-camera icon"></i>
                             <div class="info">
                                 <div class="main"><span>স্ক্রিনশট আপলোড করুন</span></div>
                                 <div class="sub">JPG/PNG · Max 5MB</div>
                             </div>
                         </div>
-                        <span class="size-badge"><i class="fas fa-upload"></i> Upload</span>
+                        <span class="size-badge"><i class="fa-solid fa-upload"></i> Upload</span>
                     </div>
                 </div>
             </div>
 
             <div class="row-2">
                 <div class="form-group">
-                    <label><i class="fas fa-phone"></i><span class="step-num">19</span> অভিভাবকের মোবাইল<span class="required">*</span></label>
+                    <label><i class="fa-solid fa-phone"></i><span class="step-num">19</span> অভিভাবকের মোবাইল<span class="required">*</span></label>
                     <input type="tel" class="form-control" id="guardianPhone" placeholder="01XXXXXXXXX" required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-mobile-screen"></i><span class="step-num">20</span> আপনার মোবাইল<span class="required">*</span></label>
+                    <label><i class="fa-solid fa-mobile-screen"></i><span class="step-num">20</span> আপনার মোবাইল<span class="required">*</span></label>
                     <input type="tel" class="form-control" id="personalPhone" placeholder="01XXXXXXXXX (সচল)" required>
                 </div>
             </div>
@@ -1029,32 +1074,47 @@
             <div class="btn-group">
                 <button type="submit" class="btn-submit" id="submitBtn">
                     <span class="spinner"></span>
-                    <span class="btn-text"><i class="fas fa-paper-plane"></i> জমা দিন <i class="fas fa-arrow-right" style="margin-left:6px;"></i></span>
+                    <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> জমা দিন <i class="fa-solid fa-arrow-right" style="margin-left:4px;"></i></span>
                 </button>
-                <button type="reset" class="btn-reset"><i class="fas fa-rotate-left"></i> রিসেট</button>
+                <button type="reset" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> রিসেট</button>
             </div>
 
             <div class="form-footer">
-                <span><i class="fas fa-shield-halved" style="color:var(--primary);"></i> CSB Team Official</span>
-                <span>v3.6 Enterprise · 2026</span>
+                <span><i class="fa-solid fa-shield-halved" style="color:var(--primary);"></i> CSB Team Official</span>
+                <span>v3.8 Enterprise · 2026</span>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- HOW TO APPLY MODAL GUIDE -->
+<div class="guide-box-modal" id="howToApplyModal">
+    <div class="guide-content">
+        <h3><i class="fa-solid fa-circle-question"></i> কিভাবে আবেদন করবেন?</h3>
+        <ul class="guide-steps">
+            <li><span>১</span> 'রেজিস্ট্রেশন' বাটনে ক্লিক করে ফর্মটি ওপেন করুন।</li>
+            <li><span>২</span> আপনার নাম, ঠিকানা, ইমেইল এবং সঠিক নম্বরসমূহ লিখুন।</li>
+            <li><span>৩</span> আপনার ২টি পাসপোর্ট সাইজ ছবি ও NID/জন্মসনদ আপলোড করুন।</li>
+            <li><span>৪</span> লাইভ ক্যামেরা অন করে শপথনামা পাঠ করে ভিডিও রেকর্ড সম্পন্ন করুন।</li>
+            <li><span>৫</span> নির্ধারিত নম্বরে ফি পাঠিয়ে TrxID ও স্ক্রিনশট প্রদান করে সাবমিট করুন।</li>
+        </ul>
+        <button class="guide-close-btn" id="closeGuideBtn">বুঝেছি</button>
     </div>
 </div>
 
 <!-- SUCCESS MODAL -->
 <div class="modal-overlay" id="successModal">
     <div class="modal-content">
-        <i class="fas fa-circle-check icon"></i>
+        <i class="fa-solid fa-circle-check icon"></i>
         <h2>আবেদন সফল!</h2>
         <p>
-            আপনার আবেদনটি ডেটাবেস ও চ্যানেলে সফলভাবে জমা হয়েছে。<br>
+            আপনার আবেদনটি সফলভাবে জমা হয়েছে。<br>
             <strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">
                 ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span>
             </strong>
-            <button type="button" class="copy-btn" onclick="copyText('trackingIdDisplay')" style="margin-left: 6px;"><i class="fas fa-copy"></i> কপি</button>
+            <button type="button" class="copy-btn" onclick="copyText('trackingIdDisplay')" style="margin-left: 6px;">কপি</button>
             <br><br>
-            আপনার অফিশিয়াল স্লিপটি <strong>PNG ছবি</strong> হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।
+            আপনার অফিশিয়াল স্লিপটি <strong>PNG ছবি</strong> হিসেবে ডাউনলোড হচ্ছে।
         </p>
         <button class="btn-modal" onclick="closeModal()">ঠিক আছে</button>
     </div>
@@ -1062,10 +1122,10 @@
 
 <div class="modal-overlay" id="errorModal">
     <div class="modal-content">
-        <i class="fas fa-circle-exclamation icon error"></i>
+        <i class="fa-solid fa-circle-exclamation icon error"></i>
         <h2>সমস্যা হয়েছে</h2>
-        <div id="errorMessage" style="font-size:13.5px; color:var(--text-muted); margin-bottom:20px;"></div>
-        <button class="btn-modal error" onclick="closeErrorModal()">আবার চেষ্টা করুন</button>
+        <div id="errorMessage" style="font-size:13px; color:var(--text-muted); margin-bottom:16px;"></div>
+        <button class="btn-modal" style="background:var(--accent-red); color:#fff;" onclick="closeErrorModal()">আবার চেষ্টা করুন</button>
     </div>
 </div>
 
@@ -1073,7 +1133,7 @@
     <span id="toastMessage"></span>
 </div>
 
-<!-- FIREBASE & CORE SCRIPTS -->
+<!-- FIREBASE & CORE ENGINE -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1095,6 +1155,8 @@
         logoUrl: '',
         maleLink: 'https://t.me/+iK88FtiL2YNmZjE1',
         femaleLink: 'https://t.me/+tSQK_jWEeWU0YjI1',
+        supportWhatsapp: 'https://wa.me/+601130345524',
+        supportTelegram: 'https://t.me/CSB_Official_Support',
         categoryFees: {},
         categoryLinks: {},
         categoryOaths: {},
@@ -1144,12 +1206,28 @@
         
         document.getElementById('liveDateDisplay').textContent = dateStr;
         document.getElementById('liveClockDisplay').textContent = timeStr;
-        document.getElementById('liveTimeDisplay').textContent = timeStr;
     }
     updateLiveDateTime();
     setInterval(updateLiveDateTime, 1000);
 
-    // LIVE FIRESTORE LISTENER
+    // HOW TO APPLY & SUPPORT TOGGLE
+    const howToApplyBtn = document.getElementById('howToApplyBtn');
+    const howToApplyModal = document.getElementById('howToApplyModal');
+    const closeGuideBtn = document.getElementById('closeGuideBtn');
+    const supportToggleBtn = document.getElementById('supportToggleBtn');
+    const supportDropdown = document.getElementById('supportDropdown');
+
+    howToApplyBtn.addEventListener('click', () => { howToApplyModal.classList.add('show'); });
+    closeGuideBtn.addEventListener('click', () => { howToApplyModal.classList.remove('show'); });
+    howToApplyModal.addEventListener('click', (e) => { if (e.target === howToApplyModal) howToApplyModal.classList.remove('show'); });
+
+    supportToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        supportDropdown.classList.toggle('show');
+    });
+    document.addEventListener('click', () => { supportDropdown.classList.remove('show'); });
+
+    // FIRESTORE SYNC
     onSnapshot(doc(db, "settings", "portalConfig"), (snap) => {
         if (snap.exists()) {
             const cfg = snap.data();
@@ -1162,7 +1240,6 @@
                 logoContainer.style.display = 'inline-flex';
             } else {
                 logoContainer.style.display = 'none';
-                adminLogoImg.src = '';
             }
 
             const noticeBox = document.getElementById('portalNoticeBox');
@@ -1186,6 +1263,10 @@
             if (cfg.batchTitle) document.getElementById('batchTitleText').textContent = cfg.batchTitle;
             if (cfg.batchSub) document.getElementById('displayBatchSub').textContent = cfg.batchSub;
             if (cfg.paymentNumber) document.getElementById('displayPaymentPhone').textContent = cfg.paymentNumber;
+            
+            // DYNAMIC ADMIN SUPPORT LINKS
+            if (cfg.supportWhatsapp) document.getElementById('adminWhatsappLink').href = cfg.supportWhatsapp;
+            if (cfg.supportTelegram) document.getElementById('adminTelegramLink').href = cfg.supportTelegram;
 
             if (cfg.categories && Array.isArray(cfg.categories) && cfg.categories.length > 0) {
                 const catSelect = document.getElementById('category');
@@ -1204,7 +1285,6 @@
 
     function updateCategoryContext() {
         const selectedCat = document.getElementById('category').value;
-        
         let currentFee = '50';
         if (activePortalConfig.categoryFees && activePortalConfig.categoryFees[selectedCat]) {
             currentFee = activePortalConfig.categoryFees[selectedCat];
@@ -1221,7 +1301,6 @@
 
         const roleSelect = document.getElementById('role');
         roleSelect.innerHTML = '<option value="">সিলেক্ট করুন</option>';
-
         let availableRoles = [];
         if (activePortalConfig.categoryRoles && activePortalConfig.categoryRoles[selectedCat]) {
             availableRoles = activePortalConfig.categoryRoles[selectedCat];
@@ -1245,7 +1324,6 @@
     const formWrapper = document.getElementById('formWrapper');
     const registerBtn = document.getElementById('registerBtn');
     const trackingBtn = document.getElementById('trackingBtn');
-    const supportBtn = document.getElementById('supportBtn');
     const backToHomeBtn = document.getElementById('backToHomeBtn');
     const trackingPanel = document.getElementById('trackingPanel');
     const trackInput = document.getElementById('trackInput');
@@ -1265,154 +1343,10 @@
     });
 
     trackingBtn.addEventListener('click', () => {
-        landingPage.style.display = 'block';
-        formWrapper.classList.remove('active');
         trackingPanel.style.display = trackingPanel.style.display === 'none' ? 'block' : 'none';
-        if (trackingPanel.style.display === 'block') {
-            trackResult.innerHTML = `<p><i class="fas fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>`;
-        }
     });
 
-    supportBtn.addEventListener('click', () => { window.open('https://wa.me/+601130345524', '_blank'); });
-
-    window.addEventListener('DOMContentLoaded', async () => {
-        const params = new URLSearchParams(window.location.search);
-        const action = params.get('action');
-        const trackId = params.get('id');
-        const msgId = params.get('msg_id');
-
-        if (action && trackId) {
-            try {
-                const docRef = doc(db, "applications", trackId);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const existingData = docSnap.data();
-                    const updateTime = new Date().toLocaleString('bn-BD');
-
-                    if (action === 'approve') {
-                        await updateDoc(docRef, { status: 'Approved', updateTime: updateTime });
-                        showToast(`✅ ID: ${trackId} অনুমোদিত হয়েছে!`, 'success');
-                        sendToApproveChannel(trackId, { ...existingData, time: updateTime });
-                    } else if (action === 'reject') {
-                        await updateDoc(docRef, { status: 'Rejected', updateTime: updateTime });
-                        showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
-                        sendRejectionNotice(trackId, { ...existingData, time: updateTime });
-                    }
-
-                    if (msgId) {
-                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                chat_id: CHANNEL_ID_SUBMIT,
-                                message_id: parseInt(msgId),
-                                reply_markup: { inline_keyboard: [] }
-                            })
-                        });
-                    }
-                }
-            } catch (err) {
-                console.error("Action Error:", err);
-            }
-        }
-    });
-
-    async function sendToApproveChannel(trackId, data) {
-        const text = `🎉 **নতুন আবেদন অনুমোদিত (APPROVED)** 🎉\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n📂 ক্যাটাগরি: ${data.category || 'N/A'}\n🏠 ঠিকানা: ${data.address || 'N/A'}\n📧 ইমেইল: ${data.email || 'N/A'}\n📱 WhatsApp: ${data.whatsapp || 'N/A'}\n✈️ Telegram: ${data.telegram || 'N/A'}\n⚧️ জেন্ডার: ${data.gender}\n🗂️ রোল: ${data.role}\n🪪 ${data.docType || 'NID/Birth'}: \`${data.nidNumber}\`\n📅 জন্মতারিখ: \`${data.dob}\`\n🧾 TNX ID: ${data.tnxId || 'N/A'}\n📞 অভিভাবক: ${data.guardianPhone || 'N/A'}\n📱 নিজের: ${data.personalPhone || 'N/A'}\n📅 অনুমোদন সময়: ${data.time}\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: CHANNEL_ID_APPROVE, text: text, parse_mode: 'Markdown' })
-        });
-    }
-
-    async function sendRejectionNotice(trackId, data) {
-        const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: CHANNEL_ID_SUBMIT, text: text, parse_mode: 'Markdown' })
-        });
-    }
-
-    trackSubmitBtn.addEventListener('click', async () => {
-        const id = trackInput.value.trim().toUpperCase();
-        if (!id) { showToast('⚠️ আইডি লিখুন', 'error'); return; }
-
-        trackResult.innerHTML = `<p style="color:var(--primary);"><i class="fas fa-spinner fa-spin"></i> ডাটাবেজে খোঁজা হচ্ছে...</p>`;
-
-        try {
-            const docRef = doc(db, "applications", id);
-            const docSnap = await getDoc(docRef);
-
-            if (!docSnap.exists()) {
-                trackResult.innerHTML = `<div style="background:rgba(244,63,94,0.06); border-radius:14px; padding:16px; border:1px solid rgba(244,63,94,0.2); margin-top:12px;"><p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p></div>`;
-                return;
-            }
-
-            const data = docSnap.data();
-            const status = data.status || 'Pending';
-            const time = data.updateTime || data.createdAt || 'N/A';
-            const gender = data.gender || 'Male';
-            const cat = data.category || 'NEW STUDENTS';
-
-            let color = '#ffa94d';
-            let icon = '⏳';
-            let joinLinkHtml = '';
-
-            if (status === 'Approved') {
-                color = '#00f5d4';
-                icon = '✅';
-                
-                let targetGroupLink = activePortalConfig.maleLink;
-                if (activePortalConfig.categoryLinks && activePortalConfig.categoryLinks[cat]) {
-                    targetGroupLink = (gender === 'Female') 
-                        ? activePortalConfig.categoryLinks[cat].female 
-                        : activePortalConfig.categoryLinks[cat].male;
-                }
-                if (!targetGroupLink) {
-                    targetGroupLink = (gender === 'Female') ? activePortalConfig.femaleLink : activePortalConfig.maleLink;
-                }
-
-                joinLinkHtml = `
-                    <div style="margin-top: 15px; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 15px; text-align: center;">
-                        <p style="color: var(--primary); font-weight: 600; font-size: 13px; margin-bottom: 10px;">🎉 অভিনন্দন! আপনার আবেদনটি অনুমোদিত হয়েছে।</p>
-                        <a href="${targetGroupLink}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #020617; padding: 10px 22px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                            <i class="fab fa-telegram"></i> অফিসিয়াল গ্রুপে জয়েন করুন
-                        </a>
-                    </div>
-                `;
-            } else if (status === 'Rejected') {
-                color = '#f43f5e';
-                icon = '❌';
-                joinLinkHtml = `<div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;"><p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে।</p></div>`;
-            }
-
-            trackResult.innerHTML = `
-                <div style="background:rgba(255,255,255,0.02); border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.06); margin-top:12px;">
-                    <p style="font-size:15px; font-weight:700; color:#fff;">আইডি: <span style="color:var(--primary); font-family:'JetBrains Mono';">${id}</span></p>
-                    <p style="margin-top:6px; font-size:14px; font-weight:600;">স্ট্যাটাস: <span style="color:${color};">${icon} ${status}</span></p>
-                    <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${time}</p>${joinLinkHtml}
-                </div>
-            `;
-        } catch (err) {
-            trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি।</p>`;
-        }
-    });
-
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        toast.className = 'toast ' + type;
-        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}" style="margin-right:8px; color:${type === 'success' ? 'var(--primary)' : 'var(--accent-red)'}"></i> ${message}`;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 4000);
-    }
-
-    window.closeModal = function() { document.getElementById('successModal').classList.remove('show'); };
-    window.closeErrorModal = function() { document.getElementById('errorModal').classList.remove('show'); };
-
-    // VIDEO RECORDER
+    // CAMERA RECORDER
     let mediaRecorder, recordedChunks = [], stream = null, isCameraReady = false, recordedBlob = null;
     const previewVideo = document.getElementById('previewVideo');
     const startBtn = document.getElementById('startRecord');
@@ -1431,7 +1365,7 @@
             recordingDot.className = 'dot ready';
             return true;
         } catch (err) {
-            recordingStatus.textContent = 'Access Denied';
+            recordingStatus.textContent = 'Denied';
             recordingDot.className = 'dot';
             return false;
         }
@@ -1439,10 +1373,10 @@
 
     startBtn.addEventListener('click', async () => {
         const cameraStarted = await initCamera();
-        if (!cameraStarted || !stream) { showToast('⚠️ ক্যামেরা ব্যবহারের অনুমতি দিন', 'error'); return; }
+        if (!cameraStarted || !stream) { showToast('⚠️ ক্যামেরা এক্সেস প্রয়োজন', 'error'); return; }
         recordedChunks = [];
         recordedBlob = null;
-        try { mediaRecorder = new MediaRecorder(stream); } catch (err) { showToast('⚠️ ভিডিও রেকর্ডিং ব্রাউজারে সাপোর্ট করছে না', 'error'); return; }
+        try { mediaRecorder = new MediaRecorder(stream); } catch (err) { showToast('⚠️ ব্রাউজারে রেকর্ডিং সাপোর্ট নেই', 'error'); return; }
 
         mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
         mediaRecorder.onstop = () => {
@@ -1457,7 +1391,7 @@
             recordingDot.className = 'dot ready';
             startBtn.disabled = false;
             stopBtn.disabled = true;
-            showToast('✅ ভিডিও রেকর্ড সম্পন্ন হয়েছে', 'success');
+            showToast('✅ ভিডিও রেকর্ড সম্পন্ন', 'success');
         };
 
         mediaRecorder.start();
@@ -1478,12 +1412,10 @@
             const span = area.querySelector('.info .main span');
             if (this.files.length) {
                 let fileName = this.files[0].name;
-                if (fileName.length > 25) {
-                    fileName = fileName.substring(0, 20) + '...' + fileName.split('.').pop();
-                }
+                if (fileName.length > 20) fileName = fileName.substring(0, 16) + '...' + fileName.split('.').pop();
                 span.textContent = fileName;
             } else {
-                span.textContent = 'ফাইল বেছে নিন';
+                span.textContent = 'ফাইল বাছুন';
             }
         });
     });
@@ -1496,97 +1428,54 @@
         if (pct >= 100) setTimeout(() => prog.classList.remove('show'), 2500);
     }
 
-    // DIRECT HIGH-RES PNG SLIP EXPORT
+    // AUTO HIGH-RES SLIP GENERATOR
     async function generateAutoPNG(trackId, formData, currentTime) {
         const card = document.createElement('div');
         card.style.position = 'fixed';
         card.style.left = '-9999px';
         card.style.top = '0';
-        card.style.width = '600px';
+        card.style.width = '550px';
         card.style.background = '#060a14';
         card.style.color = '#f8fafc';
-        card.style.padding = '35px';
-        card.style.borderRadius = '20px';
+        card.style.padding = '30px';
+        card.style.borderRadius = '18px';
         card.style.border = '2px solid #00f5d4';
-        card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8)';
         card.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
 
         card.innerHTML = `
-            <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 16px; margin-bottom: 22px;">
-                <h2 style="color: #00f5d4; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">CYBER SENTINEL BANGLADESH</h2>
-                <p style="font-size: 11.5px; color: #94a3b8; letter-spacing: 2px; font-weight: 700; margin-top: 5px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
+            <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 14px; margin-bottom: 20px;">
+                <h2 style="color: #00f5d4; font-size: 20px; font-weight: 800; margin: 0;">CYBER SENTINEL BANGLADESH</h2>
+                <p style="font-size: 11px; color: #94a3b8; letter-spacing: 2px; font-weight: 700; margin-top: 4px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
             </div>
-            
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13.5px; line-height: 1.6;">
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; width: 42%; font-weight: 600;">ট্র্যাকিং আইডি:</td>
-                    <td style="padding: 9px 0; font-weight: 800; color: #00f5d4; font-family: monospace; font-size: 14.5px;">${trackId}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনকারীর নাম:</td>
-                    <td style="padding: 9px 0; font-weight: 700; color: #fff;">${formData.fullName}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">মোবাইল নম্বর:</td>
-                    <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.personalPhone}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ইমেইল:</td>
-                    <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${formData.email}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ক্যাটাগরি:</td>
-                    <td style="padding: 9px 0; font-weight: 600; color: #0ea5e9;">${formData.category}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">নির্বাচিত রোল:</td>
-                    <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.role}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">সনদের ধরন ও নম্বর:</td>
-                    <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.docType} (${formData.nidNumber})</td>
-                </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">পেমেন্ট রেফারেন্স (TNX):</td>
-                    <td style="padding: 9px 0; font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনের সময়:</td>
-                    <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${currentTime}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">বর্তমান অবস্থা:</td>
-                    <td style="padding: 9px 0; font-weight: 800; color: #f59e0b;">Pending (যাচাই চলছে)</td>
-                </tr>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 7px 0; color: #94a3b8; width: 42%;">ট্র্যাকিং আইডি:</td><td style="padding: 7px 0; font-weight: 800; color: #00f5d4; font-family: monospace;">${trackId}</td></tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 7px 0; color: #94a3b8;">নাম:</td><td style="padding: 7px 0; font-weight: 700; color: #fff;">${formData.fullName}</td></tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 7px 0; color: #94a3b8;">মোবাইল:</td><td style="padding: 7px 0; color: #fff;">${formData.personalPhone}</td></tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 7px 0; color: #94a3b8;">ক্যাটাগরি:</td><td style="padding: 7px 0; color: #0ea5e9;">${formData.category}</td></tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 7px 0; color: #94a3b8;">রোল:</td><td style="padding: 7px 0; color: #fff;">${formData.role}</td></tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);"><td style="padding: 7px 0; color: #94a3b8;">TNX ID:</td><td style="padding: 7px 0; font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td></tr>
+                <tr><td style="padding: 7px 0; color: #94a3b8;">স্ট্যাটাস:</td><td style="padding: 7px 0; font-weight: 800; color: #f59e0b;">Pending (যাচাই চলছে)</td></tr>
             </table>
-
-            <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 14px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.5;">
-                <p>এই স্লিপটি আপনার অফিশিয়াল প্রমাণপত্র। ট্র্যাকিং প্যানেল থেকে নিয়মিত স্ট্যাটাস চেক করুন।</p>
-                <p style="margin-top: 3px; font-weight: 700; color: #00f5d4;">🛡️ Cyber Sentinel Bangladesh · Official Desk</p>
+            <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 12px; text-align: center; font-size: 11px; color: #64748b;">
+                <p>🛡️ Cyber Sentinel Bangladesh · Official Desk</p>
             </div>
         `;
 
         document.body.appendChild(card);
-
         try {
-            const canvas = await html2canvas(card, {
-                scale: 2,
-                backgroundColor: '#060a14',
-                useCORS: true
-            });
-
+            const canvas = await html2canvas(card, { scale: 2, backgroundColor: '#060a14', useCORS: true });
             const link = document.createElement('a');
             link.download = `CSB_Slip_${trackId}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (err) {
-            console.error("PNG Gen Error:", err);
+            console.error(err);
         } finally {
             document.body.removeChild(card);
         }
     }
 
-    // FORM SUBMISSION ENGINE
+    // FORM SUBMIT
     document.getElementById('csbForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const submitBtn = document.getElementById('submitBtn');
@@ -1620,45 +1509,17 @@
                 }
             }
 
-            try {
-                const tnxCheckRef = doc(db, "transactions", formData.tnxId);
-                const tnxSnap = await getDoc(tnxCheckRef);
-                if (tnxSnap.exists()) {
-                    document.getElementById('errorMessage').innerHTML = `<p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p><p style="margin-top:4px;">নতুন TNX দিয়ে চেষ্টা করুন।</p>`;
-                    document.getElementById('errorModal').classList.add('show');
-                    submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
-                }
-            } catch(e) {
-                console.log("Validation bypassed");
-            }
+            if (!recordedBlob) { showToast('⚠️ লাইভ ভিডিও রেকর্ড বাধ্যতামূলক', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
 
-            if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { showToast('⚠️ সঠিক ইমেইল দিন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
-            const phoneRegex = /^01[3-9]\d{8}$/;
-            if (!phoneRegex.test(formData.whatsapp) || !phoneRegex.test(formData.guardianPhone) || !phoneRegex.test(formData.personalPhone)) {
-                showToast('⚠️ সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; 
-            }
-            if (!formData.fbLink.match(/^https?:\/\/(www\.)?facebook\.com\/.+/)) { showToast('⚠️ সঠিক ফেসবুক লিংক দিন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
-            if (!recordedBlob) { showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড বাধ্যতামূলক', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; }
-
-            const fileIds = ['photo1', 'photo2', 'nid', 'paymentScreenshot'];
-            for (let id of fileIds) {
-                const inp = document.getElementById(id);
-                if (!inp.files || !inp.files.length) {
-                    showToast('⚠️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
-                }
-            }
-
-            updateProgress(20, 'ফায়ারস্টোর ডেটাবেজে সেভ হচ্ছে...');
+            updateProgress(20, 'ফায়ারস্টোরে সেভ হচ্ছে...');
             const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
             const currentTime = new Date().toLocaleString('bn-BD');
 
-            await setDoc(doc(db, "applications", trackId), {
-                ...formData, status: 'Pending', createdAt: currentTime, updateTime: currentTime
-            });
+            await setDoc(doc(db, "applications", trackId), { ...formData, status: 'Pending', createdAt: currentTime, updateTime: currentTime });
             await setDoc(doc(db, "transactions", formData.tnxId), { trackId: trackId, usedAt: currentTime });
 
             updateProgress(50, 'টেলিগ্রাম চ্যানেলে পাঠানো হচ্ছে...');
-            const caption = `🛡️ **CSB NEW ADMISSION FORM** 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${formData.fullName}\n📂 ক্যাটাগরি: ${formData.category}\n🏠 ঠিকানা: ${formData.address}\n📧 ইমেইল: ${formData.email}\n📱 WhatsApp: ${formData.whatsapp}\n✈️ Telegram: ${formData.telegram}\n📘 FB নাম: ${formData.fbName}\n🔗 FB লিংক: ${formData.fbLink}\n🪪 ${formData.docType}: \`${formData.nidNumber}\`\n📅 জন্মতারিখ: \`${formData.dob}\`\n⚧️ জেন্ডার: ${formData.gender}\n🗂️ রোল: ${formData.role}\n🧾 TNX ID: \`${formData.tnxId}\`\n📞 অভিভাবক: ${formData.guardianPhone}\n📱 নিজের: ${formData.personalPhone}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন টাইম: ${currentTime}`;
+            const caption = `🛡️ **CSB NEW ADMISSION** 🛡️\n👤 নাম: ${formData.fullName}\n🆔 আইডি: \`${trackId}\`\n📂 ক্যাটাগরি: ${formData.category}\n📱 WhatsApp: ${formData.whatsapp}\n🧾 TNX: \`${formData.tnxId}\``;
 
             try {
                 const mediaGroup = new FormData();
@@ -1678,9 +1539,7 @@
                 ];
                 mediaGroup.append('media', JSON.stringify(mediaData));
 
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
-                    method: 'POST', body: mediaGroup
-                });
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, { method: 'POST', body: mediaGroup });
             } catch(tgErr) {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
@@ -1689,40 +1548,7 @@
                 });
             }
 
-            updateProgress(80, 'অ্যাকশন কন্ট্রোল ও PNG তৈরি হচ্ছে...');
-
-            const webAppBaseUrl = window.location.href.split('?')[0];
-            const actionMsgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    chat_id: CHANNEL_ID_SUBMIT, 
-                    text: `🚨 **CSB ACTION PANEL** 🚨\nID: \`${trackId}\`\nনাম: ${formData.fullName}\nরোল: ${formData.role}`, 
-                    parse_mode: 'Markdown' 
-                })
-            });
-            const actionData = await actionMsgRes.json();
-            const actionMsgId = actionData.result ? actionData.result.message_id : '';
-
-            if (actionMsgId) {
-                const inlineKeyboard = {
-                    inline_keyboard: [[
-                        { text: '✅ Approve', url: `${webAppBaseUrl}?action=approve&id=${trackId}&msg_id=${actionMsgId}` }, 
-                        { text: '❌ Reject', url: `${webAppBaseUrl}?action=reject&id=${trackId}&msg_id=${actionMsgId}` }
-                    ]]
-                };
-
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: CHANNEL_ID_SUBMIT,
-                        message_id: actionMsgId,
-                        reply_markup: inlineKeyboard
-                    })
-                });
-            }
-
+            updateProgress(85, 'স্লিপ তৈরি হচ্ছে...');
             await generateAutoPNG(trackId, formData, currentTime);
 
             updateProgress(100, 'সম্পন্ন হয়েছে!');
@@ -1731,41 +1557,54 @@
 
             setTimeout(() => {
                 document.getElementById('csbForm').reset();
-                document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'ফাইল বেছে নিন');
+                document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'ফাইল বাছুন');
                 recordedBlob = null;
-                recordedChunks = [];
-                recordingStatus.textContent = 'Ready';
-                recordingDot.className = 'dot ready';
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
-                downloadBtn.disabled = true;
-                if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; isCameraReady = false; previewVideo.srcObject = null; }
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
             }, 1500);
 
         } catch (err) {
-            console.error(err);
-            document.getElementById('errorMessage').textContent = 'ত্রুটি দেখা দিয়েছে। ইন্টারনেট বা পারমিশন চেক করুন। (' + err.message + ')';
+            document.getElementById('errorMessage').textContent = err.message;
             document.getElementById('errorModal').classList.add('show');
             submitBtn.classList.remove('loading');
             submitBtn.disabled = false;
-            document.getElementById('uploadProgress').classList.remove('show');
         }
     });
 
-    document.querySelector('.btn-reset').addEventListener('click', (e) => {
-        e.preventDefault();
-        if (confirm('সব ফিল্ড মুছে ফেলতে চান?')) {
-            document.getElementById('csbForm').reset();
-            document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'ফাইল বেছে নিন');
-            recordedBlob = null;
-            recordedChunks = [];
-            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; isCameraReady = false; previewVideo.srcObject = null; }
-            document.getElementById('uploadProgress').classList.remove('show');
-            showToast('ফর্ম রিসেট করা হয়েছে', 'success');
+    // TRACKING HANDLER
+    trackSubmitBtn.addEventListener('click', async () => {
+        const id = trackInput.value.trim().toUpperCase();
+        if (!id) { showToast('⚠️ আইডি লিখুন', 'error'); return; }
+        trackResult.innerHTML = `<p style="color:var(--primary);"><i class="fa-solid fa-spinner fa-spin"></i> ডাটাবেজে খোঁজা হচ্ছে...</p>`;
+
+        try {
+            const docSnap = await getDoc(doc(db, "applications", id));
+            if (!docSnap.exists()) {
+                trackResult.innerHTML = `<p style="color:var(--accent-red); font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> আবেদন পাওয়া যায়নি!</p>`;
+                return;
+            }
+            const data = docSnap.data();
+            trackResult.innerHTML = `
+                <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:12px; margin-top:8px;">
+                    <p style="color:#fff; font-weight:700;">আইডি: <span style="color:var(--primary); font-family:monospace;">${id}</span></p>
+                    <p style="margin-top:4px;">স্ট্যাটাস: <strong style="color:${data.status === 'Approved' ? '#00f5d4' : (data.status === 'Rejected' ? '#f43f5e' : '#f59e0b')}">${data.status}</strong></p>
+                </div>
+            `;
+        } catch(e) {
+            trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার সমস্যা</p>`;
         }
     });
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.className = 'toast ' + type;
+        toast.innerHTML = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    window.closeModal = function() { document.getElementById('successModal').classList.remove('show'); };
+    window.closeErrorModal = function() { document.getElementById('errorModal').classList.remove('show'); };
 </script>
 
 </body>
