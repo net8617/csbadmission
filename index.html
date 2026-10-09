@@ -1176,9 +1176,9 @@
         <i class="fas fa-book-open-reader icon"></i>
         <h2>কীভাবে আবেদন করবেন?</h2>
 
-        <!-- DYNAMIC ADMIN GUIDE VIDEO CONTAINER -->
+        <!-- DYNAMIC ADMIN GUIDE VIDEO CONTAINER (AUTO PLAY ENGINE) -->
         <div id="guideVideoContainer" style="display:none; margin: 15px 0 20px; width:100%; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,245,212,0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.6); background: #000;">
-            <video id="adminGuideVideo" controls playsinline style="width: 100%; height: auto; max-height: 280px; display: block;"></video>
+            <div id="guidePlayerTarget" style="width:100%; min-height:220px; display:flex; align-items:center; justify-content:center;"></div>
         </div>
 
         <div class="rules-step-list">
@@ -1192,11 +1192,11 @@
             </div>
             <div class="rule-item">
                 <i class="fas fa-video"></i>
-                <div><strong>৩. লাইভ শপথনামা:</strong> ক্যামেরা অন করে স্ক্রিনে দেওয়া শপথবাক্য স্পষ্টভাবে পড়ে ভিডিওটি পোর্টাল থেকেই রেকর্ড করুন।</div>
+                <div><strong>৩. লাইভ শপথনামা:</strong> ক্যামেরা অন করে স্ক্রিনে দেওয়া শপথবাক্য স্পষ্টভাবে পড়ে ভিডিওটি পোর্টাল থেকেই রেকর্ড করুন।</div>
             </div>
             <div class="rule-item">
                 <i class="fas fa-download"></i>
-                <div><strong>৪. কনফার্মেশন স্লিপ:</strong> সাবমিট হওয়ার সাথে সাথেই আপনার ট্র্যাকিং স্লিপ PNG ফরম্যাটে স্বয়ংক্রিয়ভাবে ডাউনলোড হয়ে যাবে।</div>
+                <div><strong>৪. কনফার্মেশন স্লিপ:</strong> সাবমিট হওয়ার সাথে সাথেই আপনার ট্র্যাকিং স্লিপ PNG ফরম্যাটে স্বয়ংক্রিয়ভাবে ডাউনলোড হয়ে যাবে।</div>
             </div>
         </div>
         <button class="btn-modal" onclick="closeGuideModal()">বুঝেছি</button>
@@ -1208,7 +1208,7 @@
     <div class="modal-content">
         <i class="fas fa-headset icon"></i>
         <h2>CSB হেল্পডেস্ক ও সাপোর্ট</h2>
-        <p>যেকোনো জিজ্ঞাসা বা টেকনিক্যাল সহায়তায় আমাদের অফিশিয়াল চ্যানেলে সরাসরি যোগাযোগ করুন।</p>
+        <p>যেকোনো জিজ্ঞাসা বা টেকনিক্যাল সহায়তায় আমাদের অফিশিয়াল চ্যানেলে সরাসরি যোগাযোগ করুন।</p>
         
         <div class="support-modal-grid">
             <a href="https://wa.me/+601130345524" target="_blank" class="support-link-card whatsapp" id="dynWhatsappLink">
@@ -1224,7 +1224,7 @@
                 <i class="fab fa-telegram"></i>
                 <div class="text-box">
                     <div class="title">Telegram সাপোর্ট</div>
-                    <div class="desc">অফিশিয়াল হেল্পডেস্ক চ্যানেল</div>
+                    <div class="desc">অফিশিয়াল হেল্পডেস্ক চ্যানেল</div>
                 </div>
                 <i class="fas fa-arrow-up-right-from-square" style="color:var(--primary); font-size:14px;"></i>
             </a>
@@ -1392,18 +1392,13 @@
                 document.getElementById('dynTelegramLink').href = cfg.telegramSupport;
             }
 
-            // Admin Dynamic Guide Video (কীভাবে আবেদন করবেন)
+            // Admin Dynamic Guide Video (Auto Setup Container)
             const guideVidContainer = document.getElementById('guideVideoContainer');
-            const guideVidEl = document.getElementById('adminGuideVideo');
             if (cfg.guideVideoUrl && cfg.guideVideoUrl.trim() !== '') {
-                if (guideVidEl.src !== cfg.guideVideoUrl) {
-                    guideVidEl.src = cfg.guideVideoUrl;
-                }
                 guideVidContainer.style.display = 'block';
             } else {
-                guideVidEl.pause();
-                guideVidEl.src = '';
                 guideVidContainer.style.display = 'none';
+                document.getElementById('guidePlayerTarget').innerHTML = '';
             }
 
             if (cfg.categories && Array.isArray(cfg.categories) && cfg.categories.length > 0) {
@@ -1473,14 +1468,50 @@
     const trackSubmitBtn = document.getElementById('trackSubmitBtn');
     const trackResult = document.getElementById('trackResult');
 
+    // UNIVERSAL AUTO-RUN PLAYER BUILDER
+    function launchGuideVideo() {
+        const target = document.getElementById('guidePlayerTarget');
+        const container = document.getElementById('guideVideoContainer');
+        const url = (activePortalConfig.guideVideoUrl || '').trim();
+
+        if (!url) {
+            container.style.display = 'none';
+            target.innerHTML = '';
+            return;
+        }
+
+        container.style.display = 'block';
+
+        // Facebook Video / Reels Auto Run
+        if (url.includes('facebook.com') || url.includes('fb.watch')) {
+            const encoded = encodeURIComponent(url);
+            target.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encoded}&show_text=false&autoplay=true&width=500" width="100%" height="280" style="border:none;overflow:hidden;border-radius:14px;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
+        }
+        // YouTube Auto Run
+        else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            let videoId = '';
+            if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+            else if (url.includes('watch?v=')) videoId = url.split('watch?v=')[1].split('&')[0];
+            else if (url.includes('/embed/')) videoId = url.split('/embed/')[1].split('?')[0];
+            else if (url.includes('/shorts/')) videoId = url.split('/shorts/')[1].split('?')[0];
+            target.innerHTML = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1" style="border:none;border-radius:14px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
+        // Direct MP4 / WebM Auto Run
+        else {
+            target.innerHTML = `<video controls autoplay playsinline style="width:100%; max-height:280px; display:block; border-radius:14px;"><source src="${url}">আপনার ব্রাউজারে ভিডিও সাপোর্ট করছে না।</video>`;
+        }
+    }
+
     // MODAL HANDLERS
     window.closeGuideModal = () => {
-        const guideVidEl = document.getElementById('adminGuideVideo');
-        if (guideVidEl) guideVidEl.pause();
+        document.getElementById('guidePlayerTarget').innerHTML = ''; // Stop video immediately on close
         document.getElementById('guideModal').classList.remove('show');
     };
     window.closeSupportModal = () => document.getElementById('supportModal').classList.remove('show');
-    guideBtn.addEventListener('click', () => document.getElementById('guideModal').classList.add('show'));
+    guideBtn.addEventListener('click', () => {
+        document.getElementById('guideModal').classList.add('show');
+        launchGuideVideo(); // Trigger Auto Run when clicked
+    });
     supportModalBtn.addEventListener('click', () => document.getElementById('supportModal').classList.add('show'));
 
     registerBtn.addEventListener('click', () => {
@@ -1761,6 +1792,7 @@
                     <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.personalPhone}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ইমেইল:</td>
                     <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${formData.email}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
@@ -1776,8 +1808,7 @@
                     <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.docType} (${formData.nidNumber})</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">পেমেন্ট রেফারেন্স (TNX):</td>
-                    <td style="padding: 9px 0; font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td>
+                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
                     <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনের সময়:</td>
