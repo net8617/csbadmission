@@ -4,29 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSB Admission Portal | Cyber Sentinel Bangladesh</title>
+    
+    <!-- FONTS & ICONS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    
     <!-- HTML2CANVAS for High-Quality Direct PNG Slip Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         :root {
             --primary: #00f5d4;
             --primary-glow: rgba(0, 245, 212, 0.25);
             --secondary: #0ea5e9;
+            --secondary-glow: rgba(14, 165, 233, 0.25);
             --accent-red: #f43f5e;
-            --bg-base: #020617;
-            --card-bg: rgba(10, 17, 34, 0.85);
+            --accent-amber: #f59e0b;
+            --bg-base: #030712;
+            --card-bg: rgba(11, 19, 43, 0.75);
             --card-border: rgba(255, 255, 255, 0.08);
-            --input-bg: rgba(2, 6, 23, 0.75);
+            --input-bg: rgba(6, 12, 26, 0.7);
+            --input-border: rgba(255, 255, 255, 0.12);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         input, textarea, select {
@@ -45,70 +55,82 @@
             position: relative;
             overflow-x: hidden;
             color: var(--text-main);
+            line-height: 1.5;
         }
 
+        /* Ambient Cyber Glows */
         .ambient-glow {
             position: fixed;
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(0, 245, 212, 0.06) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
             z-index: 0;
-            filter: blur(100px);
+            filter: blur(120px);
+            opacity: 0.6;
         }
-        .glow-top-left { top: -200px; left: -200px; }
-        .glow-bottom-right { bottom: -200px; right: -200px; background: radial-gradient(circle, rgba(14, 165, 233, 0.06) 0%, transparent 70%); }
+        .glow-top-left { 
+            top: -200px; 
+            left: -200px; 
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); 
+        }
+        .glow-bottom-right { 
+            bottom: -200px; 
+            right: -200px; 
+            background: radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%); 
+        }
 
         .grid-bg {
             position: fixed;
             inset: 0;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 40px 40px;
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 48px 48px;
             z-index: 0;
             pointer-events: none;
         }
 
+        /* Container */
         .container {
             position: relative;
             z-index: 1;
             max-width: 860px;
             width: 100%;
             background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
             border: 1px solid var(--card-border);
-            border-radius: 28px;
+            border-radius: 24px;
             padding: 45px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: containerIn 0.6s var(--transition) forwards;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            animation: containerIn 0.5s var(--transition) forwards;
         }
 
         @keyframes containerIn {
-            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+            0% { opacity: 0; transform: translateY(18px) scale(0.99); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
+        /* Welcome Section */
         .welcome-section {
             text-align: center;
-            padding: 10px 0 24px;
+            padding: 10px 0 20px;
         }
 
         .brand-logo-container {
             display: none;
             justify-content: center;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
         .brand-logo-container img {
             max-width: 90px;
             max-height: 90px;
             object-fit: contain;
-            filter: drop-shadow(0 0 20px var(--primary-glow));
+            filter: drop-shadow(0 0 16px var(--primary-glow));
             border-radius: 20px;
-            border: 1px solid var(--card-border);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 6px;
             background: rgba(255, 255, 255, 0.02);
         }
@@ -117,14 +139,14 @@
             width: 100%;
             display: none;
             justify-content: center;
-            margin: 10px 0 20px;
+            margin: 10px 0 22px;
         }
         #csbDynamicBanner {
             max-width: 100%;
             max-height: 220px;
             border-radius: 18px;
             border: 1px solid var(--card-border);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
             object-fit: cover;
         }
 
@@ -132,35 +154,37 @@
             font-size: 34px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+            background: linear-gradient(180deg, #ffffff 30%, #94a3b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .welcome-section .sub {
             color: var(--primary);
             font-size: 11.5px;
-            letter-spacing: 3px;
+            letter-spacing: 2.5px;
             margin-top: 8px;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
         }
 
+        /* Realtime Meta Bar */
         .realtime-meta-bar {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 12px;
-            margin: 18px 0 8px;
+            margin: 20px 0 12px;
             flex-wrap: wrap;
-            font-size: 12px;
+            font-size: 12.5px;
             color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
         }
         .realtime-meta-bar span {
-            background: rgba(255, 255, 255, 0.025);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--card-border);
             padding: 6px 16px;
-            border-radius: 30px;
+            border-radius: 9999px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -172,19 +196,19 @@
             align-items: center;
             gap: 10px;
             margin-top: 10px;
-            background: rgba(0, 245, 212, 0.04);
-            border: 1px solid rgba(0, 245, 212, 0.15);
+            background: rgba(0, 245, 212, 0.05);
+            border: 1px solid rgba(0, 245, 212, 0.2);
             padding: 6px 20px;
             border-radius: 9999px;
             font-size: 12.5px;
             font-weight: 600;
-            color: #cbd5e1;
+            color: #e2e8f0;
         }
         .live-counter {
             background: rgba(244, 63, 94, 0.15);
-            border: 1px solid rgba(244, 63, 94, 0.3);
+            border: 1px solid rgba(244, 63, 94, 0.35);
             border-radius: 9999px;
-            padding: 3px 10px;
+            padding: 2px 9px;
             font-size: 10px;
             font-weight: 800;
             color: var(--accent-red);
@@ -194,18 +218,19 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
+        /* Action Buttons */
         .home-buttons {
             display: flex;
             justify-content: center;
             gap: 14px;
-            margin: 30px 0 10px;
+            margin: 28px 0 10px;
             flex-wrap: wrap;
         }
         .home-btn {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 15px 30px;
+            border-radius: 14px;
+            padding: 14px 28px;
             color: #cbd5e1;
             font-weight: 700;
             font-size: 14px;
@@ -214,29 +239,35 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            text-decoration: none;
         }
         .home-btn:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
+            transform: translateY(-2px);
+            border-color: rgba(0, 245, 212, 0.4);
             color: #fff;
-            box-shadow: 0 10px 30px rgba(0, 245, 212, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 8px 24px rgba(0, 245, 212, 0.12);
         }
         .home-btn.primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
             color: #020617;
-            box-shadow: 0 6px 20px rgba(0, 245, 212, 0.25);
+            box-shadow: 0 4px 18px rgba(0, 245, 212, 0.25);
+        }
+        .home-btn.primary:hover {
+            box-shadow: 0 6px 24px rgba(0, 245, 212, 0.4);
         }
 
+        /* Notice Box */
         .portal-notice-box {
             display: none;
             background: rgba(0, 245, 212, 0.04);
             border: 1px solid rgba(0, 245, 212, 0.2);
             border-left: 4px solid var(--primary);
-            border-radius: 16px;
+            border-radius: 14px;
             padding: 16px 20px;
             margin-bottom: 24px;
-            animation: containerIn 0.4s ease;
+            animation: containerIn 0.3s ease;
         }
         .portal-notice-box h5 {
             color: var(--primary);
@@ -253,10 +284,11 @@
             line-height: 1.6;
         }
 
+        /* Payment Card */
         .payment-card {
-            background: linear-gradient(135deg, rgba(0, 245, 212, 0.04), rgba(14, 165, 233, 0.02));
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.05), rgba(14, 165, 233, 0.03));
             border: 1px solid rgba(0, 245, 212, 0.2);
-            border-radius: 20px;
+            border-radius: 18px;
             padding: 20px 24px;
             margin: 24px 0 22px;
             display: flex;
@@ -270,22 +302,22 @@
             background: rgba(0, 245, 212, 0.1);
             width: 48px;
             height: 48px;
-            border-radius: 14px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             color: var(--primary);
         }
-        .payment-card .info h4 { font-size: 16px; font-weight: 700; color: #fff; }
-        .payment-card .info p { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .payment-card .info h4 { font-size: 15px; font-weight: 700; color: #fff; }
+        .payment-card .info p { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .payment-card .info strong { color: var(--primary); font-family: 'JetBrains Mono', monospace; font-size: 14px; }
         
         .copy-btn {
             background: rgba(0, 245, 212, 0.1);
             border: 1px solid rgba(0, 245, 212, 0.25);
             color: var(--primary);
-            padding: 3px 10px;
+            padding: 3px 9px;
             border-radius: 6px;
             font-size: 11px;
             cursor: pointer;
@@ -300,8 +332,8 @@
         .payment-card .right {
             background: rgba(255, 255, 255, 0.025);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 10px 16px;
+            border-radius: 10px;
+            padding: 9px 15px;
             font-size: 12px;
             color: var(--text-muted);
             display: flex;
@@ -310,15 +342,16 @@
         }
         .payment-card .right .number { color: var(--primary); font-weight: 700; }
 
+        /* Form Wrapper */
         .form-wrapper { display: none; }
-        .form-wrapper.active { display: block; animation: containerIn 0.5s ease forwards; }
+        .form-wrapper.active { display: block; animation: containerIn 0.4s ease forwards; }
 
         .back-btn-wrapper { margin-bottom: 22px; }
         .back-btn {
             background: rgba(255, 255, 255, 0.025);
             border: 1px solid var(--card-border);
-            padding: 10px 18px;
-            border-radius: 12px;
+            padding: 9px 18px;
+            border-radius: 10px;
             color: var(--text-muted);
             font-size: 13px;
             font-weight: 600;
@@ -328,9 +361,9 @@
             gap: 8px;
             transition: var(--transition);
         }
-        .back-btn:hover { color: var(--primary); border-color: var(--primary); transform: translateX(-4px); }
+        .back-btn:hover { color: var(--primary); border-color: var(--primary); transform: translateX(-3px); }
 
-        .form-group { margin-bottom: 22px; width: 100%; }
+        .form-group { margin-bottom: 20px; width: 100%; }
         .form-group label {
             display: flex;
             align-items: center;
@@ -354,7 +387,7 @@
         .doc-type-toggle {
             display: flex;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .doc-type-btn {
             flex: 1;
@@ -377,15 +410,15 @@
             border-color: var(--primary);
             background: rgba(0, 245, 212, 0.08);
             color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 245, 212, 0.1);
+            box-shadow: 0 0 14px rgba(0, 245, 212, 0.1);
         }
 
         .form-control {
             width: 100%;
-            padding: 14px 16px;
+            padding: 13px 16px;
             background: var(--input-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
             color: var(--text-main);
             font-size: 14px;
             font-family: inherit;
@@ -395,7 +428,7 @@
         .form-control:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.12);
-            background: rgba(2, 6, 23, 0.9);
+            background: rgba(4, 10, 22, 0.95);
         }
         .form-control::placeholder { color: #475569; }
 
@@ -404,8 +437,8 @@
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2300f5d4' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 18px center;
-            padding-right: 45px;
+            background-position: right 16px center;
+            padding-right: 42px;
         }
         select.form-control option { background: #060a14; color: #fff; }
 
@@ -415,6 +448,7 @@
             gap: 16px;
         }
 
+        /* File Upload */
         .file-upload-wrapper { position: relative; width: 100%; display: block; }
         .file-upload-wrapper input[type="file"] {
             position: absolute;
@@ -430,10 +464,10 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            padding: 13px 16px;
+            padding: 12px 16px;
             background: rgba(255, 255, 255, 0.02);
-            border: 1.5px dashed rgba(255, 255, 255, 0.12);
-            border-radius: 14px;
+            border: 1.5px dashed rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
             transition: var(--transition);
             width: 100%;
             box-sizing: border-box;
@@ -462,7 +496,7 @@
             width: 100%;
         }
         .file-upload-area .info .main span { color: var(--primary); font-weight: 600; }
-        .file-upload-area .info .sub { font-size: 10.5px; color: #475569; margin-top: 2px; }
+        .file-upload-area .info .sub { font-size: 10.5px; color: #64748b; margin-top: 2px; }
         .file-upload-area .size-badge {
             flex-shrink: 0;
             font-size: 11px;
@@ -473,11 +507,12 @@
             font-weight: 700;
         }
 
+        /* Video Recorder */
         .video-recorder {
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(2, 6, 23, 0.6);
             border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 18px;
+            border-radius: 16px;
+            padding: 16px;
             margin: 10px 0;
         }
         .recorder-header {
@@ -496,7 +531,7 @@
         }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: #475569; }
         .dot.recording { background: var(--accent-red); animation: pulseLive 1s infinite; }
-        .dot.ready { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        .dot.ready { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
         @keyframes pulseLive { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         .video-recorder video {
@@ -505,7 +540,7 @@
             background: #020617;
             border-radius: 12px;
             object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         .recorder-controls { display: flex; gap: 10px; margin-top: 12px; }
         .btn-recorder {
@@ -525,55 +560,57 @@
         .btn-recorder.start { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #020617; }
         .btn-recorder.stop { background: var(--accent-red); color: #fff; }
         .btn-recorder.download { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--card-border); }
-        .btn-recorder:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-recorder:disabled { opacity: 0.35; cursor: not-allowed; }
 
+        /* Oath Box */
         .oath-box {
             background: rgba(0, 245, 212, 0.02);
             border-left: 3px solid var(--primary);
             border-radius: 12px;
-            padding: 18px 20px;
+            padding: 16px 18px;
             margin: 15px 0 10px;
         }
         .oath-title {
             color: var(--primary);
             font-weight: 800;
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 13.5px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .oath-text { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
+        .oath-text { color: var(--text-muted); font-size: 12.5px; line-height: 1.65; }
         .oath-text .highlight { color: #fff; font-weight: 600; }
-        .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 8px; font-size: 14px; }
+        .oath-amen { text-align: right; color: var(--primary); font-weight: 700; margin-top: 6px; font-size: 13px; }
 
+        /* Buttons Group */
         .btn-group { display: flex; gap: 12px; margin-top: 25px; }
         .btn-submit {
             flex: 2;
-            padding: 16px 24px;
+            padding: 15px 24px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             color: #020617;
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: 800;
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: 0 4px 20px rgba(0, 245, 212, 0.25);
+            box-shadow: 0 4px 18px rgba(0, 245, 212, 0.25);
             display: inline-flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
         }
-        .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 245, 212, 0.4); }
+        .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 245, 212, 0.35); }
         .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .btn-reset {
             flex: 1;
-            padding: 16px 20px;
+            padding: 15px 20px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--card-border);
-            border-radius: 14px;
+            border-radius: 12px;
             color: var(--text-muted);
             font-size: 14px;
             font-weight: 600;
@@ -587,13 +624,14 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 25px;
-            padding-top: 18px;
+            padding-top: 16px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 11px;
-            color: #475569;
+            color: #64748b;
             font-family: 'JetBrains Mono', monospace;
         }
 
+        /* Progress Bar */
         .upload-progress {
             display: none;
             margin: 15px 0;
@@ -611,21 +649,22 @@
         }
         .status-text { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 6px; }
 
+        /* Toast & Modals */
         .toast {
             position: fixed;
             top: 24px;
             right: 24px;
-            background: rgba(10, 17, 34, 0.95);
+            background: rgba(11, 19, 43, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
-            padding: 14px 20px;
+            border-radius: 12px;
+            padding: 12px 18px;
             color: #fff;
             font-size: 13.5px;
             z-index: 1000;
             transform: translateX(120%);
             transition: transform 0.35s ease;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
         }
         .toast.show { transform: translateX(0); }
         .toast.success { border-color: var(--primary); }
@@ -636,7 +675,7 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(14px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -644,26 +683,27 @@
         }
         .modal-overlay.show { display: flex; }
         .modal-content {
-            background: #060a14;
+            background: #060c1a;
             border: 1px solid var(--card-border);
-            border-radius: 22px;
-            padding: 36px 28px;
-            max-width: 440px;
+            border-radius: 20px;
+            padding: 32px 26px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
         }
-        .modal-content .icon { font-size: 52px; color: var(--primary); margin-bottom: 12px; }
+        .modal-content .icon { font-size: 48px; color: var(--primary); margin-bottom: 12px; }
         .modal-content .icon.error { color: var(--accent-red); }
-        .modal-content h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-        .modal-content p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+        .modal-content h2 { font-size: 19px; font-weight: 800; margin-bottom: 8px; }
+        .modal-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
         .btn-modal {
-            padding: 12px 32px;
+            padding: 11px 30px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             color: #020617;
             font-weight: 700;
+            font-size: 13.5px;
             cursor: pointer;
         }
         .btn-modal.error { background: var(--accent-red); color: #fff; }
@@ -682,7 +722,7 @@
         .btn-submit.loading .btn-text { display: none; }
 
         @media (max-width: 768px) {
-            .container { padding: 24px 16px; border-radius: 20px; }
+            .container { padding: 24px 16px; border-radius: 18px; }
             .row-2 { grid-template-columns: 1fr; gap: 0; }
             .welcome-section h1 { font-size: 26px; }
             .home-buttons { flex-direction: column; }
@@ -703,7 +743,7 @@
     <div id="landingPage">
         <div class="welcome-section" id="welcomeSection">
             
-            <!-- DYNAMIC LOGO (Admin Upload Only) -->
+            <!-- DYNAMIC LOGO -->
             <div class="brand-logo-container" id="brandLogoContainer">
                 <img id="adminLogoImage" src="" alt="CSB Logo" />
             </div>
@@ -840,7 +880,7 @@
             <div class="form-group">
                 <label><i class="fas fa-id-card"></i><span class="step-num">10</span> সনদের ধরন নির্বাচন করুন<span class="required">*</span></label>
                 <div class="doc-type-toggle">
-                    <div class="doc-type-btn active" id="btnTypeNid" onclick="setDocType('NID')"><i class="fas fa-id-card"></i> জাতীয় পরিচয়পত্র (NID)</div>
+                    <div class="doc-type-btn active" id="btnTypeNid" onclick="setDocType('NID')"><i class="fas fa-id-card"></i> জাতীয় পরিচয়পত্র (NID)</div>
                     <div class="doc-type-btn" id="btnTypeBirth" onclick="setDocType('Birth Certificate')"><i class="fas fa-file-invoice"></i> জন্মসনদ (Birth Cert)</div>
                 </div>
                 <input type="hidden" id="selectedDocType" value="NID">
@@ -893,7 +933,7 @@
             </div>
 
             <div class="form-group">
-                <label><i class="fas fa-briefcase"></i><span class="step-num">15</span> রোল (ক্যাটাগরি অনুযায়ী)<span class="required">*</span></label>
+                <label><i class="fas fa-briefcase"></i><span class="step-num">15</span> রোল (ক্যাটাগরি অনুযায়ী)<span class="required">*</span></label>
                 <select class="form-control" id="role" required>
                     <option value="">প্রথমে ক্যাটাগরি সিলেক্ট করুন</option>
                 </select>
@@ -1008,13 +1048,13 @@
         <i class="fas fa-circle-check icon"></i>
         <h2>আবেদন সফল!</h2>
         <p>
-            আপনার আবেদনটি ডেটাবেস ও চ্যানেলে সফলভাবে জমা হয়েছে。<br>
+            আপনার আবেদনটি ডেটাবেস ও চ্যানেলে সফলভাবে জমা হয়েছে。<br>
             <strong style="color:var(--primary); font-family:'JetBrains Mono', monospace;">
                 ট্র্যাকিং আইডি: <span id="trackingIdDisplay">CSB-2026-0012</span>
             </strong>
             <button type="button" class="copy-btn" onclick="copyText('trackingIdDisplay')" style="margin-left: 6px;"><i class="fas fa-copy"></i> কপি</button>
             <br><br>
-            আপনার অফিশিয়াল স্লিপটি <strong>PNG ছবি</strong> হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।
+            আপনার অফিশিয়াল স্লিপটি <strong>PNG ছবি</strong> হিসেবে স্বয়ংক্রিয়ভাবে ডাউনলোড হচ্ছে।
         </p>
         <button class="btn-modal" onclick="closeModal()">ঠিক আছে</button>
     </div>
@@ -1023,7 +1063,7 @@
 <div class="modal-overlay" id="errorModal">
     <div class="modal-content">
         <i class="fas fa-circle-exclamation icon error"></i>
-        <h2>সমস্যা হয়েছে</h2>
+        <h2>সমস্যা হয়েছে</h2>
         <div id="errorMessage" style="font-size:13.5px; color:var(--text-muted); margin-bottom:20px;"></div>
         <button class="btn-modal error" onclick="closeErrorModal()">আবার চেষ্টা করুন</button>
     </div>
@@ -1068,9 +1108,9 @@
     window.copyText = function(elementId) {
         const text = document.getElementById(elementId).textContent.trim();
         navigator.clipboard.writeText(text).then(() => {
-            showToast(`✅ কপি হয়েছে: ${text}`, 'success');
+            showToast(`✅ কপি হয়েছে: ${text}`, 'success');
         }).catch(() => {
-            showToast('কপি করতে ব্যর্থ হয়েছে', 'error');
+            showToast('কপি করতে ব্যর্থ হয়েছে', 'error');
         });
     };
 
@@ -1087,7 +1127,7 @@
             btnBirth.classList.remove('active');
             uploadLabel.textContent = 'NID কার্ডের সামনের দিক আপলোড';
             numLabel.textContent = 'NID নম্বর';
-            numInput.placeholder = 'জাতীয় পরিচয়পত্র নম্বর লিখুন';
+            numInput.placeholder = 'জাতীয় পরিচয়পত্র নম্বর লিখুন';
         } else {
             btnBirth.classList.add('active');
             btnNid.classList.remove('active');
@@ -1252,11 +1292,11 @@
 
                     if (action === 'approve') {
                         await updateDoc(docRef, { status: 'Approved', updateTime: updateTime });
-                        showToast(`✅ ID: ${trackId} অনুমোদিত হয়েছে!`, 'success');
+                        showToast(`✅ ID: ${trackId} অনুমোদিত হয়েছে!`, 'success');
                         sendToApproveChannel(trackId, { ...existingData, time: updateTime });
                     } else if (action === 'reject') {
                         await updateDoc(docRef, { status: 'Rejected', updateTime: updateTime });
-                        showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
+                        showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
                         sendRejectionNotice(trackId, { ...existingData, time: updateTime });
                     }
 
@@ -1279,7 +1319,7 @@
     });
 
     async function sendToApproveChannel(trackId, data) {
-        const text = `🎉 **নতুন আবেদন অনুমোদিত (APPROVED)** 🎉\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n📂 ক্যাটাগরি: ${data.category || 'N/A'}\n🏠 ঠিকানা: ${data.address || 'N/A'}\n📧 ইমেইল: ${data.email || 'N/A'}\n📱 WhatsApp: ${data.whatsapp || 'N/A'}\n✈️ Telegram: ${data.telegram || 'N/A'}\n⚧️ জেন্ডার: ${data.gender}\n🗂️ রোল: ${data.role}\n🪪 ${data.docType || 'NID/Birth'}: \`${data.nidNumber}\`\n📅 জন্মতারিখ: \`${data.dob}\`\n🧾 TNX ID: ${data.tnxId || 'N/A'}\n📞 অভিভাবক: ${data.guardianPhone || 'N/A'}\n📱 নিজের: ${data.personalPhone || 'N/A'}\n📅 অনুমোদন সময়: ${data.time}\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
+        const text = `🎉 **নতুন আবেদন অনুমোদিত (APPROVED)** 🎉\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n📂 ক্যাটাগরি: ${data.category || 'N/A'}\n🏠 ঠিকানা: ${data.address || 'N/A'}\n📧 ইমেইল: ${data.email || 'N/A'}\n📱 WhatsApp: ${data.whatsapp || 'N/A'}\n✈️ Telegram: ${data.telegram || 'N/A'}\n⚧️ জেন্ডার: ${data.gender}\n🗂️ রোল: ${data.role}\n🪪 ${data.docType || 'NID/Birth'}: \`${data.nidNumber}\`\n📅 জন্মতারিখ: \`${data.dob}\`\n🧾 TNX ID: ${data.tnxId || 'N/A'}\n📞 অভিভাবক: ${data.guardianPhone || 'N/A'}\n📱 নিজের: ${data.personalPhone || 'N/A'}\n📅 অনুমোদন সময়: ${data.time}\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1288,7 +1328,7 @@
     }
 
     async function sendRejectionNotice(trackId, data) {
-        const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
+        const text = `❌ **আবেদন বাতিল নোটিশ (REJECTED)** ❌\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${data.fullName || data.name}\n🆔 ট্র্যাকিং আইডি: \`${trackId}\`\n⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1307,7 +1347,7 @@
             const docSnap = await getDoc(docRef);
 
             if (!docSnap.exists()) {
-                trackResult.innerHTML = `<div style="background:rgba(244,63,94,0.06); border-radius:14px; padding:16px; border:1px solid rgba(244,63,94,0.2); margin-top:12px;"><p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p></div>`;
+                trackResult.innerHTML = `<div style="background:rgba(244,63,94,0.06); border-radius:14px; padding:16px; border:1px solid rgba(244,63,94,0.2); margin-top:12px;"><p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p></div>`;
                 return;
             }
 
@@ -1337,27 +1377,27 @@
 
                 joinLinkHtml = `
                     <div style="margin-top: 15px; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 15px; text-align: center;">
-                        <p style="color: var(--primary); font-weight: 600; font-size: 13px; margin-bottom: 10px;">🎉 অভিনন্দন! আপনার আবেদনটি অনুমোদিত হয়েছে।</p>
+                        <p style="color: var(--primary); font-weight: 600; font-size: 13px; margin-bottom: 10px;">🎉 অভিনন্দন! আপনার আবেদনটি অনুমোদিত হয়েছে।</p>
                         <a href="${targetGroupLink}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #020617; padding: 10px 22px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                            <i class="fab fa-telegram"></i> অফিসিয়াল গ্রুপে জয়েন করুন
+                            <i class="fab fa-telegram"></i> অফিসিয়াল গ্রুপে জয়েন করুন
                         </a>
                     </div>
                 `;
             } else if (status === 'Rejected') {
                 color = '#f43f5e';
                 icon = '❌';
-                joinLinkHtml = `<div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;"><p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে।</p></div>`;
+                joinLinkHtml = `<div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;"><p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে।</p></div>`;
             }
 
             trackResult.innerHTML = `
                 <div style="background:rgba(255,255,255,0.02); border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.06); margin-top:12px;">
                     <p style="font-size:15px; font-weight:700; color:#fff;">আইডি: <span style="color:var(--primary); font-family:'JetBrains Mono';">${id}</span></p>
                     <p style="margin-top:6px; font-size:14px; font-weight:600;">স্ট্যাটাস: <span style="color:${color};">${icon} ${status}</span></p>
-                    <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${time}</p>${joinLinkHtml}
+                    <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${time}</p>${joinLinkHtml}
                 </div>
             `;
         } catch (err) {
-            trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি।</p>`;
+            trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি।</p>`;
         }
     });
 
@@ -1406,7 +1446,7 @@
 
         mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
         mediaRecorder.onstop = () => {
-            if (!recordedChunks.length) { showToast('⚠️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
+            if (!recordedChunks.length) { showToast('⚠️ ভিডিও সঠিকভাবে রেকর্ড হয়নি', 'error'); return; }
             recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
             const url = URL.createObjectURL(recordedBlob);
             downloadBtn.disabled = false;
@@ -1417,7 +1457,7 @@
             recordingDot.className = 'dot ready';
             startBtn.disabled = false;
             stopBtn.disabled = true;
-            showToast('✅ ভিডিও রেকর্ড সম্পন্ন হয়েছে', 'success');
+            showToast('✅ ভিডিও রেকর্ড সম্পন্ন হয়েছে', 'success');
         };
 
         mediaRecorder.start();
@@ -1511,7 +1551,7 @@
                     <td style="padding: 9px 0; font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনের সময়:</td>
+                    <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনের সময়:</td>
                     <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${currentTime}</td>
                 </tr>
                 <tr>
@@ -1521,7 +1561,7 @@
             </table>
 
             <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 14px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.5;">
-                <p>এই স্লিপটি আপনার অফিশিয়াল প্রমাণপত্র। ট্র্যাকিং প্যানেল থেকে নিয়মিত স্ট্যাটাস চেক করুন।</p>
+                <p>এই স্লিপটি আপনার অফিশিয়াল প্রমাণপত্র। ট্র্যাকিং প্যানেল থেকে নিয়মিত স্ট্যাটাস চেক করুন।</p>
                 <p style="margin-top: 3px; font-weight: 700; color: #00f5d4;">🛡️ Cyber Sentinel Bangladesh · Official Desk</p>
             </div>
         `;
@@ -1584,7 +1624,7 @@
                 const tnxCheckRef = doc(db, "transactions", formData.tnxId);
                 const tnxSnap = await getDoc(tnxCheckRef);
                 if (tnxSnap.exists()) {
-                    document.getElementById('errorMessage').innerHTML = `<p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p><p style="margin-top:4px;">নতুন TNX দিয়ে চেষ্টা করুন।</p>`;
+                    document.getElementById('errorMessage').innerHTML = `<p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p><p style="margin-top:4px;">নতুন TNX দিয়ে চেষ্টা করুন।</p>`;
                     document.getElementById('errorModal').classList.add('show');
                     submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
                 }
@@ -1604,11 +1644,11 @@
             for (let id of fileIds) {
                 const inp = document.getElementById(id);
                 if (!inp.files || !inp.files.length) {
-                    showToast('⚠️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
+                    showToast('⚠️ সব প্রয়োজনীয় ডকুমেন্ট আপলোড করুন', 'error'); submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
                 }
             }
 
-            updateProgress(20, 'ফায়ারস্টোর ডেটাবেজে সেভ হচ্ছে...');
+            updateProgress(20, 'ফায়ারস্টোর ডেটাবেজে সেভ হচ্ছে...');
             const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
             const currentTime = new Date().toLocaleString('bn-BD');
 
@@ -1685,7 +1725,7 @@
 
             await generateAutoPNG(trackId, formData, currentTime);
 
-            updateProgress(100, 'সম্পন্ন হয়েছে!');
+            updateProgress(100, 'সম্পন্ন হয়েছে!');
             document.getElementById('trackingIdDisplay').textContent = trackId;
             document.getElementById('successModal').classList.add('show');
 
@@ -1706,7 +1746,7 @@
 
         } catch (err) {
             console.error(err);
-            document.getElementById('errorMessage').textContent = 'ত্রুটি দেখা দিয়েছে। ইন্টারনেট বা পারমিশন চেক করুন। (' + err.message + ')';
+            document.getElementById('errorMessage').textContent = 'ত্রুটি দেখা দিয়েছে। ইন্টারনেট বা পারমিশন চেক করুন। (' + err.message + ')';
             document.getElementById('errorModal').classList.add('show');
             submitBtn.classList.remove('loading');
             submitBtn.disabled = false;
@@ -1723,7 +1763,7 @@
             recordedChunks = [];
             if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; isCameraReady = false; previewVideo.srcObject = null; }
             document.getElementById('uploadProgress').classList.remove('show');
-            showToast('ফর্ম রিসেট করা হয়েছে', 'success');
+            showToast('ফর্ম রিসেট করা হয়েছে', 'success');
         }
     });
 </script>
