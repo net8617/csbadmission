@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSB Master Admin Engine | Cyber Sentinel Bangladesh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-    <!-- PDF Export Library -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet" />
+    <!-- PDF & Canvas & Zip Export Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root {
             --primary: #00f5d4;
@@ -27,7 +29,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
             background: var(--bg-base);
             color: var(--text-main);
             min-height: 100vh;
@@ -278,6 +280,15 @@
             transition: 0.2s;
         }
         .btn-report:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-report.btn-img-pack {
+            border-color: rgba(0, 245, 212, 0.3);
+            color: var(--primary);
+            background: rgba(0, 245, 212, 0.05);
+        }
+        .btn-report.btn-img-pack:hover {
+            background: var(--primary);
+            color: #030712;
+        }
 
         .tag-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .tag-item {
@@ -360,7 +371,7 @@
             <form id="adminLoginForm">
                 <div class="form-group" style="text-align: left;">
                     <label>Admin ID / Email</label>
-                    <input type="text" id="adminUser" class="form-control" placeholder="admin@csb.org" required />
+                    <input type="text" id="adminUser" class="form-control" placeholder="tumicsb@csb.ord" required />
                 </div>
                 <div class="form-group" style="text-align: left;">
                     <label>Password</label>
@@ -415,7 +426,7 @@
                     <h1 id="panelTitle">ড্যাশবোর্ড ওভারভিউ</h1>
                     <p>সিস্টেম কনফিগারেশন এবং ক্লাউড ফায়ারস্টোর সরাসরি সিঙ্ক করা আছে</p>
                 </div>
-                <button class="btn-primary" onclick="syncAllToFirestore()"><i class="fas fa-cloud-arrow-up"></i> লাইভ সেভ করুন</button>
+                <button class="btn-primary" id="saveAllBtn" onclick="syncAllToFirestore()"><i class="fas fa-cloud-arrow-up"></i> লাইভ সেভ করুন</button>
             </div>
 
             <!-- METRIC CARDS -->
@@ -486,7 +497,7 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>সরাসরি লোগো আপলোড করুন (ছবি ফাইল)</label>
+                            <label>সরাসরি লোগো আপলোড করুন (ছবি ফাইল - Max 800KB)</label>
                             <input type="file" id="cfgLogoFileInput" class="form-control" accept="image/*" />
                         </div>
                         <div class="form-group">
@@ -508,12 +519,13 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>টিউটোরিয়াল ভিডিও ফাইল আপলোড করুন (Direct MP4/WebM)</label>
-                            <input type="file" id="cfgGuideVideoFileInput" class="form-control" accept="video/mp4,video/webm" />
+                            <label>ভিডিও সরাসরি লিংক দিন (প্রস্তাবিত: MP4 / WebM URL)</label>
+                            <input type="url" id="cfgGuideVideoUrl" class="form-control" placeholder="https://domain.com/csb_guide.mp4" />
+                            <small style="color:var(--text-muted); font-size:11px; margin-top:4px; display:block;">ফায়ারস্টোর ডকুমেন্ট সীমা রক্ষার জন্য ডিরেক্ট URL ব্যবহার করা সর্বোত্তম।</small>
                         </div>
                         <div class="form-group">
-                            <label>অথবা ভিডিও সরাসরি লিংক (URL) দিন</label>
-                            <input type="url" id="cfgGuideVideoUrl" class="form-control" placeholder="https://domain.com/csb_guide.mp4" />
+                            <label>অথবা ছোট ভিডিও ফাইল আপলোড (সর্বোচ্চ 800KB)</label>
+                            <input type="file" id="cfgGuideVideoFileInput" class="form-control" accept="video/mp4,video/webm" />
                         </div>
                     </div>
                     <div id="guideVideoPreviewBox" style="margin-top: 10px; display: none;">
@@ -541,7 +553,7 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>সরাসরি ব্যানার আপলোড করুন (ছবি ফাইল)</label>
+                            <label>সরাসরি ব্যানার আপলোড করুন (ছবি ফাইল - Max 800KB)</label>
                             <input type="file" id="cfgBannerFileInput" class="form-control" accept="image/*" />
                         </div>
                         <div class="form-group">
@@ -695,17 +707,31 @@
                 </div>
             </div>
 
-            <!-- TAB 6: ALL APPLICATIONS, SEARCH & PDF REPORTS -->
+            <!-- TAB 6: ALL APPLICATIONS, SEARCH, SLIP IMAGES & PDF REPORTS -->
             <div class="content-panel" id="tab-applications">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-users"></i> সমস্ত আবেদন ও রিপোর্ট কন্ট্রোল</h3>
+                        <h3><i class="fas fa-users"></i> সমস্ত আবেদন, স্লিপ ছবি ও রিপোর্ট কন্ট্রোল</h3>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="btn-report" onclick="exportPDFReport('All')"><i class="fas fa-file-pdf"></i> সকল আবেদন PDF</button>
+                            <button class="btn-report" onclick="exportPDFReport('All')"><i class="fas fa-file-pdf"></i> সকল PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('Approved')"><i class="fas fa-file-circle-check"></i> অনুমোদিত PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('Pending')"><i class="fas fa-file-circle-exclamation"></i> পেন্ডিং PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('Rejected')"><i class="fas fa-file-circle-xmark"></i> বাতিল PDF</button>
                         </div>
+                    </div>
+
+                    <!-- ZIP IMAGE EXPORT BUTTONS (ALL TOGETHER OR SEPARATE) -->
+                    <div style="background: rgba(14, 165, 233, 0.04); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 14px; padding: 18px; margin-bottom: 20px;">
+                        <h4 style="font-size: 13.5px; color: var(--secondary); margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+                            <i class="fas fa-images"></i> আইডি কার্ড / স্লিপ ছবি একসাথে এক্সপোর্ট করুন (PNG Slip ZIP):
+                        </h4>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn-report btn-img-pack" onclick="exportSlipImagesZip('All')"><i class="fas fa-file-zipper"></i> সকল স্লিপ ছবি (ZIP)</button>
+                            <button class="btn-report btn-img-pack" onclick="exportSlipImagesZip('Approved')"><i class="fas fa-check-double"></i> অনুমোদিত স্লিপ ছবি (ZIP)</button>
+                            <button class="btn-report btn-img-pack" onclick="exportSlipImagesZip('Pending')"><i class="fas fa-hourglass-half"></i> পেন্ডিং স্লিপ ছবি (ZIP)</button>
+                            <button class="btn-report btn-img-pack" onclick="exportSlipImagesZip('Rejected')"><i class="fas fa-ban"></i> বাতিল স্লিপ ছবি (ZIP)</button>
+                        </div>
+                        <div id="zipExportStatus" style="font-size: 11.5px; color: var(--primary); margin-top: 10px; display: none; font-family:'JetBrains Mono', monospace;"></div>
                     </div>
 
                     <!-- 1 DAY SPECIFIC DATE REPORT GENERATOR -->
@@ -805,7 +831,7 @@
 
         let loadedApplications = [];
 
-        // AUTHENTICATION
+        // AUTHENTICATION (UPDATED AS REQUESTED)
         const loginWrap = document.getElementById('loginWrap');
         const adminLayout = document.getElementById('adminLayout');
         const loginForm = document.getElementById('adminLoginForm');
@@ -819,12 +845,12 @@
             const u = document.getElementById('adminUser').value.trim();
             const p = document.getElementById('adminPass').value.trim();
 
-            if (u === 'admin@csb.org' && p === 'csb@2026') {
+            if (u === 'tumicsb@csb.ord' && p === 'tumiadmin') {
                 sessionStorage.setItem('CSB_ADMIN_LOGGED', 'true');
                 unlockDashboard();
                 showToast('লগইন সফল হয়েছে!', 'success');
             } else {
-                showToast('ভুল ক্রেডেনশিয়ালস!', 'error');
+                showToast('ভুল ইমেইল বা পাসওয়ার্ড!', 'error');
             }
         });
 
@@ -840,12 +866,12 @@
             bindApplicationsStream();
         }
 
-        // LOGO LOCAL FILE UPLOAD (Base64)
+        // LOGO LOCAL FILE UPLOAD (Base64 Safe Limit)
         document.getElementById('cfgLogoFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 2 * 1024 * 1024) {
-                    showToast('⚠️ লোগোর সাইজ ২ মেগাবাইটের বেশি হওয়া যাবে না!', 'error');
+                if (file.size > 800 * 1024) {
+                    showToast('⚠️ লোগোর ফাইল সাইজ ৮০০ KB এর বেশি হওয়া যাবে না! (Firestore Limit)', 'error');
                     this.value = '';
                     return;
                 }
@@ -869,12 +895,12 @@
             syncAllToFirestore();
         };
 
-        // GUIDE VIDEO LOCAL FILE UPLOAD (Base64)
+        // GUIDE VIDEO UPLOAD (Base64 Safe Limit)
         document.getElementById('cfgGuideVideoFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 25 * 1024 * 1024) {
-                    showToast('⚠️ ভিডিও ফাইলের সাইজ ২৫ মেগাবাইটের বেশি হওয়া যাবে না! (প্রয়োজনে URL দিন)', 'error');
+                if (file.size > 800 * 1024) {
+                    showToast('⚠️ ভিডিও ফাইলের সাইজ ৮০০ KB এর বেশি! ফায়ারস্টোর লিমিটের জন্য ডিরেক্ট URL দিন।', 'error');
                     this.value = '';
                     return;
                 }
@@ -884,7 +910,7 @@
                     document.getElementById('cfgGuideVideoUrl').value = '';
                     document.getElementById('guideVideoPreviewBox').style.display = 'block';
                     document.getElementById('guideVideoPreview').src = portalConfig.guideVideoUrl;
-                    showToast('গাইড ভিডিও সিলেক্ট হয়েছে! "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
+                    showToast('গাইড ভিডিও ফাইল সিলেক্ট হয়েছে! "লাইভ সেভ করুন"-এ ক্লিক করুন', 'success');
                 };
                 reader.readAsDataURL(file);
             }
@@ -901,12 +927,12 @@
             syncAllToFirestore();
         };
 
-        // BANNER LOCAL FILE UPLOAD (Base64)
+        // BANNER LOCAL FILE UPLOAD (Base64 Safe Limit)
         document.getElementById('cfgBannerFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 2 * 1024 * 1024) {
-                    showToast('⚠️ ব্যানারের সাইজ ২ মেগাবাইটের বেশি হওয়া যাবে না!', 'error');
+                if (file.size > 800 * 1024) {
+                    showToast('⚠️ ব্যানারের সাইজ ৮০০ KB এর বেশি হওয়া যাবে না!', 'error');
                     this.value = '';
                     return;
                 }
@@ -930,7 +956,7 @@
             syncAllToFirestore();
         };
 
-        // FIRESTORE CONFIG LOAD & SAVE
+        // FIRESTORE CONFIG LOAD & SAVE (Reliable Payloads)
         async function loadRemoteConfig() {
             try {
                 const cfgRef = doc(db, "settings", "portalConfig");
@@ -997,17 +1023,24 @@
             renderCategoryRoles();
         }
 
+        // SAVE BUTTON FIX
         window.syncAllToFirestore = async function() {
-            if (document.getElementById('cfgLogoUrl').value.trim() !== '') {
-                portalConfig.logoUrl = document.getElementById('cfgLogoUrl').value.trim();
-            }
-            if (document.getElementById('cfgGuideVideoUrl').value.trim() !== '') {
-                portalConfig.guideVideoUrl = document.getElementById('cfgGuideVideoUrl').value.trim();
-            }
+            const saveBtn = document.getElementById('saveAllBtn');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> সেভ হচ্ছে...`;
+            saveBtn.disabled = true;
+
+            const logoUrlVal = document.getElementById('cfgLogoUrl').value.trim();
+            if (logoUrlVal !== '') portalConfig.logoUrl = logoUrlVal;
+
+            const guideVideoUrlVal = document.getElementById('cfgGuideVideoUrl').value.trim();
+            if (guideVideoUrlVal !== '') portalConfig.guideVideoUrl = guideVideoUrlVal;
+
             portalConfig.notice = document.getElementById('cfgNoticeText').value.trim();
-            if (document.getElementById('cfgBannerUrl').value.trim() !== '') {
-                portalConfig.bannerUrl = document.getElementById('cfgBannerUrl').value.trim();
-            }
+
+            const bannerUrlVal = document.getElementById('cfgBannerUrl').value.trim();
+            if (bannerUrlVal !== '') portalConfig.bannerUrl = bannerUrlVal;
+
             portalConfig.batchTitle = document.getElementById('cfgBatchTitle').value.trim();
             portalConfig.batchSub = document.getElementById('cfgBatchSub').value.trim();
             portalConfig.paymentNumber = document.getElementById('cfgPaymentNumber').value.trim();
@@ -1017,16 +1050,27 @@
             delete portalConfig.roles;
 
             try {
+                // Payload Size Inspection (Firestore 1MB Safety)
+                const payloadString = JSON.stringify(portalConfig);
+                const sizeInBytes = new Blob([payloadString]).size;
+                if (sizeInBytes > 1048000) {
+                    throw new Error("ফাইল ডাটাবেজের ১MB সাইজ সীমা অতিক্রম করেছে। ভিডিও বা ছবির জন্য ডিরেক্ট URL ব্যবহার করুন।");
+                }
+
                 await setDoc(doc(db, "settings", "portalConfig"), portalConfig);
-                showToast('সব কনফিগারেশন ক্লাউডে লাইভ সেভ হয়েছে!', 'success');
+                showToast('✅ সব কনফিগারেশন ক্লাউডে সফলভাবে সেভ হয়েছে!', 'success');
                 document.getElementById('statBatch').textContent = portalConfig.batchTitle;
                 renderConfigToUI();
             } catch (err) {
-                showToast('সেভ করতে ব্যর্থ: ' + err.message, 'error');
+                console.error("Save Error:", err);
+                showToast('❌ সেভ করতে ব্যর্থ: ' + err.message, 'error');
+            } finally {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
             }
         };
 
-        // CATEGORY & CATEGORY-SPECIFIC ROLES (FULLY ISOLATED)
+        // CATEGORY & CATEGORY-SPECIFIC ROLES
         function renderCategories() {
             const list = document.getElementById('categoryTagList');
             const select = document.getElementById('roleCategorySelect');
@@ -1091,7 +1135,6 @@
             syncAllToFirestore();
         };
 
-        // নির্দিষ্ট ক্যাটাগরির নিজস্ব রোল লিস্ট রেন্ডার
         window.renderCategoryRoles = function() {
             const selectedCat = document.getElementById('roleCategorySelect').value;
             const list = document.getElementById('categoryRoleTagList');
@@ -1113,7 +1156,6 @@
             });
         };
 
-        // নির্দিষ্ট ক্যাটাগরিতে রোল যোগ
         window.addRoleToCategory = function() {
             const selectedCat = document.getElementById('roleCategorySelect').value;
             const val = document.getElementById('newRoleInput').value.trim();
@@ -1140,7 +1182,6 @@
             }
         };
 
-        // নির্দিষ্ট ক্যাটাগরি থেকে রোল রিমুভ
         window.removeRoleFromCategory = function(cat, idx) {
             if (portalConfig.categoryRoles && portalConfig.categoryRoles[cat]) {
                 portalConfig.categoryRoles[cat].splice(idx, 1);
@@ -1279,6 +1320,7 @@
                 const actionBtns = `
                     <button class="btn-action-icon" title="Approve" onclick="updateAppStatus('${app.id}', 'Approved')"><i class="fas fa-check" style="color:var(--accent-green);"></i></button>
                     <button class="btn-action-icon reject" title="Reject" onclick="updateAppStatus('${app.id}', 'Rejected')"><i class="fas fa-xmark" style="color:var(--accent-red);"></i></button>
+                    <button class="btn-action-icon" title="Download PNG Slip" onclick="downloadSingleSlipPNG('${app.id}')"><i class="fas fa-image" style="color:var(--primary);"></i></button>
                     <button class="btn-action-icon reject" title="Delete" onclick="deleteApplication('${app.id}')"><i class="fas fa-trash"></i></button>
                 `;
 
@@ -1335,30 +1377,32 @@
             }
         };
 
-        // 100% RELIABLE PDF DOWNLOAD ENGINE (With Official Logo)
+        // 100% RELIABLE WHITE-PAGE-FREE PDF DOWNLOAD ENGINE
         function triggerPDFDownload(element, filename) {
-            element.style.position = 'fixed';
-            element.style.left = '0';
-            element.style.top = '0';
-            element.style.zIndex = '-9999';
-            element.style.width = '1000px';
-            element.style.background = '#ffffff';
-
-            document.body.appendChild(element);
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'absolute';
+            wrapper.style.top = '0';
+            wrapper.style.left = '0';
+            wrapper.style.width = '1100px';
+            wrapper.style.zIndex = '99999';
+            wrapper.style.background = '#ffffff';
+            wrapper.style.color = '#000000';
+            wrapper.appendChild(element);
+            document.body.appendChild(wrapper);
 
             const opt = {
                 margin: [10, 10, 10, 10],
                 filename: filename,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                if (element.parentNode) document.body.removeChild(element);
+                if (wrapper.parentNode) document.body.removeChild(wrapper);
                 showToast('✅ PDF রিপোর্ট সফলভাবে ডাউনলোড হয়েছে!', 'success');
             }).catch(err => {
-                if (element.parentNode) document.body.removeChild(element);
+                if (wrapper.parentNode) document.body.removeChild(wrapper);
                 console.error("PDF Download Error:", err);
                 showToast('PDF তৈরিতে সমস্যা হয়েছে!', 'error');
             });
@@ -1379,19 +1423,20 @@
             const reportContainer = document.createElement('div');
             reportContainer.style.padding = '35px';
             reportContainer.style.color = '#0f172a';
-            reportContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+            reportContainer.style.background = '#ffffff';
+            reportContainer.style.fontFamily = "'Plus Jakarta Sans', 'Hind Siliguri', sans-serif";
 
             let rowsHtml = '';
             data.forEach((item, index) => {
                 rowsHtml += `
-                    <tr style="border-bottom: 1px solid #e2e8f0; font-size: 11px;">
-                        <td style="padding: 8px;">${index + 1}</td>
+                    <tr style="border-bottom: 1px solid #cbd5e1; font-size: 11px;">
+                        <td style="padding: 8px; color:#000;">${index + 1}</td>
                         <td style="padding: 8px; font-weight:700; font-family:monospace; color:#0284c7;">${item.id}</td>
-                        <td style="padding: 8px; font-weight:600;">${item.fullName || 'N/A'}</td>
-                        <td style="padding: 8px;">${item.category || 'N/A'}</td>
-                        <td style="padding: 8px;">${item.role || 'N/A'}</td>
-                        <td style="padding: 8px;">${item.personalPhone || 'N/A'}</td>
-                        <td style="padding: 8px; font-family:monospace;">${item.tnxId || 'N/A'}</td>
+                        <td style="padding: 8px; font-weight:600; color:#000;">${item.fullName || 'N/A'}</td>
+                        <td style="padding: 8px; color:#000;">${item.category || 'N/A'}</td>
+                        <td style="padding: 8px; color:#000;">${item.role || 'N/A'}</td>
+                        <td style="padding: 8px; color:#000;">${item.personalPhone || 'N/A'}</td>
+                        <td style="padding: 8px; font-family:monospace; color:#000;">${item.tnxId || 'N/A'}</td>
                         <td style="padding: 8px; font-weight:700; color:${item.status === 'Approved' ? '#16a34a' : (item.status === 'Rejected' ? '#dc2626' : '#d97706')};">${item.status || 'Pending'}</td>
                     </tr>
                 `;
@@ -1417,15 +1462,15 @@
 
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
-                        <tr style="background: #f1f5f9; font-size: 11px; text-transform: uppercase;">
-                            <th style="padding: 8px;">#</th>
-                            <th style="padding: 8px;">আইডি</th>
-                            <th style="padding: 8px;">নাম</th>
-                            <th style="padding: 8px;">ক্যাটাগরি</th>
-                            <th style="padding: 8px;">রোল</th>
-                            <th style="padding: 8px;">মোবাইল</th>
-                            <th style="padding: 8px;">TNX</th>
-                            <th style="padding: 8px;">স্ট্যাটাস</th>
+                        <tr style="background: #e2e8f0; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 8px; color:#0f172a;">#</th>
+                            <th style="padding: 8px; color:#0f172a;">আইডি</th>
+                            <th style="padding: 8px; color:#0f172a;">নাম</th>
+                            <th style="padding: 8px; color:#0f172a;">ক্যাটাগরি</th>
+                            <th style="padding: 8px; color:#0f172a;">রোল</th>
+                            <th style="padding: 8px; color:#0f172a;">মোবাইল</th>
+                            <th style="padding: 8px; color:#0f172a;">TNX</th>
+                            <th style="padding: 8px; color:#0f172a;">স্ট্যাটাস</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1481,19 +1526,20 @@
             const reportContainer = document.createElement('div');
             reportContainer.style.padding = '35px';
             reportContainer.style.color = '#0f172a';
-            reportContainer.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+            reportContainer.style.background = '#ffffff';
+            reportContainer.style.fontFamily = "'Plus Jakarta Sans', 'Hind Siliguri', sans-serif";
 
             let rowsHtml = '';
             dailyApps.forEach((item, index) => {
                 rowsHtml += `
-                    <tr style="border-bottom: 1px solid #e2e8f0; font-size: 11px;">
-                        <td style="padding: 8px;">${index + 1}</td>
+                    <tr style="border-bottom: 1px solid #cbd5e1; font-size: 11px;">
+                        <td style="padding: 8px; color:#000;">${index + 1}</td>
                         <td style="padding: 8px; font-weight:700; font-family:monospace; color:#0284c7;">${item.id}</td>
-                        <td style="padding: 8px; font-weight:600;">${item.fullName || 'N/A'}</td>
-                        <td style="padding: 8px;">${item.category || 'N/A'}</td>
-                        <td style="padding: 8px;">${item.role || 'N/A'}</td>
-                        <td style="padding: 8px;">${item.personalPhone || 'N/A'}</td>
-                        <td style="padding: 8px; font-family:monospace;">${item.tnxId || 'N/A'}</td>
+                        <td style="padding: 8px; font-weight:600; color:#000;">${item.fullName || 'N/A'}</td>
+                        <td style="padding: 8px; color:#000;">${item.category || 'N/A'}</td>
+                        <td style="padding: 8px; color:#000;">${item.role || 'N/A'}</td>
+                        <td style="padding: 8px; color:#000;">${item.personalPhone || 'N/A'}</td>
+                        <td style="padding: 8px; font-family:monospace; color:#000;">${item.tnxId || 'N/A'}</td>
                         <td style="padding: 8px; font-weight:700; color:${item.status === 'Approved' ? '#16a34a' : (item.status === 'Rejected' ? '#dc2626' : '#d97706')};">${item.status || 'Pending'}</td>
                     </tr>
                 `;
@@ -1517,7 +1563,7 @@
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 12px; margin-bottom: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 18px; font-size: 12px;">
+                <div style="display: flex; gap: 12px; margin-bottom: 20px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 18px; font-size: 12px;">
                     <div style="flex: 1;"><strong>মোট আবেদন:</strong> ${dailyApps.length}টি</div>
                     <div style="flex: 1; color: #16a34a;"><strong>অনুমোদিত (Approved):</strong> ${appCount}টি</div>
                     <div style="flex: 1; color: #dc2626;"><strong>বাতিল (Rejected):</strong> ${rejCount}টি</div>
@@ -1526,15 +1572,15 @@
 
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
-                        <tr style="background: #f1f5f9; font-size: 11px; text-transform: uppercase;">
-                            <th style="padding: 8px;">#</th>
-                            <th style="padding: 8px;">আইডি</th>
-                            <th style="padding: 8px;">নাম</th>
-                            <th style="padding: 8px;">ক্যাটাগরি</th>
-                            <th style="padding: 8px;">রোল</th>
-                            <th style="padding: 8px;">মোবাইল</th>
-                            <th style="padding: 8px;">TNX</th>
-                            <th style="padding: 8px;">স্ট্যাটাস</th>
+                        <tr style="background: #e2e8f0; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 8px; color:#0f172a;">#</th>
+                            <th style="padding: 8px; color:#0f172a;">আইডি</th>
+                            <th style="padding: 8px; color:#0f172a;">নাম</th>
+                            <th style="padding: 8px; color:#0f172a;">ক্যাটাগরি</th>
+                            <th style="padding: 8px; color:#0f172a;">রোল</th>
+                            <th style="padding: 8px; color:#0f172a;">মোবাইল</th>
+                            <th style="padding: 8px; color:#0f172a;">TNX</th>
+                            <th style="padding: 8px; color:#0f172a;">স্ট্যাটাস</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1544,6 +1590,179 @@
             `;
 
             triggerPDFDownload(reportContainer, `CSB_Daily_Report_${dateVal}.pdf`);
+        };
+
+        // NEW FEATURE: HIGH RESOLUTION SLIP CREATOR ELEMENT
+        function buildSlipDOM(appData) {
+            const card = document.createElement('div');
+            card.style.width = '600px';
+            card.style.background = '#060a14';
+            card.style.color = '#f8fafc';
+            card.style.padding = '35px';
+            card.style.borderRadius = '20px';
+            card.style.border = '2px solid #00f5d4';
+            card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8)';
+            card.style.fontFamily = "'Plus Jakarta Sans', 'Hind Siliguri', sans-serif";
+
+            card.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 16px; margin-bottom: 22px;">
+                    <h2 style="color: #00f5d4; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">CYBER SENTINEL BANGLADESH</h2>
+                    <p style="font-size: 11.5px; color: #94a3b8; letter-spacing: 2px; font-weight: 700; margin-top: 5px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13.5px; line-height: 1.6;">
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; width: 42%; font-weight: 600;">ট্র্যাকিং আইডি:</td>
+                        <td style="padding: 9px 0; font-weight: 800; color: #00f5d4; font-family: monospace; font-size: 14.5px;">${appData.id}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনকারীর নাম:</td>
+                        <td style="padding: 9px 0; font-weight: 700; color: #fff;">${appData.fullName || appData.name || 'N/A'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">মোবাইল নম্বর:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #fff;">${appData.personalPhone || 'N/A'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ইমেইল:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${appData.email || 'N/A'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ক্যাটাগরি:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #0ea5e9;">${appData.category || 'N/A'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">নির্বাচিত রোল:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #fff;">${appData.role || 'N/A'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">সনদের ধরন ও নম্বর:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #fff;">${appData.docType || 'NID'} (${appData.nidNumber || 'N/A'})</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">পেমেন্ট রেফারেন্স (TNX):</td>
+                        <td style="padding: 9px 0; font-weight: 700; color: #0ea5e9; font-family: monospace;">${appData.tnxId || 'N/A'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনের সময়:</td>
+                        <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${appData.createdAt || appData.time || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">বর্তমান অবস্থা:</td>
+                        <td style="padding: 9px 0; font-weight: 800; color:${appData.status === 'Approved' ? '#10b981' : (appData.status === 'Rejected' ? '#f43f5e' : '#f59e0b')};">
+                            ${appData.status || 'Pending'}
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 14px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.5;">
+                    <p>এই স্লিপটি অফিসিয়াল প্রমাণপত্র। ট্র্যাকিং প্যানেল থেকে নিয়মিত স্ট্যাটাস চেক করুন।</p>
+                    <p style="margin-top: 3px; font-weight: 700; color: #00f5d4;">🛡️ Cyber Sentinel Bangladesh · Official Desk</p>
+                </div>
+            `;
+            return card;
+        }
+
+        // DOWNLOAD SINGLE SLIP PNG
+        window.downloadSingleSlipPNG = async function(id) {
+            const targetApp = loadedApplications.find(a => a.id === id);
+            if (!targetApp) {
+                showToast('আবেদন খুঁজে পাওয়া যায়নি!', 'error');
+                return;
+            }
+
+            const card = buildSlipDOM(targetApp);
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'fixed';
+            wrapper.style.top = '0';
+            wrapper.style.left = '0';
+            wrapper.style.zIndex = '99999';
+            wrapper.style.opacity = '0';
+            wrapper.appendChild(card);
+            document.body.appendChild(wrapper);
+
+            try {
+                const canvas = await html2canvas(card, {
+                    scale: 2,
+                    backgroundColor: '#060a14',
+                    useCORS: true
+                });
+                const link = document.createElement('a');
+                link.download = `CSB_Slip_${id}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast(`✅ স্লিপ PNG ডাউনলোড হয়েছে: ${id}`, 'success');
+            } catch (err) {
+                console.error("Slip Export Error:", err);
+                showToast('ছবি তৈরিতে সমস্যা হয়েছে!', 'error');
+            } finally {
+                if (wrapper.parentNode) document.body.removeChild(wrapper);
+            }
+        };
+
+        // NEW FEATURE: BATCH EXPORT SLIP IMAGES IN ZIP (ALL OR SEPARATE STATUS)
+        window.exportSlipImagesZip = async function(statusType) {
+            let data = loadedApplications;
+            if (statusType !== 'All') {
+                data = loadedApplications.filter(a => a.status === statusType);
+            }
+
+            if (data.length === 0) {
+                showToast(`⚠️ এই ক্যাটাগরিতে (${statusType}) কোনো আবেদন নেই!`, 'error');
+                return;
+            }
+
+            const statusEl = document.getElementById('zipExportStatus');
+            statusEl.style.display = 'block';
+            statusEl.textContent = `স্লিপ ছবি প্রসেস হচ্ছে... (০/${data.length})`;
+
+            const zip = new JSZip();
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'fixed';
+            wrapper.style.top = '0';
+            wrapper.style.left = '0';
+            wrapper.style.zIndex = '99999';
+            wrapper.style.opacity = '0';
+            document.body.appendChild(wrapper);
+
+            try {
+                for (let i = 0; i < data.length; i++) {
+                    const item = data[i];
+                    wrapper.innerHTML = '';
+                    const card = buildSlipDOM(item);
+                    wrapper.appendChild(card);
+
+                    statusEl.textContent = `ছবি জেনারেট হচ্ছে: ${i + 1}/${data.length} (${item.id})`;
+
+                    const canvas = await html2canvas(card, {
+                        scale: 2,
+                        backgroundColor: '#060a14',
+                        useCORS: true
+                    });
+
+                    const base64Data = canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, "");
+                    zip.file(`Slip_${item.id}_${item.status || 'Pending'}.png`, base64Data, { base64: true });
+                }
+
+                statusEl.textContent = `ZIP ফাইল তৈরি হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।`;
+                const content = await zip.generateAsync({ type: "blob" });
+
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = `CSB_Slips_${statusType}_${Date.now()}.zip`;
+                link.click();
+
+                showToast(`✅ ${data.length}টি স্লিপ ছবি ZIP ফাইলে ডাউনলোড হয়েছে!`, 'success');
+                statusEl.textContent = `সম্পন্ন হয়েছে! মোট ${data.length}টি স্লিপ ডাউনলোড হয়েছে।`;
+                setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+
+            } catch (err) {
+                console.error("ZIP Export Error:", err);
+                showToast('ZIP ফাইল তৈরিতে সমস্যা হয়েছে!', 'error');
+                statusEl.textContent = `ত্রুটি দেখা দিয়েছে!`;
+            } finally {
+                if (wrapper.parentNode) document.body.removeChild(wrapper);
+            }
         };
 
         // TAB SWITCHER
@@ -1562,7 +1781,7 @@
                 categories: 'ক্যাটাগরি ও রোল ম্যানেজমেন্ট',
                 fees: 'ফি, গ্রুপ এবং সাপোর্ট লিংক কন্ট্রোল',
                 oath: 'শপথনামা টেক্সট কন্ট্রোল',
-                applications: 'সকল আবেদন ও রিপোর্ট কন্ট্রোল'
+                applications: 'সকল আবেদন, স্লিপ ছবি ও রিপোর্ট কন্ট্রোল'
             };
             document.getElementById('panelTitle').textContent = titles[tabId] || 'অ্যাডমিন ড্যাশবোর্ড';
         };
