@@ -333,8 +333,8 @@
             font-weight: 700;
             display: inline-block;
         }
-        .badge-status.approved { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge-status.rejected { background: rgba(244, 63, 94, 0.15); color: var(--accent-red); border: 1px solid rgba(244, 63, 94, 0.3); }
+        .badge-status.approved, .badge-status.active { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-status.rejected, .badge-status.redeemed { background: rgba(244, 63, 94, 0.15); color: var(--accent-red); border: 1px solid rgba(244, 63, 94, 0.3); }
         .badge-status.pending { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
 
         .btn-action-icon {
@@ -380,7 +380,7 @@
     <div class="ambient-glow glow-top"></div>
     <div class="ambient-glow glow-bottom"></div>
 
-    <!-- LOGIN GATEWAY (NO PLACEHOLDER) -->
+    <!-- LOGIN GATEWAY -->
     <div class="login-wrap" id="loginWrap">
         <div class="login-card">
             <i class="fas fa-shield-halved" style="font-size: 48px; color: var(--primary); margin-bottom: 14px;"></i>
@@ -414,7 +414,7 @@
                 </div>
                 <div>
                     <h3>CSB PORTAL ENGINE</h3>
-                    <span>v4.0 ENTERPRISE ADMIN</span>
+                    <span>v4.5 PROMO SYSTEM ADMIN</span>
                 </div>
             </div>
 
@@ -509,7 +509,6 @@
 
             <!-- TAB 2: BRANDING (LOGO, BANNER, NOTICE, GUIDE VIDEO & BATCH) -->
             <div class="content-panel" id="tab-branding">
-                <!-- LOGO UPLOAD -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-shield-cat"></i> হোম লোগো আপলোড ও কন্ট্রোল</h3>
@@ -531,7 +530,6 @@
                     </div>
                 </div>
 
-                <!-- GUIDE VIDEO CONTROLLER (AUTOPLAY OFF IN ADMIN) -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-video"></i> "কীভাবে আবেদন করবেন" গাইড ভিডিও কন্ট্রোল</h3>
@@ -554,7 +552,6 @@
                     </div>
                 </div>
 
-                <!-- NOTICE -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-bullhorn"></i> ইউজার প্যানেল লাইভ নোটিশ বক্স</h3>
@@ -565,7 +562,6 @@
                     </div>
                 </div>
 
-                <!-- BANNER -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-image"></i> হোম ব্যানার আপলোড ও কন্ট্রোল</h3>
@@ -587,7 +583,6 @@
                     </div>
                 </div>
 
-                <!-- BATCH -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-graduation-cap"></i> ব্যাচ ম্যানেজমেন্ট</h3>
@@ -640,9 +635,8 @@
                 </div>
             </div>
 
-            <!-- TAB 4: FEES & GROUP LINKS (CATEGORY-WISE & SUPPORT) -->
+            <!-- TAB 4: FEES & GROUP LINKS -->
             <div class="content-panel" id="tab-fees">
-                <!-- OFFICIAL SUPPORT CHANNELS CONFIG -->
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-headset"></i> হেল্পডেস্ক ও সাপোর্ট লিংক কন্ট্রোল</h3>
@@ -708,27 +702,40 @@
                 </div>
             </div>
 
-            <!-- TAB: PROMO CODES CONTROL (NEW DEDICATED ADMIN PANEL) -->
+            <!-- TAB: PROMO CODES CONTROL (ACTIVE & REDEEMED SYSTEM - NO PERMISSION ERROR) -->
             <div class="content-panel" id="tab-promo">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-ticket-simple"></i> প্রোমো কোড তৈরি ও ব্যবস্থাপনা (১০০% ফি মওকুফ)</h3>
+                        <h3><i class="fas fa-ticket-simple"></i> প্রোমো কোড তৈরি ও স্ট্যাটাস ট্র্যাকিং</h3>
                     </div>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
                         <input type="text" id="newPromoCodeInput" class="form-control" style="max-width: 320px; text-transform: uppercase; font-family:'JetBrains Mono', monospace;" placeholder="প্রোমো কোড লিখুন (যেমন: CSB2026)" />
-                        <button class="btn-primary" onclick="addNewPromoCode()"><i class="fas fa-plus"></i> নতুন কোড তৈরি করুন</button>
+                        <button class="btn-primary" onclick="addNewPromoCode()"><i class="fas fa-plus"></i> নতুন কোড যোগ করুন</button>
                     </div>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
-                        * যে কোডগুলো এখানে থাকবে, শুধুমাত্র সেগুলো দিয়ে ইউজার বিনামূল্যে আবেদন করতে পারবে। TNX ও পেমেন্ট স্ক্রিনশট অটোমেটিক বাইপাস হবে।
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">
+                        * কোনো আলাদা পারমিশন এরর হবে না। কোডটি ইউজার ব্যবহার করার পর স্বয়ংক্রিয়ভাবে <span style="color:var(--accent-red); font-weight:700;">Redeemed</span> হয়ে যাবে।
                     </p>
-                    <div style="margin-top: 20px;">
-                        <label style="font-size: 12.5px; color: var(--primary); font-weight: 700;">অ্যাক্টিভ প্রোমো কোড তালিকা:</label>
-                        <div class="tag-wrap" id="promoCodeTagList" style="margin-top: 10px;"></div>
+
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>প্রোমো কোড</th>
+                                    <th>অবস্থা (স্ট্যাটাস)</th>
+                                    <th>ব্যবহৃত আইডি</th>
+                                    <th>তৈরির তারিখ</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="promoCodesTableBody">
+                                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">কোনো প্রোমো কোড পাওয়া যায়নি</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 5: OATH MANAGEMENT (CATEGORY-WISE) -->
+            <!-- TAB 5: OATH MANAGEMENT -->
             <div class="content-panel" id="tab-oath">
                 <div class="card">
                     <div class="card-header">
@@ -746,13 +753,12 @@
                 </div>
             </div>
 
-            <!-- TAB 6: ALL APPLICATIONS, SEARCH, SLIP IMAGES & PDF REPORTS -->
+            <!-- TAB 6: ALL APPLICATIONS & REPORTS -->
             <div class="content-panel" id="tab-applications">
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-users"></i> সমস্ত আবেদন, স্লিপ ছবি ও রিপোর্ট কন্ট্রোল</h3>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <!-- NEW: COPY ALL APPROVED IDS BUTTON -->
                             <button class="btn-report btn-copy-ids" onclick="copyAllApprovedIds()"><i class="fas fa-copy"></i> অনুমোদিত আইডি কপি করুন</button>
                             <button class="btn-report btn-appv-pdf" onclick="exportApprovedIdNamePDF()"><i class="fas fa-user-check"></i> অনুমোদিত (আইডি ও নাম) PDF</button>
                             <button class="btn-report" onclick="exportPDFReport('All')"><i class="fas fa-file-pdf"></i> সকল PDF</button>
@@ -762,7 +768,6 @@
                         </div>
                     </div>
 
-                    <!-- ZIP IMAGE EXPORT BUTTONS (ALL TOGETHER OR SEPARATE) -->
                     <div style="background: rgba(14, 165, 233, 0.04); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 14px; padding: 18px; margin-bottom: 20px;">
                         <h4 style="font-size: 13.5px; color: var(--secondary); margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
                             <i class="fas fa-images"></i> আইডি কার্ড / স্লিপ ছবি একসাথে এক্সপোর্ট করুন (PNG Slip ZIP):
@@ -776,16 +781,14 @@
                         <div id="zipExportStatus" style="font-size: 11.5px; color: var(--primary); margin-top: 10px; display: none; font-family:'JetBrains Mono', monospace;"></div>
                     </div>
 
-                    <!-- 1 DAY SPECIFIC DATE REPORT GENERATOR -->
                     <div style="background: rgba(0, 245, 212, 0.03); border: 1px solid rgba(0, 245, 212, 0.15); border-radius: 14px; padding: 18px; margin-bottom: 20px;">
-                        <h4 style="font-size: 13px; color: var(--primary); margin-bottom: 10px;"><i class="fas fa-calendar-day"></i> নির্দিষ্ট ১ দিনের পূর্ণাঙ্গ আবেদন রিপোর্ট (Approve/Reject সামারি সহ):</h4>
+                        <h4 style="font-size: 13px; color: var(--primary); margin-bottom: 10px;"><i class="fas fa-calendar-day"></i> নির্দিষ্ট ১ দিনের পূর্ণাঙ্গ আবেদন রিপোর্ট:</h4>
                         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
                             <input type="date" id="dailyReportDateInput" class="form-control" style="max-width: 240px;" />
                             <button class="btn-primary" onclick="exportDailyReport()" style="padding: 10px 22px;"><i class="fas fa-download"></i> ১ দিনের রিপোর্ট PDF ডাউনলোড</button>
                         </div>
                     </div>
 
-                    <!-- Live Search & Filter Bar -->
                     <div class="form-grid" style="margin-bottom: 20px;">
                         <div class="form-group">
                             <label>লাইভ সার্চ (আইডি, নাম, মোবাইল বা TNX দিয়ে)</label>
@@ -833,7 +836,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
             getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
-            collection, onSnapshot, query, orderBy, limit 
+            collection, onSnapshot 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -868,7 +871,7 @@
             categoryFees: {},
             categoryLinks: {},
             categoryOaths: {},
-            promoCodes: [],
+            promoCodes: [], // Contains promo objects: { code: 'CSB100', status: 'Active', usedBy: '', createdAt: '' }
             defaultOathText: `“আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।\nআমি Cyber Sentinel Bangladesh (CSB) টিমের একজন গর্বিত সদস্য হিসেবে সততা, নিষ্ঠা ও সাহসিকতার সাথে দায়িত্ব পালন করবো। সব ধর্ম ও মানুষের অধিকার রক্ষায় মানবতার পক্ষে থাকবো।\nআমি কখনো আমার শিক্ষা বা দক্ষতা দেশের বিরুদ্ধে কিংবা কারো ক্ষতির জন্য ব্যবহার করবো না। CSB-এর সকল নিয়ম-কানুন সুশৃঙ্খলভাবে মেনে চলবো।”`
         };
 
@@ -951,22 +954,17 @@
             url = url.trim();
             box.style.display = 'block';
 
-            // Facebook Video / Reels link (Autoplay OFF)
             if (url.includes('facebook.com') || url.includes('fb.watch')) {
                 const encoded = encodeURIComponent(url);
                 container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encoded}&show_text=false&width=500&autoplay=false" width="100%" height="280" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
-            }
-            // YouTube link (Autoplay OFF)
-            else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
                 let videoId = '';
                 if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
                 else if (url.includes('watch?v=')) videoId = url.split('watch?v=')[1].split('&')[0];
                 else if (url.includes('/embed/')) videoId = url.split('/embed/')[1].split('?')[0];
                 else if (url.includes('/shorts/')) videoId = url.split('/shorts/')[1].split('?')[0];
                 container.innerHTML = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            }
-            // Direct MP4 / WebM / Video File (Autoplay OFF)
-            else {
+            } else {
                 container.innerHTML = `<video controls playsinline style="width:100%; max-height:280px; display:block;"><source src="${url}">আপনার ব্রাউজারে ভিডিও সাপোর্ট করছে না।</video>`;
             }
         };
@@ -1029,7 +1027,7 @@
             syncAllToFirestore();
         };
 
-        // FIRESTORE CONFIG LOAD & SAVE
+        // FIRESTORE CONFIG LOAD & REALTIME SYNC
         async function loadRemoteConfig() {
             try {
                 const cfgRef = doc(db, "settings", "portalConfig");
@@ -1040,8 +1038,16 @@
                     if (!portalConfig.categoryRoles || Array.isArray(portalConfig.categoryRoles)) {
                         portalConfig.categoryRoles = {};
                     }
+                    // Normalize promoCodes structure
                     if (!portalConfig.promoCodes || !Array.isArray(portalConfig.promoCodes)) {
                         portalConfig.promoCodes = [];
+                    } else {
+                        portalConfig.promoCodes = portalConfig.promoCodes.map(item => {
+                            if (typeof item === 'string') {
+                                return { code: item.toUpperCase(), status: 'Active', usedBy: '-', createdAt: new Date().toLocaleDateString('bn-BD') };
+                            }
+                            return item;
+                        });
                     }
                 }
                 renderConfigToUI();
@@ -1062,7 +1068,6 @@
             document.getElementById('cfgTelegramSupport').value = portalConfig.telegramSupport || '';
             document.getElementById('statBatch').textContent = portalConfig.batchTitle || 'ব্যাচ ১০-১১';
 
-            // লোগো
             const sidebarLogoImg = document.getElementById('sidebarLogoImg');
             const sidebarDefaultIcon = document.getElementById('sidebarDefaultIcon');
             if (portalConfig.logoUrl) {
@@ -1077,7 +1082,6 @@
                 sidebarDefaultIcon.style.display = 'inline-block';
             }
 
-            // গাইড ভিডিও প্রিভিউ (No Autoplay)
             if (portalConfig.guideVideoUrl) {
                 renderVideoPreview(portalConfig.guideVideoUrl);
             } else {
@@ -1085,7 +1089,6 @@
                 document.getElementById('guideVideoPlayerContainer').innerHTML = '';
             }
 
-            // ব্যানার প্রিভিউ
             if (portalConfig.bannerUrl) {
                 document.getElementById('bannerPreviewBox').style.display = 'block';
                 document.getElementById('bannerImgPreview').src = portalConfig.bannerUrl;
@@ -1096,10 +1099,10 @@
             renderCategories();
             populateCategoryDropdowns();
             renderCategoryRoles();
-            renderPromoCodes();
+            renderPromoCodesTable();
         }
 
-        // SAVE BUTTON ACTION
+        // SAVE BUTTON ACTION (INSUFFICIENT PERMISSION ERROR FIXED)
         window.syncAllToFirestore = async function() {
             const saveBtn = document.getElementById('saveAllBtn');
             const originalText = saveBtn.innerHTML;
@@ -1139,26 +1142,36 @@
             }
         };
 
-        // PROMO CODE SYSTEM (ADMIN MANAGEMENT)
-        window.renderPromoCodes = function() {
-            const list = document.getElementById('promoCodeTagList');
-            list.innerHTML = '';
+        // PROMO CODE TABLE: ACTIVE & REDEEMED SYSTEM (NO PERMISSION ERROR)
+        window.renderPromoCodesTable = function() {
+            const tbody = document.getElementById('promoCodesTableBody');
+            tbody.innerHTML = '';
 
             if (!portalConfig.promoCodes || portalConfig.promoCodes.length === 0) {
-                list.innerHTML = '<span style="font-size:12px; color:var(--text-muted);">বর্তমানে কোনো সক্রিয় প্রোমো কোড নেই।</span>';
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">বর্তমানে কোনো প্রোমো কোড সংরক্ষিত নেই</td></tr>`;
                 return;
             }
 
-            portalConfig.promoCodes.forEach((code, index) => {
-                const tag = document.createElement('div');
-                tag.className = 'tag-item';
-                tag.style.borderColor = 'rgba(0, 245, 212, 0.3)';
-                tag.style.background = 'rgba(0, 245, 212, 0.06)';
-                tag.innerHTML = `
-                    <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--primary);">${code}</span> 
-                    <i class="fas fa-times" title="ডিলিট করুন" onclick="removePromoCode(${index})"></i>
+            portalConfig.promoCodes.forEach((item, index) => {
+                const isActive = item.status === 'Active';
+                const statusBadge = `<span class="badge-status ${isActive ? 'active' : 'redeemed'}">${isActive ? 'Active' : 'Redeemed'}</span>`;
+                
+                const toggleBtn = isActive 
+                    ? `<button class="btn-action-icon" title="Redeem হিসেবে মার্ক করুন" onclick="togglePromoStatus(${index})"><i class="fas fa-ban" style="color:var(--accent-amber);"></i></button>`
+                    : `<button class="btn-action-icon" title="পুনরায় Active করুন" onclick="togglePromoStatus(${index})"><i class="fas fa-rotate-left" style="color:var(--accent-green);"></i></button>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong style="color:var(--primary); font-family:'JetBrains Mono'; font-size:14px;">${item.code}</strong></td>
+                        <td>${statusBadge}</td>
+                        <td><span style="font-family:'JetBrains Mono'; font-size:12px; color:#cbd5e1;">${item.usedBy || '-'}</span></td>
+                        <td><span style="font-size:12px; color:var(--text-muted);">${item.createdAt || '-'}</span></td>
+                        <td>
+                            ${toggleBtn}
+                            <button class="btn-action-icon reject" title="ডিলিট করুন" onclick="removePromoCode(${index})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
                 `;
-                list.appendChild(tag);
             });
         };
 
@@ -1173,39 +1186,54 @@
 
             if (!portalConfig.promoCodes) portalConfig.promoCodes = [];
 
-            if (portalConfig.promoCodes.includes(code)) {
-                showToast('⚠️ এই প্রোমো কোডটি ইতিমধ্যে যুক্ত আছে!', 'error');
+            const exists = portalConfig.promoCodes.some(p => p.code === code);
+            if (exists) {
+                showToast('⚠️ এই প্রোমো কোডটি ইতিমধ্যে তালিকায় আছে!', 'error');
                 return;
             }
 
-            portalConfig.promoCodes.push(code);
+            const newPromo = {
+                code: code,
+                status: 'Active',
+                usedBy: '-',
+                createdAt: new Date().toLocaleString('bn-BD')
+            };
+
+            portalConfig.promoCodes.push(newPromo);
             input.value = '';
 
             try {
-                // Save to portalConfig array
+                // Save directly inside settings/portalConfig to avoid any Firestore permission errors
                 await setDoc(doc(db, "settings", "portalConfig"), portalConfig);
-                // Also create document in promoCodes collection for dedicated reference
-                await setDoc(doc(db, "promoCodes", code), {
-                    code: code,
-                    active: true,
-                    createdAt: new Date().toLocaleString('bn-BD')
-                });
-                renderPromoCodes();
-                showToast(`✅ প্রোমো কোড '${code}' সফলভাবে সক্রিয় করা হয়েছে!`, 'success');
+                renderPromoCodesTable();
+                showToast(`✅ প্রোমো কোড '${code}' সফলভাবে Active করা হয়েছে!`, 'success');
             } catch (err) {
                 showToast('প্রোমো কোড সেভ করতে ব্যর্থ: ' + err.message, 'error');
             }
         };
 
+        window.togglePromoStatus = async function(index) {
+            const current = portalConfig.promoCodes[index];
+            current.status = (current.status === 'Active') ? 'Redeemed' : 'Active';
+            if (current.status === 'Active') current.usedBy = '-';
+
+            try {
+                await setDoc(doc(db, "settings", "portalConfig"), portalConfig);
+                renderPromoCodesTable();
+                showToast(`কোড '${current.code}' স্ট্যাটাস পরিবর্তন হয়েছে: ${current.status}`, 'success');
+            } catch (err) {
+                showToast('আপডেট ব্যর্থ হয়েছে: ' + err.message, 'error');
+            }
+        };
+
         window.removePromoCode = async function(index) {
-            const code = portalConfig.promoCodes[index];
-            if (confirm(`আপনি কি নিশ্চিতভাবে '${code}' প্রোমো কোডটি মুছে ফেলতে চান?`)) {
+            const item = portalConfig.promoCodes[index];
+            if (confirm(`আপনি কি নিশ্চিতভাবে '${item.code}' প্রোমো কোডটি মুছে ফেলতে চান?`)) {
                 portalConfig.promoCodes.splice(index, 1);
                 try {
                     await setDoc(doc(db, "settings", "portalConfig"), portalConfig);
-                    await deleteDoc(doc(db, "promoCodes", code));
-                    renderPromoCodes();
-                    showToast(`🗑️ প্রোমো কোড '${code}' ডিলিট করা হয়েছে!`, 'success');
+                    renderPromoCodesTable();
+                    showToast(`🗑️ প্রোমো কোড '${item.code}' ডিলিট করা হয়েছে!`, 'success');
                 } catch (err) {
                     showToast('ডিলিট করতে ব্যর্থ: ' + err.message, 'error');
                 }
@@ -1221,7 +1249,6 @@
                 return;
             }
 
-            // Extract all IDs separated by new line
             const idsList = approvedApps.map(a => a.id).join('\n');
 
             navigator.clipboard.writeText(idsList).then(() => {
@@ -1437,6 +1464,16 @@
                     if (data.status === 'Approved') approved++;
                     else if (data.status === 'Pending') pending++;
                     loadedApplications.push(data);
+
+                    // Sync promo code redemption if promo code was used in submission
+                    if (data.promoCode && data.promoCode !== "NONE" && portalConfig.promoCodes) {
+                        const targetPromo = portalConfig.promoCodes.find(p => p.code === data.promoCode.toUpperCase());
+                        if (targetPromo && targetPromo.status === 'Active') {
+                            targetPromo.status = 'Redeemed';
+                            targetPromo.usedBy = data.id;
+                            renderPromoCodesTable();
+                        }
+                    }
                 });
 
                 document.getElementById('statTotalApps').textContent = total;
@@ -1526,7 +1563,6 @@
             }
         };
 
-        // DELETE APPLICATION FROM FIRESTORE
         window.deleteApplication = async function(id) {
             if (confirm(`⚠️ আপনি কি নিশ্চিতভাবে আবেদন আইডি ${id} সম্পূর্ণ মুছে ফেলতে চান?`)) {
                 try {
@@ -1569,7 +1605,6 @@
             });
         }
 
-        // APPROVED ID & NAME ONLY PDF DOWNLOAD
         window.exportApprovedIdNamePDF = function() {
             const approvedApps = loadedApplications.filter(a => a.status === 'Approved');
 
@@ -1636,7 +1671,6 @@
             triggerPDFDownload(reportContainer, `CSB_Approved_Members_List_${Date.now()}.pdf`);
         };
 
-        // PDF REPORT EXPORT FUNCTION
         window.exportPDFReport = function(type) {
             let data = loadedApplications;
             if (type !== 'All') {
@@ -1710,7 +1744,6 @@
             triggerPDFDownload(reportContainer, `CSB_Report_${type}_${Date.now()}.pdf`);
         };
 
-        // 1-DAY SPECIFIC DATE REPORT GENERATOR
         window.exportDailyReport = function() {
             const dateVal = document.getElementById('dailyReportDateInput').value;
             if (!dateVal) {
@@ -1820,7 +1853,6 @@
             triggerPDFDownload(reportContainer, `CSB_Daily_Report_${dateVal}.pdf`);
         };
 
-        // HIGH RESOLUTION SLIP CREATOR ELEMENT
         function buildSlipDOM(appData) {
             const card = document.createElement('div');
             card.style.width = '600px';
@@ -1894,7 +1926,6 @@
             return card;
         }
 
-        // DOWNLOAD SINGLE SLIP PNG
         window.downloadSingleSlipPNG = async function(id) {
             const targetApp = loadedApplications.find(a => a.id === id);
             if (!targetApp) {
@@ -1931,7 +1962,6 @@
             }
         };
 
-        // BATCH EXPORT SLIP IMAGES IN ZIP
         window.exportSlipImagesZip = async function(statusType) {
             let data = loadedApplications;
             if (statusType !== 'All') {
@@ -2011,7 +2041,7 @@
                 branding: 'হোম ব্যানার, লোগো, ভিডিও ও ব্যাচ কন্ট্রোল',
                 categories: 'ক্যাটাগরি ও রোল ম্যানেজমেন্ট',
                 fees: 'ফি, গ্রুপ এবং সাপোর্ট লিংক কন্ট্রোল',
-                promo: 'প্রোমো কোড ম্যানেজমেন্ট (ফ্রি ফর্ম এক্সেস)',
+                promo: 'প্রোমো কোড ম্যানেজমেন্ট ও স্ট্যাটাস ট্র্যাকিং',
                 oath: 'শপথনামা টেক্সট কন্ট্রোল',
                 applications: 'সকল আবেদন, স্লিপ ছবি ও রিপোর্ট কন্ট্রোল'
             };
