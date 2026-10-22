@@ -15,11 +15,18 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let activePortalConfig = {
-    paymentNumber: '01971138617',
-    categories: ['NEW STUDENTS', 'EX-STUDENTS', 'EXECUTIVE'],
+    logoUrl: '',
+    maleLink: 'https://t.me/+iK88FtiL2YNmZjE1',
+    femaleLink: 'https://t.me/+tSQK_jWEeWU0YjI1',
+    whatsappSupport: 'https://wa.me/+601130345524',
+    telegramSupport: 'https://t.me/CyberSentinelBD',
+    guideVideoUrl: '',
     categoryFees: {},
-    categoryFeeDisabled: {},
-    oathConfig: { maleEnabled: true, femaleEnabled: true, maleText: '', femaleText: '' },
+    categoryFeeDisabled: {}, // ক্যাটাগরি ভিত্তিক ফি চালু/বন্ধের ট্র্যাকিং
+    categoryLinks: {},
+    categoryOaths: {},
+    categoryRoles: {},
+    oathConfig: { maleEnabled: true, femaleEnabled: true, maleText: '', femaleText: '' }, // ছেলে-মেয়ে আলাদা শপথনামা ও অন/অফ
     promoCodes: []
 };
 
@@ -32,29 +39,143 @@ const BOT_TOKEN = '8677605758:AAHJs_SE2YmS0g0RVfuesZuXVKAJ3O5CjiM';
 const CHANNEL_ID_SUBMIT = '-1004341639499';
 const CHANNEL_ID_APPROVE = '-1003891211232';
 
+// HTML Escape Function to prevent Telegram Entity Parsing Error
 function escapeHtml(text) {
     if (!text) return '';
-    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
-// REALTIME FIRESTORE SETTINGS SYNC
+window.copyText = function(elementId) {
+    const text = document.getElementById(elementId).textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+        showToast(`✅ কপি হয়েছে: ${text}`, 'success');
+    }).catch(() => {
+        showToast('কপি করতে ব্যর্থ হয়েছে', 'error');
+    });
+};
+
+window.setDocType = function(type) {
+    document.getElementById('selectedDocType').value = type;
+    const btnNid = document.getElementById('btnTypeNid');
+    const btnBirth = document.getElementById('btnTypeBirth');
+    const btnPassport = document.getElementById('btnTypePassport');
+    const uploadLabel = document.getElementById('docUploadLabel');
+    const numLabel = document.getElementById('docNumberLabel');
+    const numInput = document.getElementById('nidNumber');
+
+    btnNid.classList.remove('active');
+    btnBirth.classList.remove('active');
+    btnPassport.classList.remove('active');
+
+    if (type === 'NID') {
+        btnNid.classList.add('active');
+        uploadLabel.textContent = 'NID কার্ডের সামনের দিক আপলোড';
+        numLabel.textContent = 'NID নম্বর';
+        numInput.placeholder = 'জাতীয় পরিচয়পত্র নম্বর লিখুন';
+    } else if (type === 'Birth Certificate') {
+        btnBirth.classList.add('active');
+        uploadLabel.textContent = 'জন্মসনদের পরিষ্কার কপি আপলোড';
+        numLabel.textContent = 'জন্মসনদ নম্বর';
+        numInput.placeholder = '১৭ ডিজিটের জন্মসনদ নম্বর লিখুন';
+    } else if (type === 'Passport') {
+        btnPassport.classList.add('active');
+        uploadLabel.textContent = 'পাসপোর্টের তথ্য পাতার ছবি আপলোড';
+        numLabel.textContent = 'পাসপোর্ট নম্বর';
+        numInput.placeholder = 'পাসপোর্ট নম্বর লিখুন (e.g. A01234567)';
+    }
+};
+
+// LIVE REALTIME CLOCK & CALENDAR
+function updateLiveDateTime() {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('bn-BD', { hour12: true });
+    
+    const dateEl = document.getElementById('liveDateDisplay');
+    const clockEl = document.getElementById('liveClockDisplay');
+    const timeEl = document.getElementById('liveTimeDisplay');
+
+    if (dateEl) dateEl.textContent = dateStr;
+    if (clockEl) clockEl.textContent = timeStr;
+    if (timeEl) timeEl.textContent = timeStr;
+}
+updateLiveDateTime();
+setInterval(updateLiveDateTime, 1000);
+
+// REAL-TIME FIRESTORE SETTINGS LISTENER
 onSnapshot(doc(db, "settings", "portalConfig"), (snap) => {
     if (snap.exists()) {
-        activePortalConfig = { ...activePortalConfig, ...snap.data() };
-        if (activePortalConfig.paymentNumber) {
-            const phoneEl = document.getElementById('displayPaymentPhone');
-            if (phoneEl) phoneEl.textContent = activePortalConfig.paymentNumber;
+        const cfg = snap.data();
+        activePortalConfig = { ...activePortalConfig, ...cfg };
+
+        const logoContainer = document.getElementById('brandLogoContainer');
+        const adminLogoImg = document.getElementById('adminLogoImage');
+        if (cfg.logoUrl && cfg.logoUrl.trim() !== '') {
+            adminLogoImg.src = cfg.logoUrl;
+            logoContainer.style.display = 'inline-flex';
+        } else {
+            logoContainer.style.display = 'none';
         }
-        updateFormContext();
+
+        const noticeBox = document.getElementById('portalNoticeBox');
+        const noticeText = document.getElementById('portalNoticeText');
+        if (cfg.notice && cfg.notice.trim() !== '') {
+            noticeText.textContent = cfg.notice;
+            noticeBox.style.display = 'block';
+        } else {
+            noticeBox.style.display = 'none';
+        }
+
+        const bannerWrap = document.getElementById('bannerWrapper');
+        const bannerImg = document.getElementById('csbDynamicBanner');
+        if (cfg.bannerUrl && cfg.bannerUrl.trim() !== '') {
+            bannerImg.src = cfg.bannerUrl;
+            bannerWrap.style.display = 'flex';
+        } else {
+            bannerWrap.style.display = 'none';
+        }
+
+        if (cfg.batchTitle) document.getElementById('batchTitleText').textContent = cfg.batchTitle;
+        if (cfg.batchSub) document.getElementById('displayBatchSub').innerHTML = `<i class="fas fa-shield-halved"></i> ${cfg.batchSub}`;
+        if (cfg.paymentNumber) document.getElementById('displayPaymentPhone').textContent = cfg.paymentNumber;
+
+        if (cfg.whatsappSupport) document.getElementById('dynWhatsappLink').href = cfg.whatsappSupport;
+        if (cfg.telegramSupport) document.getElementById('dynTelegramLink').href = cfg.telegramSupport;
+
+        const guideVidContainer = document.getElementById('guideVideoContainer');
+        if (cfg.guideVideoUrl && cfg.guideVideoUrl.trim() !== '') {
+            guideVidContainer.style.display = 'block';
+        } else {
+            guideVidContainer.style.display = 'none';
+            document.getElementById('guidePlayerTarget').innerHTML = '';
+        }
+
+        if (cfg.categories && Array.isArray(cfg.categories) && cfg.categories.length > 0) {
+            const catSelect = document.getElementById('category');
+            const currentCat = catSelect.value;
+            catSelect.innerHTML = '';
+            cfg.categories.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                if (c === currentCat) opt.selected = true;
+                catSelect.appendChild(opt);
+            });
+        }
+        updateCategoryContext();
     }
 });
 
-// CATEGORY & GENDER CONTEXT HANDLER (DYNAMIC FEE & OATH TOGGLE)
-function updateFormContext() {
+// ক্যাটাগরি ও জেন্ডার অনুযায়ী ফি এবং শপথনামার লাইভ অন/অফ প্রসেসিং
+function updateCategoryContext() {
     const selectedCat = document.getElementById('category').value;
     const selectedGender = document.getElementById('gender').value;
 
-    // 1. ক্যাটাগরি অনুযায়ী ফি চালু / বন্ধ চেক
+    // ১. আলাদা আলাদা ক্যাটাগরির জন্য ফর্ম ফি অন / অফ হ্যান্ডলিং
     isFeeFreeForCategory = activePortalConfig.categoryFeeDisabled && activePortalConfig.categoryFeeDisabled[selectedCat] === true;
     const paymentCard = document.getElementById('paymentCardMain');
     const paymentInputs = document.getElementById('paymentInputsWrapper');
@@ -63,15 +184,20 @@ function updateFormContext() {
     const screenshotInput = document.getElementById('paymentScreenshot');
 
     if (isFeeFreeForCategory || isPromoApplied) {
-        displayFee.textContent = "ফর্ম ফি: ০ টাকা (বিনামূল্যে)";
+        displayFee.textContent = `ফর্ম ফি: ০ টাকা (বিনামূল্যে)`;
         paymentCard.classList.add('free-mode');
         paymentInputs.style.display = 'none';
         tnxInput.required = false;
         screenshotInput.required = false;
         if (!tnxInput.value) tnxInput.value = isPromoApplied ? `PROMO-${appliedPromoCode}` : "FREE-CATEGORY";
     } else {
-        const fee = (activePortalConfig.categoryFees && activePortalConfig.categoryFees[selectedCat]) ? activePortalConfig.categoryFees[selectedCat] : '50';
-        displayFee.textContent = `ফর্ম ফি: ${fee} টাকা`;
+        let currentFee = '50';
+        if (activePortalConfig.categoryFees && activePortalConfig.categoryFees[selectedCat]) {
+            currentFee = activePortalConfig.categoryFees[selectedCat];
+        } else if (activePortalConfig.formFee) {
+            currentFee = activePortalConfig.formFee;
+        }
+        displayFee.textContent = `ফর্ম ফি: ${currentFee} টাকা`;
         paymentCard.classList.remove('free-mode');
         paymentInputs.style.display = 'block';
         tnxInput.required = true;
@@ -79,56 +205,329 @@ function updateFormContext() {
         if (tnxInput.value === "FREE-CATEGORY") tnxInput.value = "";
     }
 
-    // 2. ছেলে ও মেয়েদের জন্য আলাদা শপথনামা ও চালু / বন্ধ চেক
-    const oathWrapper = document.querySelector('.form-group:has(.video-recorder)') || document.getElementById('oathSectionWrapper');
+    // ২. ছেলে ও মেয়েদের জন্য আলাদা আলাদা শপথনামা ও অন/অফ হ্যান্ডলিং
+    const oathWrapper = document.querySelector('.form-group:has(.video-recorder)') || document.querySelector('.video-recorder')?.closest('.form-group');
     const oathTextDisplay = document.getElementById('displayOathText');
     const oathCfg = activePortalConfig.oathConfig || { maleEnabled: true, femaleEnabled: true };
 
     if (selectedGender === 'Female') {
         isOathDisabledForGender = oathCfg.femaleEnabled === false;
-        if (oathTextDisplay) oathTextDisplay.innerHTML = (oathCfg.femaleText || "আমি সততার সাথে দায়িত্ব পালন করবো।").replace(/\n/g, '<br>');
+        if (oathTextDisplay) {
+            oathTextDisplay.innerHTML = (oathCfg.femaleText || activePortalConfig.oathText || `“আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।”`).replace(/\n/g, '<br>');
+        }
     } else {
         isOathDisabledForGender = oathCfg.maleEnabled === false;
-        if (oathTextDisplay) oathTextDisplay.innerHTML = (oathCfg.maleText || "আমি সততার সাথে দায়িত্ব পালন করবো।").replace(/\n/g, '<br>');
+        if (oathTextDisplay) {
+            oathTextDisplay.innerHTML = (oathCfg.maleText || activePortalConfig.oathText || `“আমি শপথ করছি যে, আমি কাজ শিখে দেশের সেবা করবো এবং বাংলাদেশের সাইবার নিরাপত্তা রক্ষায় নিজেকে প্রস্তুত রাখবো।”`).replace(/\n/g, '<br>');
+        }
     }
 
-    // যদি এই জেন্ডারের জন্য শপথনামা বন্ধ থাকে তবে সম্পূর্ণ ভিডিও রেকর্ডার বক্স হাইড হবে
+    // যদি জেন্ডারের শপথনামা অ্যাডমিন থেকে OFF থাকে তবে রেকর্ডার ও শপথনামা বক্স স্বয়ংক্রিয়ভাবে লুকিয়ে যাবে
     if (oathWrapper) {
         if (isOathDisabledForGender) {
             oathWrapper.style.display = 'none';
+            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; isCameraReady = false; }
         } else {
             oathWrapper.style.display = 'block';
         }
     }
-}
 
-document.getElementById('category').addEventListener('change', updateFormContext);
-document.getElementById('gender').addEventListener('change', updateFormContext);
+    // রোল আপডেট
+    const roleSelect = document.getElementById('role');
+    const currentRole = roleSelect.value;
+    roleSelect.innerHTML = '<option value="">সিলেক্ট করুন</option>';
 
-// PROMO CODE VERIFICATION
-document.getElementById('btnApplyPromo').addEventListener('click', () => {
-    const code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
-    const msg = document.getElementById('promoStatusMessage');
-    msg.style.display = 'block';
+    let availableRoles = [];
+    if (activePortalConfig.categoryRoles && activePortalConfig.categoryRoles[selectedCat]) {
+        availableRoles = activePortalConfig.categoryRoles[selectedCat];
+    } else if (activePortalConfig.roles && Array.isArray(activePortalConfig.roles)) {
+        availableRoles = activePortalConfig.roles;
+    }
 
-    const found = (activePortalConfig.promoCodes || []).find(p => p.code === code && p.status === 'Active');
-    if (found) {
-        isPromoApplied = true;
-        appliedPromoCode = code;
-        msg.style.color = 'var(--accent-green)';
-        msg.textContent = `✅ প্রোমো কোড ${code} সফলভাবে প্রয়োগ হয়েছে! ফি মওকুফ করা হলো।`;
-        updateFormContext();
+    if (availableRoles.length > 0) {
+        availableRoles.forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r; opt.textContent = r;
+            if (r === currentRole) opt.selected = true;
+            roleSelect.appendChild(opt);
+        });
     } else {
-        msg.style.color = 'var(--accent-red)';
-        msg.textContent = `❌ অবৈধ অথবা ব্যবহৃত প্রোমো কোড!`;
+        roleSelect.innerHTML += `<option value="CSB Member">CSB Member</option>`;
+    }
+}
+document.getElementById('category').addEventListener('change', updateCategoryContext);
+document.getElementById('gender').addEventListener('change', updateCategoryContext);
+
+// PROMO CODE VERIFICATION (FIRESTORE SYNC WITH ACTIVE STATUS)
+document.getElementById('btnApplyPromo').addEventListener('click', async () => {
+    const promoInput = document.getElementById('promoCodeInput').value.trim().toUpperCase();
+    const promoMsg = document.getElementById('promoStatusMessage');
+    
+    if (!promoInput) {
+        showToast('⚠️ প্রোমো কোড লিখুন', 'error');
+        return;
+    }
+
+    promoMsg.style.display = 'block';
+    promoMsg.style.color = 'var(--primary)';
+    promoMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ডাটাবেজে যাচাই হচ্ছে...';
+
+    let isValid = false;
+
+    if (activePortalConfig.promoCodes && Array.isArray(activePortalConfig.promoCodes)) {
+        const found = activePortalConfig.promoCodes.find(item => {
+            if (typeof item === 'string') return item.toUpperCase() === promoInput;
+            return item && item.code && item.code.toUpperCase() === promoInput && item.status === 'Active';
+        });
+        if (found) isValid = true;
+    }
+
+    if (isValid) {
+        isPromoApplied = true;
+        appliedPromoCode = promoInput;
+        promoMsg.style.color = 'var(--accent-green)';
+        promoMsg.innerHTML = `✅ <strong>${promoInput}</strong> প্রোমো কোড সফলভাবে অ্যাপ্লাই হয়েছে! ফর্ম ফি সম্পূর্ণ ফ্রি।`;
+        
+        document.getElementById('displayFormFee').textContent = `ফর্ম ফি: ০ টাকা (ফ্রি)`;
+        document.getElementById('paymentAccountDetails').innerHTML = `<span style="color:var(--accent-green); font-weight:700;"><i class="fas fa-gift"></i> প্রোমো কোড অ্যাক্টিভ! কোনো ফর্ম ফি দেওয়া লাগবে না</span>`;
+        document.getElementById('paymentRightBadge').innerHTML = `<span style="color:var(--accent-green); font-weight:700;"><i class="fas fa-check-circle"></i> ফি মওকুফ</span>`;
+        document.getElementById('paymentCardMain').classList.add('free-mode');
+
+        const tnxInput = document.getElementById('tnxId');
+        tnxInput.value = `PROMO-${promoInput}`;
+        tnxInput.required = false;
+
+        const paymentScreenshotInput = document.getElementById('paymentScreenshot');
+        paymentScreenshotInput.required = false;
+        paymentScreenshotInput.value = "";
+
+        document.getElementById('paymentInputsWrapper').style.display = 'none';
+        showToast('🎉 প্রোমো কোড অ্যাক্টিভ হয়েছে!', 'success');
+    } else {
+        promoMsg.style.color = 'var(--accent-red)';
+        promoMsg.innerHTML = `❌ অবৈধ অথবা মেয়াদোত্তীর্ণ প্রোমো কোড! সঠিক কোড দিন।`;
+        showToast('অবৈধ প্রোমো কোড', 'error');
     }
 });
 
-// OPTIMIZED CAMERA & CODEC SETUP (NO BLACK SCREEN)
-let mediaRecorder, recordedChunks = [], stream = null, recordedBlob = null;
+// DOM NAVIGATION
+const landingPage = document.getElementById('landingPage');
+const formWrapper = document.getElementById('formWrapper');
+const registerBtn = document.getElementById('registerBtn');
+const trackingBtn = document.getElementById('trackingBtn');
+const guideBtn = document.getElementById('guideBtn');
+const supportModalBtn = document.getElementById('supportModalBtn');
+const backToHomeBtn = document.getElementById('backToHomeBtn');
+const trackingPanel = document.getElementById('trackingPanel');
+const trackInput = document.getElementById('trackInput');
+const trackSubmitBtn = document.getElementById('trackSubmitBtn');
+const trackResult = document.getElementById('trackResult');
+
+function launchGuideVideo() {
+    const target = document.getElementById('guidePlayerTarget');
+    const container = document.getElementById('guideVideoContainer');
+    const url = (activePortalConfig.guideVideoUrl || '').trim();
+
+    if (!url) {
+        container.style.display = 'none';
+        target.innerHTML = '';
+        return;
+    }
+
+    container.style.display = 'block';
+
+    if (url.includes('facebook.com') || url.includes('fb.watch')) {
+        const encoded = encodeURIComponent(url);
+        target.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encoded}&show_text=false&autoplay=true&width=500" width="100%" height="280" style="border:none;overflow:hidden;border-radius:14px;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
+    } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let videoId = '';
+        if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+        else if (url.includes('watch?v=')) videoId = url.split('watch?v=')[1].split('&')[0];
+        else if (url.includes('/embed/')) videoId = url.split('/embed/')[1].split('?')[0];
+        else if (url.includes('/shorts/')) videoId = url.split('/shorts/')[1].split('?')[0];
+        target.innerHTML = `<iframe width="100%" height="280" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1" style="border:none;border-radius:14px;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+        target.innerHTML = `<video controls autoplay playsinline style="width:100%; max-height:280px; display:block; border-radius:14px;"><source src="${url}">আপনার ব্রাউজারে ভিডিও সাপোর্ট করছে না।</video>`;
+    }
+}
+
+window.closeGuideModal = () => {
+    document.getElementById('guidePlayerTarget').innerHTML = '';
+    document.getElementById('guideModal').classList.remove('show');
+};
+window.closeSupportModal = () => document.getElementById('supportModal').classList.remove('show');
+
+guideBtn.addEventListener('click', () => {
+    document.getElementById('guideModal').classList.add('show');
+    launchGuideVideo();
+});
+supportModalBtn.addEventListener('click', () => document.getElementById('supportModal').classList.add('show'));
+
+registerBtn.addEventListener('click', () => {
+    landingPage.style.display = 'none';
+    formWrapper.classList.add('active');
+    trackingPanel.style.display = 'none';
+    if (!isOathDisabledForGender) initCamera(); 
+});
+
+backToHomeBtn.addEventListener('click', () => {
+    formWrapper.classList.remove('active');
+    landingPage.style.display = 'block';
+});
+
+trackingBtn.addEventListener('click', () => {
+    landingPage.style.display = 'block';
+    formWrapper.classList.remove('active');
+    trackingPanel.style.display = trackingPanel.style.display === 'none' ? 'block' : 'none';
+    if (trackingPanel.style.display === 'block') {
+        trackResult.innerHTML = `<p><i class="fas fa-circle-info" style="color:var(--primary);"></i> আপনার আবেদন আইডি প্রদান করুন।</p>`;
+    }
+});
+
+// APPROVE / REJECT WEBHOOK ENGINE
+window.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(window.location.search);
+    const action = params.get('action');
+    const trackId = params.get('id');
+    const msgId = params.get('msg_id');
+
+    if (action && trackId) {
+        try {
+            const docRef = doc(db, "applications", trackId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const existingData = docSnap.data();
+                const updateTime = new Date().toLocaleString('bn-BD');
+
+                if (action === 'approve') {
+                    await updateDoc(docRef, { status: 'Approved', updateTime: updateTime });
+                    showToast(`✅ ID: ${trackId} অনুমোদিত হয়েছে!`, 'success');
+                    sendToApproveChannel(trackId, { ...existingData, time: updateTime });
+                } else if (action === 'reject') {
+                    await updateDoc(docRef, { status: 'Rejected', updateTime: updateTime });
+                    showToast(`❌ ID: ${trackId} বাতিল করা হয়েছে!`, 'error');
+                    sendRejectionNotice(trackId, { ...existingData, time: updateTime });
+                }
+
+                if (msgId) {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: CHANNEL_ID_SUBMIT,
+                            message_id: parseInt(msgId),
+                            reply_markup: { inline_keyboard: [] }
+                        })
+                    });
+                }
+            }
+        } catch (err) {
+            console.error("Action Error:", err);
+        }
+    }
+});
+
+async function sendToApproveChannel(trackId, data) {
+    const text = `🎉 <b>নতুন আবেদন অনুমোদিত (APPROVED)</b> 🎉\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${escapeHtml(data.fullName || data.name)}\n🆔 ট্র্যাকিং আইডি: <code>${escapeHtml(trackId)}</code>\n📂 ক্যাটাগরি: ${escapeHtml(data.category || 'N/A')}\n🏠 ঠিকানা: ${escapeHtml(data.address || 'N/A')}\n📧 ইমেইল: ${escapeHtml(data.email || 'N/A')}\n📱 WhatsApp: ${escapeHtml(data.whatsapp || 'N/A')}\n✈️ Telegram: ${escapeHtml(data.telegram || 'N/A')}\n⚧️ জেন্ডার: ${escapeHtml(data.gender || 'N/A')}\n🗂️ রোল: ${escapeHtml(data.role || 'N/A')}\n🪪 ${escapeHtml(data.docType || 'NID/Passport')}: <code>${escapeHtml(data.nidNumber || 'N/A')}</code>\n📅 জন্মতারিখ: <code>${escapeHtml(data.dob || 'N/A')}</code>\n🧾 TNX / প্রোমো: ${escapeHtml(data.tnxId || 'N/A')}\n📞 অভিভাবক: ${escapeHtml(data.guardianPhone || 'N/A')}\n📱 নিজের: ${escapeHtml(data.personalPhone || 'N/A')}\n📅 অনুমোদন সময়: ${escapeHtml(data.time || 'N/A')}\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHANNEL_ID_APPROVE, text: text, parse_mode: 'HTML' })
+    });
+}
+
+async function sendRejectionNotice(trackId, data) {
+    const text = `❌ <b>আবেদন বাতিল নোটিশ (REJECTED)</b> ❌\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${escapeHtml(data.fullName || data.name)}\n🆔 ট্র্যাকিং আইডি: <code>${escapeHtml(trackId)}</code>\n⚠️ তথ্যে অসঙ্গতি থাকায় আবেদনটি বাতিল করা হয়েছে।\n━━━━━━━━━━━━━━━━━━━━━━\n🛡️ Cyber Sentinel Bangladesh`;
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHANNEL_ID_SUBMIT, text: text, parse_mode: 'HTML' })
+    });
+}
+
+trackSubmitBtn.addEventListener('click', async () => {
+    const id = trackInput.value.trim().toUpperCase();
+    if (!id) { showToast('⚠️ আইডি লিখুন', 'error'); return; }
+
+    trackResult.innerHTML = `<p style="color:var(--primary);"><i class="fas fa-spinner fa-spin"></i> ডাটাবেজে খোঁজা হচ্ছে...</p>`;
+
+    try {
+        const docRef = doc(db, "applications", id);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            trackResult.innerHTML = `<div style="background:rgba(244,63,94,0.08); border-radius:14px; padding:16px; border:1px solid rgba(244,63,94,0.25); margin-top:12px;"><p style="color:var(--accent-red); font-size:14px; font-weight:700;"><i class="fas fa-circle-xmark"></i> কোনো আবেদন পাওয়া যায়নি!</p></div>`;
+            return;
+        }
+
+        const data = docSnap.data();
+        const status = data.status || 'Pending';
+        const time = data.updateTime || data.createdAt || 'N/A';
+        const gender = data.gender || 'Male';
+        const cat = data.category || 'NEW STUDENTS';
+
+        let color = '#ffa94d';
+        let icon = '⏳';
+        let joinLinkHtml = '';
+
+        if (status === 'Approved') {
+            color = '#00f5d4';
+            icon = '✅';
+            
+            let targetGroupLink = activePortalConfig.maleLink;
+            if (activePortalConfig.categoryLinks && activePortalConfig.categoryLinks[cat]) {
+                targetGroupLink = (gender === 'Female') 
+                    ? activePortalConfig.categoryLinks[cat].female 
+                    : activePortalConfig.categoryLinks[cat].male;
+            }
+            if (!targetGroupLink) {
+                targetGroupLink = (gender === 'Female') ? activePortalConfig.femaleLink : activePortalConfig.maleLink;
+            }
+
+            joinLinkHtml = `
+                <div style="margin-top: 15px; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 15px; text-align: center;">
+                    <p style="color: var(--primary); font-weight: 600; font-size: 13px; margin-bottom: 10px;">🎉 অভিনন্দন! আপনার আবেদনটি অনুমোদিত হয়েছে।</p>
+                    <a href="${targetGroupLink}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #020617; padding: 10px 22px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                        <i class="fab fa-telegram"></i> অফিসিয়াল গ্রুপে জয়েন করুন
+                    </a>
+                </div>
+            `;
+        } else if (status === 'Rejected') {
+            color = '#f43f5e';
+            icon = '❌';
+            joinLinkHtml = `<div style="margin-top: 15px; border-top: 1px dashed rgba(244, 63, 94, 0.2); padding-top: 15px; text-align: center;"><p style="color: #f43f5e; font-size: 13px;">দুঃখিত, আবেদনটি বাতিল করা হয়েছে।</p></div>`;
+        }
+
+        trackResult.innerHTML = `
+            <div style="background:rgba(255,255,255,0.02); border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.06); margin-top:12px;">
+                <p style="font-size:15px; font-weight:700; color:#fff;">আইডি: <span style="color:var(--primary); font-family:'JetBrains Mono';">${id}</span></p>
+                <p style="margin-top:6px; font-size:14px; font-weight:600;">স্ট্যাটাস: <span style="color:${color};">${icon} ${status}</span></p>
+                <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">আপডেট সময়: ${time}</p>${joinLinkHtml}
+            </div>
+        `;
+    } catch (err) {
+        trackResult.innerHTML = `<p style="color:var(--accent-red);">সার্ভার থেকে তথ্য পাওয়া যায়নি।</p>`;
+    }
+});
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.className = 'toast ' + type;
+    toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}" style="margin-right:8px; color:${type === 'success' ? 'var(--primary)' : 'var(--accent-red)'}"></i> ${message}`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+window.closeModal = function() { document.getElementById('successModal').classList.remove('show'); };
+window.closeErrorModal = function() { document.getElementById('errorModal').classList.remove('show'); };
+
+// OPTIMIZED VIDEO RECORDER ENGINE (SOLVES BLACK SCREEN & 0:00 ISSUE)
+let mediaRecorder, recordedChunks = [], stream = null, isCameraReady = false, recordedBlob = null;
 let supportedMimeType = 'video/webm';
 let videoExt = 'webm';
 
+// Detect the best recording codec supported by device
 if (typeof MediaRecorder !== 'undefined') {
     if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1.42E01E,mp4a.40.2')) {
         supportedMimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
@@ -136,48 +535,224 @@ if (typeof MediaRecorder !== 'undefined') {
     } else if (MediaRecorder.isTypeSupported('video/mp4')) {
         supportedMimeType = 'video/mp4';
         videoExt = 'mp4';
+    } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
+        supportedMimeType = 'video/webm;codecs=vp8,opus';
+        videoExt = 'webm';
+    } else if (MediaRecorder.isTypeSupported('video/webm')) {
+        supportedMimeType = 'video/webm';
+        videoExt = 'webm';
     }
 }
 
+const previewVideo = document.getElementById('previewVideo');
+const startBtn = document.getElementById('startRecord');
+const stopBtn = document.getElementById('stopRecord');
+const downloadBtn = document.getElementById('downloadRecord');
+const recordingDot = document.getElementById('recordingDot');
+const recordingStatus = document.getElementById('recordingStatus');
+
+// Resolution optimized to 480p to prevent "Failed to fetch"
 async function initCamera() {
-    if (stream) return true;
+    if (isCameraReady) return true;
     try {
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 24 } },
-            audio: true
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'user', 
+                width: { ideal: 640, max: 640 }, 
+                height: { ideal: 480, max: 480 },
+                frameRate: { ideal: 24, max: 30 }
+            }, 
+            audio: true 
         });
-        document.getElementById('previewVideo').srcObject = stream;
-        document.getElementById('recordingStatus').textContent = 'Ready';
-        document.getElementById('recordingDot').className = 'dot ready';
+        previewVideo.srcObject = stream;
+        isCameraReady = true;
+        recordingStatus.textContent = 'Ready';
+        recordingDot.className = 'dot ready';
         return true;
-    } catch (e) { return false; }
+    } catch (err) {
+        recordingStatus.textContent = 'Access Denied';
+        recordingDot.className = 'dot';
+        return false;
+    }
 }
 
-document.getElementById('startRecord').addEventListener('click', async () => {
-    await initCamera();
+startBtn.addEventListener('click', async () => {
+    const cameraStarted = await initCamera();
+    if (!cameraStarted || !stream) { showToast('⚠️ ক্যামেরা ব্যবহারের অনুমতি দিন', 'error'); return; }
     recordedChunks = [];
     recordedBlob = null;
-    mediaRecorder = new MediaRecorder(stream, { mimeType: supportedMimeType, videoBitsPerSecond: 1000000 });
-    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-    mediaRecorder.onstop = () => {
-        recordedBlob = new Blob(recordedChunks, { type: supportedMimeType });
-        document.getElementById('recordingStatus').textContent = 'Saved';
-        document.getElementById('recordingDot').className = 'dot ready';
-        document.getElementById('startRecord').disabled = false;
-        document.getElementById('stopRecord').disabled = true;
+    
+    try { 
+        mediaRecorder = new MediaRecorder(stream, { 
+            mimeType: supportedMimeType,
+            videoBitsPerSecond: 1000000 // 1 Mbps keeps size low (~2-3MB) and clear
+        }); 
+    } catch (err) { 
+        try {
+            mediaRecorder = new MediaRecorder(stream);
+            supportedMimeType = mediaRecorder.mimeType || 'video/webm';
+            videoExt = supportedMimeType.includes('mp4') ? 'mp4' : 'webm';
+        } catch (err2) {
+            showToast('⚠️ ভিডিও রেকর্ডিং ব্রাউজারে সাপোর্ট করছে না', 'error'); return; 
+        }
+    }
+
+    mediaRecorder.ondataavailable = (e) => { 
+        if (e.data && e.data.size > 0) recordedChunks.push(e.data); 
     };
+
+    mediaRecorder.onstop = () => {
+        if (!recordedChunks.length) { showToast('⚠️ ভিডিও রেকর্ড হয়নি', 'error'); return; }
+        
+        // Accurate Blob type and extension matches recording format
+        recordedBlob = new Blob(recordedChunks, { type: supportedMimeType });
+        const url = URL.createObjectURL(recordedBlob);
+        
+        downloadBtn.disabled = false;
+        downloadBtn.onclick = () => {
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = `csb_oath_${Date.now()}.${videoExt}`; 
+            a.click();
+        };
+        
+        recordingStatus.textContent = 'Saved';
+        recordingDot.className = 'dot ready';
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        showToast('✅ ভিডিও রেকর্ড সম্পন্ন হয়েছে', 'success');
+    };
+
     mediaRecorder.start(1000);
-    document.getElementById('startRecord').disabled = true;
-    document.getElementById('stopRecord').disabled = false;
-    document.getElementById('recordingStatus').textContent = 'Recording';
-    document.getElementById('recordingDot').className = 'dot recording';
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    downloadBtn.disabled = true;
+    recordingStatus.textContent = 'Recording';
+    recordingDot.className = 'dot recording';
 });
 
-document.getElementById('stopRecord').addEventListener('click', () => {
+stopBtn.addEventListener('click', () => {
     if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
 });
 
-// FORM SUBMISSION ENGINE
+document.querySelectorAll('.file-upload-wrapper input[type="file"]').forEach(input => {
+    input.addEventListener('change', function() {
+        const area = this.closest('.file-upload-wrapper').querySelector('.file-upload-area');
+        const span = area.querySelector('.info .main span');
+        if (this.files.length) {
+            let fileName = this.files[0].name;
+            if (fileName.length > 25) {
+                fileName = fileName.substring(0, 20) + '...' + fileName.split('.').pop();
+            }
+            span.textContent = fileName;
+        } else {
+            span.textContent = 'ফাইল বেছে নিন';
+        }
+    });
+});
+
+function updateProgress(pct, status) {
+    const prog = document.getElementById('uploadProgress');
+    prog.classList.add('show');
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressStatus').textContent = `${status} (${pct}%)`;
+    if (pct >= 100) setTimeout(() => prog.classList.remove('show'), 2000);
+}
+
+// HIGH-RES PNG SLIP GENERATOR
+async function generateAutoPNG(trackId, formData, currentTime) {
+    const card = document.createElement('div');
+    card.style.position = 'fixed';
+    card.style.left = '-9999px';
+    card.style.top = '0';
+    card.style.width = '600px';
+    card.style.background = '#060a14';
+    card.style.color = '#f8fafc';
+    card.style.padding = '35px';
+    card.style.borderRadius = '20px';
+    card.style.border = '2px solid #00f5d4';
+    card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8)';
+    card.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+
+    card.innerHTML = `
+        <div style="text-align: center; border-bottom: 2px dashed rgba(0, 245, 212, 0.4); padding-bottom: 16px; margin-bottom: 22px;">
+            <h2 style="color: #00f5d4; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">CYBER SENTINEL BANGLADESH</h2>
+            <p style="font-size: 11.5px; color: #94a3b8; letter-spacing: 2px; font-weight: 700; margin-top: 5px;">OFFICIAL ADMISSION CONFIRMATION SLIP</p>
+        </div>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13.5px; line-height: 1.6;">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; width: 42%; font-weight: 600;"> লাইভ ট্র্যাকিং আইডি:</td>
+                <td style="padding: 9px 0; font-weight: 800; color: #00f5d4; font-family: monospace; font-size: 14.5px;">${trackId}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনকারীর নাম:</td>
+                <td style="padding: 9px 0; font-weight: 700; color: #fff;">${formData.fullName}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">বর্তমান ঠিকানা:</td>
+                <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.address}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">মোবাইল নম্বর:</td>
+                <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.personalPhone}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ইমেইল:</td>
+                <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${formData.email}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">ক্যাটাগরি:</td>
+                <td style="padding: 9px 0; font-weight: 600; color: #0ea5e9;">${formData.category}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">নির্বাচিত রোল:</td>
+                <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.role}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">সনদের ধরন ও নম্বর:</td>
+                <td style="padding: 9px 0; font-weight: 600; color: #fff;">${formData.docType} (${formData.nidNumber})</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 700; color: #0ea5e9; font-family: monospace;">${formData.tnxId}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">আবেদনের সময়:</td>
+                <td style="padding: 9px 0; font-weight: 600; color: #cbd5e1;">${currentTime}</td>
+            </tr>
+            <tr>
+                <td style="padding: 9px 0; color: #94a3b8; font-weight: 600;">বর্তমান অবস্থা:</td>
+                <td style="padding: 9px 0; font-weight: 800; color: #f59e0b;">Pending (যাচাই চলছে)</td>
+            </tr>
+        </table>
+
+        <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 14px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.5;">
+            <p>এই স্লিপটি আপনার অফিশিয়াল প্রমাণপত্র। ট্র্যাকিং প্যানেল থেকে নিয়মিত স্ট্যাটাস চেক করুন।</p>
+            <p style="margin-top: 3px; font-weight: 700; color: #00f5d4;">🛡️ Cyber Sentinel Bangladesh · Official Desk</p>
+        </div>
+    `;
+
+    document.body.appendChild(card);
+
+    try {
+        const canvas = await html2canvas(card, {
+            scale: 2,
+            backgroundColor: '#060a14',
+            useCORS: true
+        });
+
+        const link = document.createElement('a');
+        link.download = `CSB_Slip_${trackId}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    } catch (err) {
+        console.error("PNG Gen Error:", err);
+    } finally {
+        document.body.removeChild(card);
+    }
+}
+
+// FORM SUBMISSION ENGINE (STRICT ATOMIC MEDIA UPLOAD WITH SECURE HTML PARSING)
 document.getElementById('csbForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const submitBtn = document.getElementById('submitBtn');
@@ -205,28 +780,85 @@ document.getElementById('csbForm').addEventListener('submit', async function(e) 
             promoCode: appliedPromoCode || (isFeeFreeForCategory ? "FREE-CAT" : "NONE")
         };
 
-        // যদি শপথনামা চালু থাকে তবেই ভিডিও রেকর্ড বাধ্যতামূলক হবে
-        if (!isOathDisabledForGender && !recordedBlob) {
-            showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড বাধ্যতামূলক!', 'error');
+        for (let k in formData) {
+            if (k === 'tnxId' && (isPromoApplied || isFeeFreeForCategory)) continue;
+            if (!formData[k]) {
+                showToast('⚠️ সব তথ্য সঠিকভাবে পূরণ করুন', 'error');
+                submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
+            }
+        }
+
+        const globalPhoneRegex = /^\+?[0-9\s\-]{7,20}$/;
+        if (!globalPhoneRegex.test(formData.whatsapp) || !globalPhoneRegex.test(formData.guardianPhone) || !globalPhoneRegex.test(formData.personalPhone)) {
+            showToast('⚠️ সঠিক মোবাইল নম্বর দিন (কমপক্ষে ৭-১৫ ডিজিট)', 'error');
             submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
+        }
+
+        if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { 
+            showToast('⚠️ সঠিক ইমেইল দিন', 'error'); 
+            submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; 
+        }
+
+        if (!formData.fbLink.match(/^https?:\/\/(www\.)?facebook\.com\/.+/)) { 
+            showToast('⚠️ সঠিক ফেসবুক লিংক দিন', 'error'); 
+            submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; 
+        }
+
+        // শপথনামা অন থাকলেই কেবল লাইভ ভিডিও রেকর্ড বাধ্যতামূলক হবে
+        if (!isOathDisabledForGender && !recordedBlob) { 
+            showToast('⚠️ শপথনামার লাইভ ভিডিও রেকর্ড ছাড়া আবেদন গ্রহণযোগ্য নয়!', 'error'); 
+            submitBtn.classList.remove('loading'); submitBtn.disabled = false; return; 
         }
 
         const photo1File = document.getElementById('photo1').files[0];
         const photo2File = document.getElementById('photo2').files[0];
         const nidFile = document.getElementById('nid').files[0];
-        const paymentFile = document.getElementById('paymentScreenshot').files[0];
+        let paymentFile = document.getElementById('paymentScreenshot').files[0];
 
-        const trackId = 'CSB-2026-' + Math.floor(1000 + Math.random() * 9000);
+        if (!photo1File || !photo2File || !nidFile) {
+            showToast('⚠️ উভয় পাসপোর্ট ছবি ও সনদের ফাইল অবশ্যই আপলোড করতে হবে', 'error');
+            submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
+        }
+
+        // ফি চালু থাকলে স্ক্রিনশট বাধ্যতামূলক
+        if (!isPromoApplied && !isFeeFreeForCategory && !paymentFile) {
+            showToast('⚠️ পেমেন্ট স্ক্রিনশট আপলোড করতে হবে', 'error');
+            submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
+        }
+
+        // Safety size check: limits total upload under 35MB
+        let totalUploadSize = photo1File.size + photo2File.size + nidFile.size + (recordedBlob ? recordedBlob.size : 0);
+        if (paymentFile) totalUploadSize += paymentFile.size;
+        if (totalUploadSize > 35 * 1024 * 1024) {
+            showToast('⚠️ ফাইলের সাইজ অতিরিক্ত বড়! অনুগ্রহ করে ছোট সাইজের ছবি আপলোড করুন।', 'error');
+            submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
+        }
+
+        if (!isPromoApplied && !isFeeFreeForCategory) {
+            try {
+                const tnxCheckRef = doc(db, "transactions", formData.tnxId);
+                const tnxSnap = await getDoc(tnxCheckRef);
+                if (tnxSnap.exists()) {
+                    document.getElementById('errorMessage').innerHTML = `<p style="color:#fff; font-weight:700;">Transaction ID ইতিমধ্যে ব্যবহৃত হয়েছে!</p><p style="margin-top:4px;">নতুন TNX দিয়ে চেষ্টা করুন।</p>`;
+                    document.getElementById('errorModal').classList.add('show');
+                    submitBtn.classList.remove('loading'); submitBtn.disabled = false; return;
+                }
+            } catch(e) {}
+        }
+
+        updateProgress(20, 'ছবি ও ভিডিও প্রস্তুত হচ্ছে...');
+        const trackId = 'CSB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
         const currentTime = new Date().toLocaleString('bn-BD');
 
-        // SAFE HTML CAPTION
-        const caption = `🛡️ <b>CSB NEW ADMISSION FORM</b> 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${escapeHtml(formData.fullName)}\n📂 ক্যাটাগরি: ${escapeHtml(formData.category)}\n🏠 ঠিকানা: ${escapeHtml(formData.address)}\n📧 ইমেইল: ${escapeHtml(formData.email)}\n📱 WhatsApp: ${escapeHtml(formData.whatsapp)}\n✈️ Telegram: ${escapeHtml(formData.telegram)}\n📘 FB: ${escapeHtml(formData.fbName)}\n🔗 লিংক: ${escapeHtml(formData.fbLink)}\n🪪 ${escapeHtml(formData.docType)}: <code>${escapeHtml(formData.nidNumber)}</code>\n⚧️ জেন্ডার: ${escapeHtml(formData.gender)}\n🗂️ রোল: ${escapeHtml(formData.role)}\n🧾 TNX: <code>${escapeHtml(formData.tnxId)}</code>\n🎟️ ফি স্ট্যাটাস: ${isFeeFreeForCategory || isPromoApplied ? 'ফ্রি' : 'পেইড'}\n🆔 ট্র্যাকিং আইডি: <code>${escapeHtml(trackId)}</code>\n📅 সময়: ${escapeHtml(currentTime)}`;
+        // Safe HTML Caption
+        const caption = `🛡️ <b>CSB NEW ADMISSION FORM</b> 🛡️\n━━━━━━━━━━━━━━━━━━━━━━\n👤 নাম: ${escapeHtml(formData.fullName)}\n📂 ক্যাটাগরি: ${escapeHtml(formData.category)}\n🏠 ঠিকানা: ${escapeHtml(formData.address)}\n📧 ইমেইল: ${escapeHtml(formData.email)}\n📱 WhatsApp: ${escapeHtml(formData.whatsapp)}\n✈️ Telegram: ${escapeHtml(formData.telegram)}\n📘 FB নাম: ${escapeHtml(formData.fbName)}\n🔗 FB লিংক: ${escapeHtml(formData.fbLink)}\n🪪 ${escapeHtml(formData.docType)}: <code>${escapeHtml(formData.nidNumber)}</code>\n📅 জন্মতারিখ: <code>${escapeHtml(formData.dob)}</code>\n⚧️ জেন্ডার: ${escapeHtml(formData.gender)}\n🗂️ রোল: ${escapeHtml(formData.role)}\n🧾 TNX / রেফারেন্স: <code>${escapeHtml(formData.tnxId)}</code>\n🎟️ ফি স্ট্যাটাস: ${isFeeFreeForCategory || isPromoApplied ? 'বিনামূল্যে (Free)' : 'পেইড (Paid)'}\n📞 অভিভাবক: ${escapeHtml(formData.guardianPhone)}\n📱 নিজের: ${escapeHtml(formData.personalPhone)}\n🆔 ট্র্যাকিং আইডি: <code>${escapeHtml(trackId)}</code>\n━━━━━━━━━━━━━━━━━━━━━━\n📅 আবেদন টাইম: ${escapeHtml(currentTime)}`;
 
+        updateProgress(45, 'ফাইল আপলোড হচ্ছে...');
         const mediaGroup = new FormData();
         mediaGroup.append('chat_id', CHANNEL_ID_SUBMIT);
         mediaGroup.append('file1', photo1File, 'photo1.jpg');
         mediaGroup.append('file2', photo2File, 'photo2.jpg');
-        mediaGroup.append('file3', nidFile, 'doc.jpg');
+        mediaGroup.append('file3', nidFile, 'doc_file.jpg');
 
         let mediaData = [
             { type: 'photo', media: 'attach://file1', caption: caption, parse_mode: 'HTML' },
@@ -234,11 +866,12 @@ document.getElementById('csbForm').addEventListener('submit', async function(e) 
             { type: 'photo', media: 'attach://file3' }
         ];
 
-        if (paymentFile && !isFeeFreeForCategory && !isPromoApplied) {
-            mediaGroup.append('file4', paymentFile, 'payment.jpg');
+        if (paymentFile && !isPromoApplied && !isFeeFreeForCategory) {
+            mediaGroup.append('file4', paymentFile, 'screenshot.jpg');
             mediaData.push({ type: 'photo', media: 'attach://file4' });
         }
 
+        // যদি শপথনামা অন থাকে তবেই ভিডিও পাঠানো হবে
         if (!isOathDisabledForGender && recordedBlob) {
             mediaGroup.append('videoFile', recordedBlob, `oath_${trackId}.${videoExt}`);
             mediaData.push({ type: 'video', media: 'attach://videoFile' });
@@ -246,29 +879,125 @@ document.getElementById('csbForm').addEventListener('submit', async function(e) 
 
         mediaGroup.append('media', JSON.stringify(mediaData));
 
-        const tgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, { method: 'POST', body: mediaGroup });
-        const tgData = await tgRes.json();
-        if (!tgData.ok) throw new Error(tgData.description || 'টেলিগ্রাম আপলোড ব্যর্থ!');
-
-        // SAVE DATA TO FIRESTORE
-        await setDoc(doc(db, "applications", trackId), {
-            ...formData, status: 'Pending', createdAt: currentTime
+        const tgResponse = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
+            method: 'POST',
+            body: mediaGroup
         });
 
-        // Redeem promo code
-        if (isPromoApplied && activePortalConfig.promoCodes) {
-            const updated = activePortalConfig.promoCodes.map(p => p.code === appliedPromoCode ? { ...p, status: 'Redeemed', usedBy: trackId } : p);
-            await updateDoc(doc(db, "settings", "portalConfig"), { promoCodes: updated });
+        const tgResult = await tgResponse.json();
+
+        if (!tgResult.ok) {
+            throw new Error(`ছবি ও ভিডিও পাঠাতে ব্যর্থ হয়েছে: ${tgResult.description || 'বড় ফাইলের আকার বা দুর্বল ইন্টারনেট সংযোগ'}`);
         }
 
+        updateProgress(75, 'সুরক্ষিতভাবে জমা হচ্ছে...');
+        await setDoc(doc(db, "applications", trackId), {
+            ...formData, status: 'Pending', createdAt: currentTime, updateTime: currentTime
+        });
+
+        if (!isPromoApplied && !isFeeFreeForCategory) {
+            await setDoc(doc(db, "transactions", formData.tnxId), { trackId: trackId, usedAt: currentTime });
+        } else if (isPromoApplied) {
+            try {
+                if (activePortalConfig.promoCodes && Array.isArray(activePortalConfig.promoCodes)) {
+                    let updatedPromo = activePortalConfig.promoCodes.map(p => {
+                        if (typeof p === 'object' && p.code.toUpperCase() === appliedPromoCode.toUpperCase()) {
+                            return { ...p, status: 'Redeemed', usedBy: trackId };
+                        }
+                        return p;
+                    });
+                    await updateDoc(doc(db, "settings", "portalConfig"), { promoCodes: updatedPromo });
+                }
+            } catch(promoErr) {
+                console.log("Promo tracking note:", promoErr);
+            }
+        }
+
+        updateProgress(90, 'অ্যাকশন প্যানেল ও স্লিপ তৈরি হচ্ছে...');
+        const webAppBaseUrl = window.location.href.split('?')[0];
+        const actionMsgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                chat_id: CHANNEL_ID_SUBMIT, 
+                text: `🚨 <b>CSB ACTION PANEL</b> 🚨\nID: <code>${escapeHtml(trackId)}</code>\nনাম: ${escapeHtml(formData.fullName)}\nরোল: ${escapeHtml(formData.role)}`, 
+                parse_mode: 'HTML' 
+            })
+        });
+        const actionData = await actionMsgRes.json();
+        const actionMsgId = actionData.result ? actionData.result.message_id : '';
+
+        if (actionMsgId) {
+            const inlineKeyboard = {
+                inline_keyboard: [[
+                    { text: '✅ Approve', url: `${webAppBaseUrl}?action=approve&id=${trackId}&msg_id=${actionMsgId}` }, 
+                    { text: '❌ Reject', url: `${webAppBaseUrl}?action=reject&id=${trackId}&msg_id=${actionMsgId}` }
+                ]]
+            };
+
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHANNEL_ID_SUBMIT,
+                    message_id: actionMsgId,
+                    reply_markup: inlineKeyboard
+                })
+            });
+        }
+
+        await generateAutoPNG(trackId, formData, currentTime);
+
+        updateProgress(100, 'সম্পন্ন হয়েছে!');
         document.getElementById('trackingIdDisplay').textContent = trackId;
         document.getElementById('successModal').classList.add('show');
 
+        setTimeout(() => {
+            document.getElementById('csbForm').reset();
+            document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'ফাইল বেছে নিন');
+            recordedBlob = null;
+            recordedChunks = [];
+            isPromoApplied = false;
+            appliedPromoCode = "";
+            document.getElementById('promoStatusMessage').style.display = 'none';
+            document.getElementById('paymentInputsWrapper').style.display = 'block';
+            document.getElementById('paymentCardMain').classList.remove('free-mode');
+            document.getElementById('tnxReqMark').style.display = 'inline';
+            document.getElementById('screenshotReqMark').style.display = 'inline';
+            recordingStatus.textContent = 'Ready';
+            recordingDot.className = 'dot ready';
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            downloadBtn.disabled = true;
+            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; isCameraReady = false; previewVideo.srcObject = null; }
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+        }, 1500);
+
     } catch (err) {
-        document.getElementById('errorMessage').textContent = err.message;
+        console.error("Submission Error:", err);
+        document.getElementById('errorMessage').innerHTML = `<p style="font-weight:700; color:#fff;">আবেদন সম্পূর্ণ হতে ব্যর্থ হয়েছে!</p><p style="margin-top:6px;">${err.message}</p><p style="margin-top:8px; font-size:12px; color:var(--text-muted);">ছবি এবং ভিডিও সঠিকভাবে আপলোড নিশ্চিত করে আবার সাবমিট করুন।</p>`;
         document.getElementById('errorModal').classList.add('show');
-    } finally {
         submitBtn.classList.remove('loading');
         submitBtn.disabled = false;
+        document.getElementById('uploadProgress').classList.remove('show');
+    }
+});
+
+document.querySelector('.btn-reset').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (confirm('সব ফিল্ড মুছে ফেলতে চান?')) {
+        document.getElementById('csbForm').reset();
+        document.querySelectorAll('.file-upload-area .info .main span').forEach(s => s.textContent = 'ফাইল বেছে নিন');
+        recordedBlob = null;
+        recordedChunks = [];
+        isPromoApplied = false;
+        appliedPromoCode = "";
+        document.getElementById('promoStatusMessage').style.display = 'none';
+        document.getElementById('paymentInputsWrapper').style.display = 'block';
+        document.getElementById('paymentCardMain').classList.remove('free-mode');
+        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; isCameraReady = false; previewVideo.srcObject = null; }
+        document.getElementById('uploadProgress').classList.remove('show');
+        showToast('ফর্ম রিসেট করা হয়েছে', 'success');
     }
 });
